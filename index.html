@@ -3,252 +3,211 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KiyoEdu · Viện Nghệ Thuật Điện Ảnh &amp; Quang Học Thị Giác</title>
-  <meta name="description" content="Viện đào tạo chuyên sâu về nghệ thuật thị giác điện ảnh 35mm — quang học thấu kính, ánh sáng Chiaroscuro, dàn cảnh không gian và đạo diễn thực chiến.">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23fcfbf9'/><circle cx='16' cy='16' r='10' fill='%23111113'/><circle cx='16' cy='16' r='4' fill='%23fcfbf9'/></svg>">
+  <title>KiyoEdu v2.0 · Nền Tảng Dạy & Học Trắc Nghiệm Thông Minh</title>
+  <meta name="description" content="KiyoEdu v2.0 — Nền tảng dạy và học trực tuyến all-in-one: Bóc tách đề thi tự động bằng SI & OCR, ngân hàng 50,000+ câu hỏi chuẩn Bộ GD&ĐT, quản lý bài tập theo phong cách Azota và đấu trường Quiz trực tiếp.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%232563eb'/><path d='M16 6L4 13l12 7 12-7-12-7zm-8 10.5v6c0 2.5 3.6 4.5 8 4.5s8-2 8-4.5v-6l-8 4.7-8-4.7z' fill='%23ffffff'/></svg>">
   <link rel="stylesheet" href="kiyo-editorial.css">
-  <!-- Fonts: Playfair Display + Inter + JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
   <!-- ══════════════════════════════════════════════════════════════════════════
-       MINIMAL CINE HEADER
+       HEADER — Thanh điều hướng kính mờ, tối giản, cân đối
        ══════════════════════════════════════════════════════════════════════════ -->
   <header class="site-header" role="banner">
-    <a href="#khoi-nguon" class="brand" aria-label="KiyoEdu — Trang chủ">
-      <span class="brand-name">KIYOEDU</span>
-      <span class="brand-tagline">VIỆN NGHỆ THUẬT ĐIỆN ẢNH &amp; QUANG HỌC</span>
+    <a href="#chang-1-hero" class="brand" aria-label="KiyoEdu — Trang chủ">
+      <div class="brand-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+          <path d="M9 7h6"></path>
+          <path d="M9 11h4"></path>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <div class="brand-title-wrap">
+          <span class="brand-name">KiyoEdu</span>
+          <span class="brand-badge">v2.0</span>
+        </div>
+        <span class="brand-sub">Nền Tảng Dạy &amp; Học Quiz</span>
+      </div>
     </a>
 
-    <nav class="header-nav" aria-label="Điều hướng các phân cảnh thị giác">
-      <a href="#quang-hoc"  class="nav-link">Quang Học</a>
-      <a href="#anh-sang"   class="nav-link">Ánh Sáng</a>
-      <a href="#dan-canh"   class="nav-link">Dàn Cảnh</a>
-      <a href="#khi-tai"    class="nav-link">Khí Tài</a>
-      <a href="#tuyen-sinh" class="nav-link">Tuyển Sinh</a>
+    <!-- Điều hướng 5 chặng Scrollytelling tinh tế -->
+    <nav class="header-nav" aria-label="Điều hướng các chặng Scrollytelling">
+      <a href="#chang-1-hero"      class="nav-link is-active">01 Khởi đầu</a>
+      <a href="#chang-2-story"     class="nav-link">02 Giải pháp</a>
+      <a href="#chang-3-timeline"  class="nav-link">03 Lộ trình</a>
+      <a href="#chang-4-showcase"  class="nav-link">04 Tính năng</a>
+      <a href="#chang-5-cta"       class="nav-link">05 Bắt đầu</a>
     </nav>
 
-    <a href="#tuyen-sinh" class="btn-header-cta">Ứng Tuyển Tác Giả</a>
+    <div class="header-actions">
+      <a href="http://localhost:3000/login" target="_blank" class="btn-header-ghost">Đăng nhập</a>
+      <a href="http://localhost:3000/register" target="_blank" class="btn-header-primary">Vào học ngay →</a>
+    </div>
 
-    <!-- Global ink progress indicator -->
+    <!-- Thanh tiến trình cuộn trang toàn cục 100% bám theo con lăn chuột -->
     <div class="header-progress-bar" id="header-progress" aria-hidden="true"></div>
   </header>
 
-  <!-- ══════════════════════════════════════════════════════════════════════════
-       WEBGPU FIXED CANVAS STAGE
-       Primary: WebGPU (WGSL) | Fallback: WebGL2 (GLSL) | Fallback: Canvas 2D
-       ================================================================══════ -->
+  <!-- Canvas lưới kỹ thuật tĩnh mờ tối giản -->
   <canvas id="scrolly-canvas" aria-hidden="true"></canvas>
 
-  <!-- ══════════════════════════════════════════════════════════════════════════
-       STORY MAIN — 6 Distinct Chapter Visual Layouts
-       ================================================================══════ -->
-  <main id="story-main" aria-label="Hành trình thị giác KiyoEdu">
+  <main id="story-main" aria-label="Hành trình trải nghiệm KiyoEdu">
 
     <!-- ────────────────────────────────────────────────────────────────────────
-         ACT 0 · KHỞI NGUỒN: Khung Ngắm Toàn Cảnh Viewfinder
-         Layout: Expansive optical viewfinder with corner brackets, SMPTE timecode,
-                 and film contact strip at bottom.
+         CHẶNG 1: KHỞI ĐẦU & THU HÚT (The Hook - Hero Section)
+         Airy layout, Stagger Fade-Up, Micro-Parallax on Scroll
          ──────────────────────────────────────────────────────────────────────── -->
-    <section class="story-chapter chapter-hero" id="khoi-nguon" data-chapter="0">
-      <div class="chapter-sticky hero-sticky">
+    <section class="stage-section stage-hero" id="chang-1-hero" data-stage="0">
+      <div class="hero-container" id="hero-parallax-target">
         
-        <!-- 4 góc căn cự ly quang học Mark V -->
-        <div class="vf-corner vf-corner--tl" aria-hidden="true"></div>
-        <div class="vf-corner vf-corner--tr" aria-hidden="true"></div>
-        <div class="vf-corner vf-corner--bl" aria-hidden="true"></div>
-        <div class="vf-corner vf-corner--br" aria-hidden="true"></div>
-
-        <!-- Thanh thông số camera trên đầu khung ngắm -->
-        <div class="hero-meta-hud" aria-label="Thông số kỹ thuật máy quay">
-          <span class="hud-item">ARRI ALEXA 35 · 800 ASA · 180.0° SHUTTER · 35MM T1.4</span>
-          <span class="hud-item hud-timecode" id="smpte-timecode">01:24:14:08</span>
+        <div class="hero-badge-wrap">
+          <span class="hero-badge">
+            <span class="badge-dot"></span>
+            KỶ NGUYÊN MỚI CỦA GIÁO DỤC TRỰC TUYẾN &amp; SI
+          </span>
         </div>
 
-        <div class="hero-content-wrap">
-          <span class="chapter-eyebrow">VIỆN NGHỆ THUẬT ĐIỆN ẢNH TÁC GIẢ · KIYOEDU</span>
-          <h1 class="hero-headline">
-            Bản lĩnh thị giác trước những ồn ào công nghệ.
-          </h1>
-          <p class="hero-prose">
-            Xưởng thực hành khắt khe dành cho đạo diễn, nhà quay phim (DOP) và những tác giả tư duy bằng hình ảnh thực tế. Chúng tôi huấn luyện đôi mắt con người làm chủ ánh sáng, nhịp điệu và chiều sâu không gian 35mm.
-          </p>
-          <div class="hero-cta-group">
-            <a href="#tuyen-sinh" class="btn-primary-action">Ứng Tuyển Khóa Tác Giả</a>
-            <a href="#quang-hoc" class="scroll-cue">
-              Cuộn để khám phá hành trình
-              <span class="scroll-arrow">↓</span>
-            </a>
+        <h1 class="hero-title">
+          Dạy thông minh, <br class="hidden-mobile">
+          học hào hứng cùng <span class="text-gradient">KiyoEdu</span>
+        </h1>
+
+        <p class="hero-lead">
+          Nền tảng all-in-one cho Thầy Cô và Học Sinh: Bóc tách đề thi tự động bằng SI &amp; OCR, ngân hàng 50,000+ câu hỏi chuẩn Bộ GD&amp;ĐT, quản lý bài tập theo phong cách Azota và đấu trường Quiz trực tiếp.
+        </p>
+
+        <div class="hero-actions">
+          <a href="http://localhost:3000/register" target="_blank" class="btn-hero-primary">
+            Bắt đầu miễn phí ngay
+            <span class="btn-arrow">→</span>
+          </a>
+          <a href="#chang-2-story" class="btn-hero-secondary">
+            Khám phá giải pháp ↓
+          </a>
+        </div>
+
+        <!-- Micro Proof Badges -->
+        <div class="hero-proof-badges">
+          <div class="proof-item">
+            <span class="proof-icon">🛡️</span>
+            <span>Miễn phí trọn đời</span>
+          </div>
+          <div class="proof-item">
+            <span class="proof-icon">⚡</span>
+            <span>Không cần cài app</span>
+          </div>
+          <div class="proof-item">
+            <span class="proof-icon">📚</span>
+            <span>Kho đề chuẩn BGD</span>
+          </div>
+          <div class="proof-item">
+            <span class="proof-icon">🎯</span>
+            <span>Chấm thi tự động 100%</span>
           </div>
         </div>
 
-        <!-- Dải phim nhựa 35mm tiếp cận (Contact Sheet Teaser) -->
-        <div class="film-contact-strip" aria-label="Khung hình 35mm các phân đoạn">
-          <a href="#quang-hoc" class="film-frame-card">
-            <img src="assets/cooke-lens-macro.jpg" alt="Quang học thấu kính 35mm" width="160" height="100" loading="eager">
-            <span class="frame-tag">01 · QUANG HỌC</span>
-          </a>
-          <a href="#anh-sang" class="film-frame-card">
-            <img src="assets/chiaroscuro-light.jpg" alt="Ánh sáng Chiaroscuro" width="160" height="100" loading="eager">
-            <span class="frame-tag">02 · ÁNH SÁNG</span>
-          </a>
-          <a href="#dan-canh" class="film-frame-card">
-            <img src="assets/blocking-set.jpg" alt="Dàn cảnh điện ảnh" width="160" height="100" loading="eager">
-            <span class="frame-tag">03 · DÀN CẢNH</span>
-          </a>
-          <a href="#khi-tai" class="film-frame-card">
-            <img src="assets/cinema-rig.jpg" alt="Khí tài máy quay 35mm" width="160" height="100" loading="eager">
-            <span class="frame-tag">04 · KHÍ TÀI</span>
-          </a>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- ────────────────────────────────────────────────────────────────────────
-         ACT 1 · QUANG HỌC: Bàn Làm Việc Thấu Kính Asymmetrical Blueprint
-         Layout: Horizontal specs ribbon + left schematic & DoF scale + floating
-                 optical glass plate on the right, exposing animated iris on canvas.
-         ──────────────────────────────────────────────────────────────────────── -->
-    <section class="story-chapter chapter-optics" id="quang-hoc" data-chapter="1">
-      <div class="chapter-sticky optics-sticky">
-
-        <!-- Băng thông số quang học trên đỉnh -->
-        <div class="optics-spec-ribbon">
-          <span>THỦY TINH QUANG HỌC: <strong>COOKE SPEED PANCHRO T1.4</strong></span>
-          <span>TIÊU CỰ: <strong>35.2MM</strong></span>
-          <span>VÒNG TRÒN THỊ TRƯỜNG: <strong>30.5MM (SUPER 35)</strong></span>
-          <span>NGÀM: <strong>ARRI PL STEEL</strong></span>
-        </div>
-
-        <div class="optics-workbench-grid">
+        <!-- HERO SHOWCASE: Kết hợp ảnh học sinh với Quiz tương tác & Quick Join -->
+        <div class="hero-showcase-grid">
           
-          <!-- Cột trái: Phân tích thấu kính & thước đo DoF -->
-          <div class="optics-info-col">
-            <span class="chapter-eyebrow">PHÒNG THỰC HÀNH QUANG HỌC 35MM</span>
-            <h2>Sức nặng thủy tinh trong lòng bàn tay.</h2>
-            <p>
-              Khi thuật toán có thể kết xuất vô vàn hình ảnh vô hồn trong tích tắc, giá trị của một khung hình nằm ở đâu? Tại KiyoEdu, chúng tôi đối diện trực tiếp với sức nặng của 9 lá khẩu cơ học điêu khắc ánh sáng.
-            </p>
-
-            <!-- Cụm bóc tách cấu trúc Double Gauss -->
-            <div class="optics-layer-stack">
-              <div class="optic-layer">
-                <span class="layer-code">NHÓM I</span>
-                <div>
-                  <strong>Thấu Kính Trước Doublet</strong>
-                  <p>Khử quang sai sắc, tái tạo da người trung thực.</p>
-                </div>
-              </div>
-              <div class="optic-layer">
-                <span class="layer-code">NHÓM II</span>
-                <div>
-                  <strong>Cụm 9 Lá Khẩu Thép Cơ Học</strong>
-                  <p>Điều khiển độ sâu trường ảnh từ f/1.4 đến f/16.</p>
-                </div>
-              </div>
-              <div class="optic-layer">
-                <span class="layer-code">NHÓM III</span>
-                <div>
-                  <strong>Thấu Kính Sau Hội Tụ</strong>
-                  <p>Nén chùm tia lên mặt phim nhựa 35mm hữu cơ.</p>
+          <!-- Mockup 1: Trải nghiệm Đấu trường Quiz trắc nghiệm tương tác CÓ ẢNH THẬT -->
+          <div class="showcase-quiz-card">
+            <div class="quiz-visual-header">
+              <img src="assets/kiyoedu-student-tablet.jpg" alt="Học sinh giải trắc nghiệm Toán trên tablet" width="600" height="240" loading="eager">
+              <div class="quiz-visual-overlay">
+                <span class="quiz-badge-live">🔴 LIVE QUIZ</span>
+                <span class="quiz-subject-pill">Toán 9 · Đại số</span>
+                <div class="quiz-timer-pill">
+                  <span class="timer-dot"></span>
+                  <span>00:38</span>
                 </div>
               </div>
             </div>
 
-            <!-- Thước đo Độ Sâu Trường Ảnh (DoF Meter) thay đổi theo scroll -->
-            <div class="dof-meter-box" aria-label="Thước đo chiều sâu trường ảnh">
-              <div class="dof-meter-label">
-                <span>THƯỚC ĐO CHIỀU SÂU TRƯỜNG ẢNH (DOF METER)</span>
-                <span class="dof-readout" id="dof-readout">f/1.4 — VÙNG NÉT: 4 INCHES</span>
+            <div class="quiz-question-box">
+              <div class="question-level">Mức 1: Nhận biết</div>
+              <h3 class="question-text">
+                Cho phương trình bậc hai <em>ax² + bx + c = 0</em> (<em>a ≠ 0</em>). Biệt thức <em>Δ</em> được tính theo công thức nào?
+              </h3>
+            </div>
+
+            <div class="quiz-options-list">
+              <div class="quiz-option-item">
+                <span class="option-key">A</span>
+                <span class="option-val">Δ = b² − 4ac</span>
               </div>
-              <div class="dof-track">
-                <div class="dof-zone-bar" id="dof-bar"></div>
+              <div class="quiz-option-item is-correct">
+                <span class="option-key">B</span>
+                <span class="option-val">Δ = b² + 4ac</span>
+                <span class="option-check">✓</span>
               </div>
-              <div class="dof-ticks">
-                <span>3ft (CẬN)</span>
-                <span>5ft (TIÊU ĐIỂM)</span>
-                <span>10ft (TRUNG CẢNH)</span>
-                <span>∞ (VÔ CỰC)</span>
+              <div class="quiz-option-item">
+                <span class="option-key">C</span>
+                <span class="option-val">Δ = 2b − 4ac</span>
               </div>
+              <div class="quiz-option-item">
+                <span class="option-key">D</span>
+                <span class="option-val">Δ = b² − 2ac</span>
+              </div>
+            </div>
+
+            <div class="quiz-card-footer">
+              <span class="quiz-footer-status">⚡ 42 học sinh đang cùng làm bài thi</span>
+              <span class="quiz-footer-pts">+120 Điểm phản xạ</span>
             </div>
           </div>
 
-          <!-- Cột phải: Floating Optical Glass Macro Card (không che kín màn hình) -->
-          <div class="optics-visual-col">
-            <div class="optical-glass-plate">
-              <div class="plate-image-frame">
-                <img src="assets/cooke-lens-macro.jpg" alt="Vành lấy nét và lá khẩu Cooke Speed Panchro 35mm" width="700" height="460" loading="lazy">
+          <!-- Mockup 2: Form Vào Lớp Học Nhanh (Quick Join) -->
+          <div class="showcase-quickjoin-card">
+            <div class="join-header">
+              <div class="join-icon">🏫</div>
+              <div class="join-header-text">
+                <h3>Vào lớp học nhanh</h3>
+                <p>Dành cho học sinh tham gia bằng mã lớp</p>
               </div>
-              <div class="plate-metadata">
-                <div class="meta-row">
-                  <span>THIẾT KẾ CƠ HỌC:</span>
-                  <strong>9 LÁ KHẨU TRÒN ĐIỀU CHỈNH TAY</strong>
+            </div>
+
+            <form class="quickjoin-form" onsubmit="event.preventDefault(); window.open('http://localhost:3000/classes/join?code=' + encodeURIComponent(document.getElementById('hero-class-code').value || 'KY-8821'), '_blank');">
+              <div class="input-group">
+                <label for="hero-class-code" class="input-label">MÃ LỚP HỌC</label>
+                <div class="input-wrapper">
+                  <input type="text" id="hero-class-code" class="class-code-input" placeholder="VÍ DỤ: KY-8821" value="KY-8821" maxlength="12">
+                  <span class="input-tag">Mã 6 ký tự</span>
                 </div>
-                <div class="meta-row">
-                  <span>THƯỚC ĐO CỰ LY:</span>
-                  <strong>BƯỚC KHẮC CHÌM IMPERIAL (FEET)</strong>
-                </div>
+              </div>
+
+              <button type="submit" class="btn-join-submit">
+                Tham gia lớp ngay →
+              </button>
+            </form>
+
+            <div class="join-features">
+              <div class="join-feature-item">
+                <span class="jf-check">✓</span>
+                <span>Tự động nhận bài tập về nhà theo tuần</span>
+              </div>
+              <div class="join-feature-item">
+                <span class="jf-check">✓</span>
+                <span>Làm đề kiểm tra trực tiếp trên trình duyệt</span>
+              </div>
+              <div class="join-feature-item">
+                <span class="jf-check">✓</span>
+                <span>Xem lời giải chi tiết và bảng điểm ngay khi nộp</span>
               </div>
             </div>
           </div>
 
         </div>
 
-      </div>
-    </section>
-
-    <!-- ────────────────────────────────────────────────────────────────────────
-         ACT 2 · ÁNH SÁNG: Phân Tách Tương Phản Phòng Tối (Chiaroscuro Split)
-         Layout: Dramatic duo-tone dark/light contrast split!
-                 Left half = Deep Carbon #111113 (Negative Fill -3.5 EV).
-                 Right half = Ivory with Kodak 5219 film frame portrait.
-         ──────────────────────────────────────────────────────────────────────── -->
-    <section class="story-chapter chapter-lighting" id="anh-sang" data-chapter="2">
-      <div class="chapter-sticky lighting-sticky">
-
-        <!-- Nửa màn hình TỐI (Carbon Ink #111113): NEGATIVE FILL -->
-        <div class="lighting-dark-panel">
-          <div class="dark-panel-content">
-            <span class="chapter-eyebrow dark-eyebrow">ÁNH SÁNG &amp; CHIAROSCURO</span>
-            <h2 class="dark-headline">Bóng tối là ngôn ngữ của tác giả.</h2>
-            <p class="dark-prose">
-              Trừ sáng Negative Fill âm 3.5 EV: điêu khắc khuôn mặt bằng bóng tối. Không phải thêm bao nhiêu đèn để sáng lên, mà là tước bỏ bao nhiêu ánh sáng thừa để lộ ra nội tâm nhân vật.
-            </p>
-
-            <!-- Bảng đo sáng quang trắc (EV Exposure HUD) -->
-            <div class="photometric-hud">
-              <div class="hud-metric">
-                <span class="metric-name">NGUỒN SÁNG CHÍNH (KEY LIGHT)</span>
-                <span class="metric-val">3200K TUNGSTEN · 800 LUX · f/4.0</span>
-              </div>
-              <div class="hud-metric">
-                <span class="metric-name">CỜ TRỪ SÁNG (NEGATIVE FILL)</span>
-                <span class="metric-val">-3.5 EV · 25 LUX · f/1.4</span>
-              </div>
-              <div class="hud-metric">
-                <span class="metric-name">TỈ LỆ TƯƠNG PHẢN (CONTRAST RATIO)</span>
-                <span class="metric-val">8:1 · CHIAROSCURO CỔ ĐIỂN</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Nửa màn hình SÁNG (Ivory): Khung phim nhựa 35mm Chiaroscuro -->
-        <div class="lighting-light-panel">
-          <div class="film-cell-mount">
-            <div class="film-sprocket-track film-sprocket-top" aria-hidden="true"></div>
-            <div class="film-photo-window">
-              <img src="assets/chiaroscuro-light.jpg" alt="Chân dung điện ảnh Chiaroscuro — Negative Fill và Key Light tương phản cao" width="800" height="520" loading="lazy">
-            </div>
-            <div class="film-sprocket-track film-sprocket-bottom" aria-hidden="true"></div>
-            <div class="film-cell-caption">
-              <span>KODAK VISION3 500T 5219</span>
-              <span>EXPOSURE LATITUDE: 14 STOPS</span>
-            </div>
+        <!-- Scroll Indicator nhỏ gọn tinh tế -->
+        <div class="hero-scroll-cue" id="hero-scroll-cue" aria-hidden="true">
+          <span>Cuộn chuột để khám phá</span>
+          <div class="mouse-cue">
+            <div class="mouse-wheel"></div>
           </div>
         </div>
 
@@ -256,267 +215,538 @@
     </section>
 
     <!-- ────────────────────────────────────────────────────────────────────────
-         ACT 3 · DÀN CẢNH: Sơ Đồ Mặt Bằng Tác Chiến (Tactical Spatial Floor Plan)
-         Layout: Full-width director's tactical staging stage with 180° axis,
-                 blocking rules, camera positions, and on-set viewfinder photo.
+         CHẶNG 2: DẪN DẮT VẤN ĐỀ & GIẢI PHÁP (Sticky Split-Screen)
+         Sticky Visual Panel (55%) + Scrolling Narrative (45%) with Cross-Fade
          ──────────────────────────────────────────────────────────────────────── -->
-    <section class="story-chapter chapter-blocking" id="dan-canh" data-chapter="3">
-      <div class="chapter-sticky blocking-sticky">
+    <section class="stage-section stage-split-story" id="chang-2-story" data-stage="1">
+      <div class="split-story-container">
 
-        <div class="blocking-header-bar">
-          <span class="chapter-eyebrow">DÀN CẢNH &amp; TRỤC KHÔNG GIAN 35MM</span>
-          <h2>Trục 180°: luật bất biến của không gian điện ảnh.</h2>
-          <p>
-            Mỗi bước chân máy quay đều là một quyết định tâm lý. Tương quan giữa nhân vật, điểm nhìn và góc máy tạo nên ngôn ngữ cảm xúc của cảnh phim — vô hình nhưng người xem cảm nhận tuyệt đối.
-          </p>
-        </div>
-
-        <div class="tactical-stage-grid">
-
-          <!-- Thẻ 1: Ba quy tắc dàn cảnh cốt lõi -->
-          <div class="tactical-card blocking-rules-card">
-            <div class="tactical-card-tag">QUY TẮC BẤT BIẾN</div>
-            <div class="blocking-rule-item">
-              <strong>01 · Đường Trục Hành Động</strong>
-              <p>Đường thẳng tưởng tượng nối 2 nhân vật không bao giờ được máy quay tự tiện vượt qua.</p>
-            </div>
-            <div class="blocking-rule-item">
-              <strong>02 · Hướng Ánh Nhìn (Eye-Line)</strong>
-              <p>Bảo toàn hướng nhìn trái/phải để khán giả luôn định vị được mối quan hệ quyền lực.</p>
-            </div>
-            <div class="blocking-rule-item">
-              <strong>03 · Nhịp Phân Cảnh (Coverage)</strong>
-              <p>Phối hợp nhịp nhàng giữa Master toàn cảnh, góc qua vai (OTS) và cận cảnh (CU).</p>
-            </div>
-          </div>
-
-          <!-- Thẻ 2: Sơ đồ vị trí máy quay thực tế -->
-          <div class="tactical-card camera-setup-card">
-            <div class="tactical-card-tag">BỐ TRÍ MÁY QUAY PHIM TRƯỜNG</div>
-            <div class="cam-position-row is-active" id="cam-pos-1">
-              <span class="cam-badge">CAM A</span>
-              <div>
-                <strong>Vị Trí Master (35mm T1.4)</strong>
-                <p>Khung hình thiết lập không gian và tương quan 2 nhân vật.</p>
+        <!-- CỘT CỐ ĐỊNH (Sticky Visual Panel - 55%) -->
+        <div class="sticky-visual-wrapper">
+          <div class="sticky-app-mockup">
+            
+            <div class="mockup-header-bar">
+              <div class="mockup-dots">
+                <span class="dot-red"></span>
+                <span class="dot-amber"></span>
+                <span class="dot-green"></span>
               </div>
-            </div>
-            <div class="cam-position-row" id="cam-pos-2">
-              <span class="cam-badge">CAM B</span>
-              <div>
-                <strong>Góc Qua Vai OTS (50mm T1.4)</strong>
-                <p>Nén khoảng cách tâm lý, nhấn mạnh sự đối thoại.</p>
+              <div class="mockup-title" id="sticky-visual-label">
+                KiyoEdu Studio · Bóc tách đề thi SI &amp; OCR
               </div>
-            </div>
-            <div class="cam-position-row" id="cam-pos-3">
-              <span class="cam-badge">CAM C</span>
-              <div>
-                <strong>Cận Cảnh CU (85mm T1.4)</strong>
-                <p>Bóc tách vi biểu cảm trên ánh mắt nhân vật.</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Thẻ 3: Ảnh đạo diễn thực địa trên sàn ray trượt -->
-          <div class="tactical-card director-photo-card">
-            <div class="director-photo-frame">
-              <img src="assets/blocking-set.jpg" alt="Đạo diễn dàn cảnh với kính ngắm Mark V trên ray trượt phim trường" width="600" height="420" loading="lazy">
-              <div class="director-hud-overlay">
-                <span>MARK V DIRECTOR'S VIEWFINDER · DOLLY TRACK 12M</span>
-              </div>
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-    </section>
-
-    <!-- ────────────────────────────────────────────────────────────────────────
-         ACT 4 · KHÍ TÀI: Băng Lưu Trữ Khí Tài & Khung Tỉ Lệ 35mm
-         Layout: Split equipment archive with dynamic aspect ratio selector
-                 (1.33:1, 1.85:1, 2.39:1) and tactile gear cards.
-         ──────────────────────────────────────────────────────────────────────── -->
-    <section class="story-chapter chapter-gear" id="khi-tai" data-chapter="4">
-      <div class="chapter-sticky gear-sticky">
-
-        <div class="gear-content-grid">
-
-          <!-- Cột trái: Tuyên ngôn khí tài & Trình chọn tỉ lệ khung hình -->
-          <div class="gear-left-panel">
-            <span class="chapter-eyebrow">KHÍ TÀI THỰC CHIẾN 35MM</span>
-            <h2>Chạm tay vào trang thiết bị thế giới.</h2>
-            <p>
-              Học viên được trực tiếp cầm máy ARRI Alexa 35, xoay vòng nét Cooke S4/i và thẩm màu trên DaVinci Resolve Studio — không phải mô phỏng, không phải phiên bản rút gọn. Khí tài tiêu chuẩn điện ảnh thế giới trong tầm tay bạn.
-            </p>
-
-            <!-- Bộ chuyển đổi tỉ lệ khung hình 35mm -->
-            <div class="aspect-ratio-selector-box">
-              <span class="selector-title">KHUNG HÌNH ĐIỆN ẢNH (ASPECT RATIO GATES):</span>
-              <div class="ratio-chips-row">
-                <button type="button" class="ratio-chip" data-ratio="1.33">1.33:1 ACADEMY</button>
-                <button type="button" class="ratio-chip is-active" data-ratio="1.85">1.85:1 FLAT DCI</button>
-                <button type="button" class="ratio-chip" data-ratio="2.39">2.39:1 SCOPE</button>
-              </div>
-              <p class="ratio-caption" id="ratio-caption">
-                Chuẩn khung hình chiếu rạp tiêu chuẩn DCI 4K quốc tế.
-              </p>
-            </div>
-          </div>
-
-          <!-- Cột phải: 3 Hàng thông số khí tài dạng Thẻ Kỹ Thuật -->
-          <div class="gear-right-panel">
-            <div class="gear-vault-card">
-              <div class="gear-vault-header">
-                <span class="vault-icon">■</span>
-                <strong>THÂN MÁY QUAY: ARRI ALEXA 35</strong>
-              </div>
-              <p>Cảm biến Super 35 4.6K native, dải tương phản 17 stops dẫn đầu thế giới, khoa học màu REVEAL Color Science.</p>
-            </div>
-
-            <div class="gear-vault-card">
-              <div class="gear-vault-header">
-                <span class="vault-icon">■</span>
-                <strong>DÀN THẤU KÍNH: COOKE S4/i &amp; SPEED PANCHRO</strong>
-              </div>
-              <p>Bộ tiêu cự đầy đủ 18mm, 25mm, 35mm, 50mm, 75mm, 100mm T2.0. Ngàm thép PL mount, giao thức dữ liệu /i Technology.</p>
-            </div>
-
-            <div class="gear-vault-card">
-              <div class="gear-vault-header">
-                <span class="vault-icon">■</span>
-                <strong>PHÒNG COLOR SUITE: DAVINCI RESOLVE ADVANCED</strong>
-              </div>
-              <p>Bàn chỉnh màu phần cứng Advanced Panel, màn hình cân chuẩn EIZO ColorEdge DCI-P3 10-bit, rạp chiếu thử 4K.</p>
-            </div>
-
-            <!-- Khung ảnh cuộn phim nhựa 35mm -->
-            <div class="film-spool-strip">
-              <img src="assets/cinema-rig.jpg" alt="Dàn máy quay điện ảnh ARRI Alexa với ống kính quang học" width="700" height="240" loading="lazy">
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-    </section>
-
-    <!-- ────────────────────────────────────────────────────────────────────────
-         ACT 5 · TUYỂN SINH: Tuyên Ngôn & Cổng Ứng Tuyển Khóa Tác Giả
-         Layout: Distinct 2-column layout — 4 Admission Criteria on the left,
-                 Bespoke application form on the right.
-         ──────────────────────────────────────────────────────────────────────── -->
-    <section class="story-chapter chapter-admissions" id="tuyen-sinh" data-chapter="5">
-      <div class="chapter-sticky admissions-sticky">
-
-        <div class="admissions-top-bar">
-          <span class="chapter-eyebrow">TUYỂN SINH KHÓA TÁC GIẢ · NIÊN KHÓA 2025</span>
-          <h2 class="admissions-headline">16 tác giả. Mỗi năm. Không hơn.</h2>
-          <p class="admissions-intro">
-            Hành trình 24 tuần. 1 phim ngắn 35mm hoàn chỉnh được chiếu tại rạp DCI 4K. Chúng tôi không mở các lớp học đại trà — chúng tôi huấn luyện một thế hệ tác giả hình ảnh thực thụ.
-          </p>
-        </div>
-
-        <div class="admissions-columns-grid">
-
-          <!-- Cột trái: 4 Phẩm chất tác giả tuyển chọn -->
-          <div class="admissions-criteria-column">
-            <div class="criteria-card-item">
-              <span class="criteria-num">01</span>
-              <div>
-                <strong>Bản Lĩnh Thị Giác</strong>
-                <p>Khao khát kể chuyện bằng hình ảnh và ánh sáng thực tế, không ỷ lại vào kỹ xảo hoặc thuật toán nhân tạo.</p>
+              <div class="mockup-status">
+                <span class="status-pulse"></span>
+                <span id="sticky-status-text">Đang đồng bộ</span>
               </div>
             </div>
 
-            <div class="criteria-card-item">
-              <span class="criteria-num">02</span>
-              <div>
-                <strong>Trung Thực Nội Tâm</strong>
-                <p>Ý niệm điện ảnh phải xuất phát từ trải nghiệm sống chân thật của tác giả, không sao chép hình thức hời hợt.</p>
-              </div>
-            </div>
-
-            <div class="criteria-card-item">
-              <span class="criteria-num">03</span>
-              <div>
-                <strong>Kỷ Luật Phim Trường</strong>
-                <p>Tôn trọng đoàn làm phim, an toàn thiết bị, thời gian biểu và quy tắc tác nghiệp nghiêm ngặt.</p>
-              </div>
-            </div>
-
-            <div class="criteria-card-item">
-              <span class="criteria-num">04</span>
-              <div>
-                <strong>Tinh Thần Cầu Thị</strong>
-                <p>Sẵn sàng đối diện và bảo vệ ý niệm nghệ thuật trước phản biện thẳng thắn của hội đồng chuyên môn.</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Cột phải: Form ứng tuyển tối giản, sắc sảo -->
-          <div class="admissions-form-column">
-            <div class="form-wrapper-box">
-              <div class="form-header-title">HỒ SƠ ỨNG TUYỂN TÁC GIẢ</div>
+            <!-- Các lớp giao diện & hình ảnh chuyển đổi Cross-fade theo bước cuộn -->
+            <div class="sticky-display-layers">
               
-              <form id="apply-form" class="author-apply-form" novalidate>
-                <div class="form-input-group">
-                  <label for="input-author-name">HỌ VÀ TÊN TÁC GIẢ *</label>
-                  <input id="input-author-name" type="text" name="name" placeholder="Nguyễn Văn A" required autocomplete="name">
-                </div>
-
-                <div class="form-row-dual">
-                  <div class="form-input-group">
-                    <label for="input-author-phone">SỐ ĐIỆN THOẠI *</label>
-                    <input id="input-author-phone" type="tel" name="phone" placeholder="0912 345 678" required autocomplete="tel">
+              <!-- LAYER 0: Bóc tách đề thi SI & OCR (Ảnh Giáo viên soạn đề + UI bóc tách) -->
+              <div class="sticky-display-layer is-active" data-step="0">
+                <div class="layer-split-content">
+                  <div class="layer-photo-half">
+                    <img src="assets/kiyoedu-teacher-scan.jpg" alt="Giáo viên sử dụng laptop và máy quét bóc tách đề thi tại văn phòng trường học" width="800" height="500" loading="lazy">
+                    <div class="photo-overlay-tag">Cô giáo Nguyễn Mai · THCS Thăng Long</div>
                   </div>
-                  <div class="form-input-group">
-                    <label for="input-author-email">EMAIL LIÊN LẠC *</label>
-                    <input id="input-author-email" type="email" name="email" placeholder="tacgia@domain.com" required autocomplete="email">
+                  <div class="layer-ui-half">
+                    <div class="ocr-top-bar">
+                      <span class="ocr-file-name">📄 De_Kiem_Tra_Toan_9.docx</span>
+                      <span class="ocr-badge-success">Quét SI thành công (3s)</span>
+                    </div>
+
+                    <div class="ocr-parsed-item">
+                      <div class="parsed-tag">Câu 1 · Nhận biết (1.0 điểm)</div>
+                      <div class="parsed-content">
+                        Rút gọn biểu thức P = √(2 − √5)² + √5 ta được kết quả:
+                      </div>
+                      <div class="parsed-options">
+                        <span class="opt">A. 2√5</span>
+                        <span class="opt opt-selected">B. 2 (Đáp án đúng)</span>
+                        <span class="opt">C. −2</span>
+                        <span class="opt">D. 4</span>
+                      </div>
+                    </div>
+
+                    <div class="ocr-footer-actions">
+                      <span class="ocr-stat">✓ 40/40 Câu hỏi đã chuẩn hóa KaTeX</span>
+                    </div>
                   </div>
                 </div>
+              </div>
 
-                <div class="form-input-group">
-                  <label for="input-author-program">CHUYÊN BAN ĐÀO TẠO</label>
-                  <select id="input-author-program" name="program">
-                    <option>Đạo Diễn Hình Ảnh (DOP) &amp; Quang Học 35mm</option>
-                    <option>Đạo Diễn Điện Ảnh &amp; Dàn Cảnh Không Gian</option>
-                  </select>
+              <!-- LAYER 1: Đấu trường Quiz Trực tiếp (Ảnh Lớp học thi đấu Live Quiz + Leaderboard) -->
+              <div class="sticky-display-layer" data-step="1">
+                <div class="layer-split-content">
+                  <div class="layer-photo-half">
+                    <img src="assets/kiyoedu-quiz-arena.jpg" alt="Học sinh hào hứng giơ tay thi đấu giải trắc nghiệm trực tiếp trên bảng tương tác và tablet" width="800" height="500" loading="lazy">
+                    <div class="photo-overlay-tag">Lớp 9A1 · Đấu trường Quiz Trực tiếp</div>
+                  </div>
+                  <div class="layer-ui-half">
+                    <div class="arena-top-header">
+                      <div class="arena-info">
+                        <span class="arena-live-tag">🔴 TRỰC TIẾP</span>
+                        <span class="arena-code">PIN: <strong>882-901</strong></span>
+                      </div>
+                      <div class="arena-counter">Câu 08/20</div>
+                    </div>
+
+                    <div class="arena-leaderboard">
+                      <div class="lb-row rank-1">
+                        <span class="lb-rank">🥇 1</span>
+                        <span class="lb-name">Nguyễn Hoàng Nam</span>
+                        <span class="lb-pts">1,450 pts</span>
+                      </div>
+                      <div class="lb-row rank-2">
+                        <span class="lb-rank">🥈 2</span>
+                        <span class="lb-name">Trần Minh Thư</span>
+                        <span class="lb-pts">1,380 pts</span>
+                      </div>
+                      <div class="lb-row rank-3">
+                        <span class="lb-rank">🥉 3</span>
+                        <span class="lb-name">Lê Quốc Huy</span>
+                        <span class="lb-pts">1,210 pts</span>
+                      </div>
+                    </div>
+
+                    <div class="arena-footer">
+                      <span>⚡ Độ trễ: 0ms qua WebSocket</span>
+                    </div>
+                  </div>
                 </div>
+              </div>
 
-                <div class="form-input-group">
-                  <label for="input-author-motivation">ĐỘNG LỰC NGHỆ THUẬT &amp; Ý NIỆM ĐIỆN ẢNH</label>
-                  <textarea id="input-author-motivation" name="motivation" rows="3" placeholder="Chia sẻ một ý niệm hoặc cảm xúc bạn muốn điêu khắc qua hình ảnh..."></textarea>
+              <!-- LAYER 2: Quản lý Lớp học Azota & Sổ điểm chuẩn BGD -->
+              <div class="sticky-display-layer" data-step="2">
+                <div class="layer-split-content">
+                  <div class="layer-photo-half">
+                    <img src="assets/webedu-archive.jpg" alt="Không gian thư viện số lưu trữ tài liệu môn học và sổ điểm" width="800" height="500" loading="lazy">
+                    <div class="photo-overlay-tag">Kho Sổ Điểm Điện Tử &amp; Đề Thi</div>
+                  </div>
+                  <div class="layer-ui-half">
+                    <div class="gb-header">
+                      <div class="gb-title-group">
+                        <span class="gb-tag">QUẢN LÝ LỚP HỌC</span>
+                        <h4>Lớp 9A1 · Tuần 12</h4>
+                      </div>
+                      <span class="gb-status-pill">Hạn nộp: 23:59</span>
+                    </div>
+
+                    <div class="gb-stats-row">
+                      <div class="gb-stat-box">
+                        <div class="gb-num">38/40</div>
+                        <div class="gb-lbl">Đã nộp bài</div>
+                      </div>
+                      <div class="gb-stat-box">
+                        <div class="gb-num">8.42</div>
+                        <div class="gb-lbl">Điểm TB</div>
+                      </div>
+                      <div class="gb-stat-box">
+                        <div class="gb-num">100%</div>
+                        <div class="gb-lbl">Tự động chấm</div>
+                      </div>
+                    </div>
+
+                    <div class="gb-table-snippet">
+                      <div class="gb-table-row">
+                        <span>Đặng Thu Hà</span>
+                        <span class="score-high">9.5 / 10</span>
+                        <span class="st-done">✓ Đã chấm</span>
+                      </div>
+                      <div class="gb-table-row">
+                        <span>Vũ Đức Trọng</span>
+                        <span class="score-mid">8.0 / 10</span>
+                        <span class="st-done">✓ Đã chấm</span>
+                      </div>
+                    </div>
+
+                    <div class="gb-footer">
+                      <span class="gb-export-link">Xuất Excel chuẩn Bộ GD&amp;ĐT →</span>
+                    </div>
+                  </div>
                 </div>
+              </div>
 
-                <button type="submit" class="btn-form-submit">
-                  <span>Gửi Đơn Ứng Tuyển →</span>
-                </button>
-              </form>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- CỘT NỘI DUNG DẪN CHUYỆN (Scrolling Narrative Steps - 45%) -->
+        <div class="narrative-steps-col">
+          
+          <!-- BƯỚC 1 -->
+          <article class="narrative-step-card is-active" data-step="0">
+            <div class="step-badge">BƯỚC 01 · SOẠN ĐỀ THẦN TỐC</div>
+            <h2 class="step-headline">
+              Bóc tách đề thi tự động bằng SI &amp; OCR chỉ trong 3 giây.
+            </h2>
+            <p class="step-prose">
+              Thầy cô không còn phải mất hàng giờ gõ lại từng câu hỏi hay căn chỉnh công thức toán. Chỉ cần tải lên file Word (.docx) hoặc ảnh chụp đề thi, KiyoEdu tự động nhận diện tiêu đề, 4 đáp án A-B-C-D và chuẩn hóa công thức toán học sắc nét.
+            </p>
+            <div class="step-points">
+              <div class="step-point">
+                <span class="point-bullet">01</span>
+                <div>
+                  <strong>Nhận diện công thức phức tạp:</strong>
+                  <span>Hỗ trợ căn bậc hai, phân số, hình học và ký hiệu hóa học.</span>
+                </div>
+              </div>
+              <div class="step-point">
+                <span class="point-bullet">02</span>
+                <div>
+                  <strong>Phân loại ma trận đề thi:</strong>
+                  <span>Tự động gán nhãn 4 mức độ nhận thức chuẩn khung chương trình.</span>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- BƯỚC 2 -->
+          <article class="narrative-step-card" data-step="1">
+            <div class="step-badge">BƯỚC 02 · ĐẤU TRƯỜNG QUIZ REALTIME</div>
+            <h2 class="step-headline">
+              Biến giờ học thành đấu trường trí tuệ sôi nổi và cuốn hút.
+            </h2>
+            <p class="step-prose">
+              Kích thích phản xạ tư duy của học sinh với cơ chế thi đấu trực tiếp qua mã PIN. Bảng xếp hạng cập nhật theo thời gian thực (0ms delay), cộng điểm chuỗi câu đúng và tạo không khí học tập hào hứng chưa từng có.
+            </p>
+            <div class="step-points">
+              <div class="step-point">
+                <span class="point-bullet">01</span>
+                <div>
+                  <strong>Tham gia tức thì không cần tài khoản:</strong>
+                  <span>Học sinh chỉ cần quét mã QR hoặc nhập mã PIN là vào thi ngay.</span>
+                </div>
+              </div>
+              <div class="step-point">
+                <span class="point-bullet">02</span>
+                <div>
+                  <strong>Chống gian lận thông minh:</strong>
+                  <span>Đảo câu hỏi, xáo trộn phương án và đếm ngược thời gian nghiêm ngặt.</span>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- BƯỚC 3 -->
+          <article class="narrative-step-card" data-step="2">
+            <div class="step-badge">BƯỚC 03 · QUẢN LÝ LỚP HỌC AZOTA</div>
+            <h2 class="step-headline">
+              Giao bài theo tuần, chấm thi tự động và xuất sổ điểm chuẩn BGD.
+            </h2>
+            <p class="step-prose">
+              Quy trình quản lý bài tập theo phong cách Azota tinh gọn: học sinh nộp bài chụp ảnh hoặc chọn đáp án, giáo viên nhận phổ điểm tự động, thống kê chính xác những câu có tỷ lệ làm sai cao nhất để chữa bài đúng trọng tâm.
+            </p>
+            <div class="step-points">
+              <div class="step-point">
+                <span class="point-bullet">01</span>
+                <div>
+                  <strong>Báo cáo phổ điểm trực quan:</strong>
+                  <span>Nhận biết tức thì điểm rơi kiến thức của cả lớp để bồi dưỡng.</span>
+                </div>
+              </div>
+              <div class="step-point">
+                <span class="point-bullet">02</span>
+                <div>
+                  <strong>Xuất file bảng điểm 1 chạm:</strong>
+                  <span>Tương thích hoàn toàn với hệ thống sổ điểm điện tử của nhà trường.</span>
+                </div>
+              </div>
+            </div>
+          </article>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ────────────────────────────────────────────────────────────────────────
+         CHẶNG 3: LỘ TRÌNH HỌC TẬP (Scroll-Linked Progress Timeline Có Ảnh Minh Họa)
+         ──────────────────────────────────────────────────────────────────────── -->
+    <section class="stage-section stage-timeline" id="chang-3-timeline" data-stage="2">
+      <div class="timeline-container">
+        
+        <div class="section-intro">
+          <span class="section-tag">CHẶNG 03 · QUY TRÌNH TINH GỌN</span>
+          <h2 class="section-title">Khởi đầu với KiyoEdu trong 4 bước</h2>
+          <p class="section-desc">Chỉ mất chưa đầy 60 giây để tổ chức một buổi học hoặc trận đấu trắc nghiệm bùng nổ.</p>
+        </div>
+
+        <div class="progress-timeline-track" id="timeline-track">
+          <!-- Trục tiến trình dọc: đường nền và đường fill màu nhấn vẽ theo vị trí cuộn -->
+          <div class="timeline-line-base"></div>
+          <div class="timeline-line-fill" id="timeline-line-fill"></div>
+
+          <!-- MỐC 1 -->
+          <div class="timeline-node-item" data-node="0">
+            <div class="node-marker">
+              <span class="marker-circle"></span>
+              <span class="marker-number">01</span>
+            </div>
+            <div class="node-card node-card-with-media">
+              <div class="node-card-content">
+                <div class="node-card-badge">BƯỚC 1 · THIẾT LẬP LỚP HỌC</div>
+                <h3>Đăng ký &amp; Tham gia lớp học</h3>
+                <p>Tạo tài khoản Giáo viên hoặc Học sinh. Mở lớp học mới hoặc nhập mã lớp để kết nối ngay lập tức trên mọi thiết bị máy tính, máy tính bảng hay điện thoại.</p>
+              </div>
+              <div class="node-card-thumb">
+                <img src="assets/webedu-hero.jpg" alt="Góc bàn học với laptop đăng ký tài khoản KiyoEdu" width="300" height="200" loading="lazy">
+              </div>
+            </div>
+          </div>
+
+          <!-- MỐC 2 -->
+          <div class="timeline-node-item" data-node="1">
+            <div class="node-marker">
+              <span class="marker-circle"></span>
+              <span class="marker-number">02</span>
+            </div>
+            <div class="node-card node-card-with-media">
+              <div class="node-card-content">
+                <div class="node-card-badge">BƯỚC 2 · SOẠN ĐỀ THÔNG MINH</div>
+                <h3>Bóc tách đề thi bằng SI &amp; OCR</h3>
+                <p>Tải lên tài liệu Word (.docx) hoặc chụp ảnh bài kiểm tra. Trợ lý SI tự động trích xuất ngân hàng câu hỏi, phân loại mức độ và chuẩn hóa KaTeX trong 3 giây.</p>
+              </div>
+              <div class="node-card-thumb">
+                <img src="assets/kiyoedu-teacher-scan.jpg" alt="Giáo viên quét đề thi và soạn bài tập trên laptop" width="300" height="200" loading="lazy">
+              </div>
+            </div>
+          </div>
+
+          <!-- MỐC 3 -->
+          <div class="timeline-node-item" data-node="2">
+            <div class="node-marker">
+              <span class="marker-circle"></span>
+              <span class="marker-number">03</span>
+            </div>
+            <div class="node-card node-card-with-media">
+              <div class="node-card-content">
+                <div class="node-card-badge">BƯỚC 3 · THỰC CHIẾN &amp; THI ĐẤU</div>
+                <h3>Tổ chức thi đấu &amp; Luyện đề trắc nghiệm</h3>
+                <p>Mở phòng Live Quiz tranh tài với mã PIN, hoặc giao bài tập về nhà theo tuần với hạn nộp, đếm ngược thời gian và chống chuyển tab.</p>
+              </div>
+              <div class="node-card-thumb">
+                <img src="assets/kiyoedu-quiz-arena.jpg" alt="Học sinh hào hứng thi đấu trắc nghiệm Live Quiz trong lớp" width="300" height="200" loading="lazy">
+              </div>
+            </div>
+          </div>
+
+          <!-- MỐC 4 -->
+          <div class="timeline-node-item" data-node="3">
+            <div class="node-marker">
+              <span class="marker-circle"></span>
+              <span class="marker-number">04</span>
+            </div>
+            <div class="node-card node-card-with-media">
+              <div class="node-card-content">
+                <div class="node-card-badge">BƯỚC 4 · TỔNG KẾT &amp; ĐÁNH GIÁ</div>
+                <h3>Chấm thi tức thì &amp; Phổ điểm chi tiết</h3>
+                <p>Hệ thống tự động chấm điểm, hiển thị lời giải từng câu và xuất bảng điểm danh sách học sinh theo chuẩn Bộ GD&amp;ĐT để gửi phụ huynh.</p>
+              </div>
+              <div class="node-card-thumb">
+                <img src="assets/kiyoedu-student-tablet.jpg" alt="Học sinh xem lại kết quả và lời giải trắc nghiệm trên tablet" width="300" height="200" loading="lazy">
+              </div>
             </div>
           </div>
 
         </div>
+
+      </div>
+    </section>
+
+    <!-- ────────────────────────────────────────────────────────────────────────
+         CHẶNG 4: TRƯNG BÀY NỘI DUNG & SỐ LIỆU (Bento Grid + Count-Up Animation)
+         ──────────────────────────────────────────────────────────────────────── -->
+    <section class="stage-section stage-showcase" id="chang-4-showcase" data-stage="3">
+      <div class="showcase-container">
+
+        <div class="section-intro">
+          <span class="section-tag">CHẶNG 04 · NĂNG LỰC &amp; HỆ THỐNG</span>
+          <h2 class="section-title">Hệ sinh thái tính năng toàn diện</h2>
+          <p class="section-desc">Mọi công cụ Thầy Cô và Học Sinh cần để dạy và học bứt phá trong kỷ nguyên số.</p>
+        </div>
+
+        <!-- BỘ ĐẾM SỐ THỐNG KÊ (Real Metrics Count-Up) -->
+        <div class="stats-counter-strip" id="stats-counter-strip">
+          <div class="stat-counter-item">
+            <div class="stat-number-wrap">
+              <span class="stat-value" data-count="50000">0</span><span class="stat-suffix">+</span>
+            </div>
+            <div class="stat-label">Câu hỏi trắc nghiệm trong ngân hàng đề</div>
+          </div>
+          <div class="stat-counter-item">
+            <div class="stat-number-wrap">
+              <span class="stat-value" data-count="4">0</span><span class="stat-suffix"> Mức</span>
+            </div>
+            <div class="stat-label">Ma trận phân hóa chuẩn Bộ Giáo dục</div>
+          </div>
+          <div class="stat-counter-item">
+            <div class="stat-number-wrap">
+              <span class="stat-value" data-count="100">0</span><span class="stat-suffix">%</span>
+            </div>
+            <div class="stat-label">Bóc tách đề &amp; chấm thi tự động bằng SI</div>
+          </div>
+          <div class="stat-counter-item">
+            <div class="stat-number-wrap">
+              <span class="stat-value" data-count="0">0</span><span class="stat-suffix">ms</span>
+            </div>
+            <div class="stat-label">Độ trễ cập nhật bảng vàng trực tiếp</div>
+          </div>
+        </div>
+
+        <!-- BENTO GRID TÍNH NĂNG KIYOEDU (Tích hợp hình ảnh thực tế) -->
+        <div class="bento-grid">
+          
+          <!-- Bento 1: AI Documents & Tests Spotlight (Card lớn có ảnh thư viện số) -->
+          <div class="bento-card bento-card-large">
+            <div class="bento-header">
+              <div class="bento-top-badges">
+                <span class="bento-tag">CHUẨN BỘ GD&amp;ĐT</span>
+                <span class="bento-pulse-tag">● Ma trận 4 mức độ</span>
+              </div>
+              <h3>Kho Tài Liệu &amp; Đề Thi Thông Minh</h3>
+              <p>Khởi tạo đề kiểm tra phân hóa theo 4 mức độ nhận thức (Nhận biết, Thông hiểu, Vận dụng, Vận dụng cao). Hỗ trợ công thức toán KaTeX, bóc tách đề từ Word và xuất bản trực tiếp cho học sinh.</p>
+            </div>
+
+            <!-- Bento Card Hero Image -->
+            <div class="bento-card-image-box">
+              <img src="assets/webedu-archive.jpg" alt="Kho lưu trữ thư viện tài liệu số trường học" width="800" height="420" loading="lazy">
+            </div>
+
+            <!-- Simulation Box inside card -->
+            <div class="bento-exam-preview">
+              <div class="exam-preview-header">
+                <span class="e-title">📄 Đề kiểm tra 15 phút · Đại số 9</span>
+                <span class="e-badge">100% Khớp SGK mới</span>
+              </div>
+              <div class="exam-preview-items">
+                <div class="e-item">
+                  <span class="e-txt">Câu 1: Giải phương trình bậc hai ax² + bx + c = 0</span>
+                  <span class="e-tag-green">Nhận biết</span>
+                </div>
+                <div class="e-item">
+                  <span class="e-txt">Câu 2: Tìm điều kiện để phương trình có hai nghiệm phân biệt</span>
+                  <span class="e-tag-blue">Thông hiểu</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="bento-card-footer">
+              <a href="http://localhost:3000/app/documents" target="_blank" class="bento-action-link">
+                Khám phá kho đề thi →
+              </a>
+            </div>
+          </div>
+
+          <!-- Bento 2: Đấu trường Live Quiz có ảnh học sinh thi đấu -->
+          <div class="bento-card bento-card-medium">
+            <div class="bento-thumb-wrap">
+              <img src="assets/kiyoedu-quiz-arena.jpg" alt="Đấu trường Live Quiz thời gian thực" width="600" height="340" loading="lazy">
+              <span class="bento-overlay-badge">🏆 REALTIME ARENA</span>
+            </div>
+            <div class="bento-content-pad">
+              <h3>Đấu Trường Trắc Nghiệm Live Quiz</h3>
+              <p>Tạo phòng thi đấu thời gian thực qua mã PIN. Bảng xếp hạng nhảy điểm trực tiếp, âm thanh kịch tính giúp tiết học luôn hào hứng.</p>
+              <a href="http://localhost:3000/app/quiz-arena" target="_blank" class="bento-link">Vào đấu trường Quiz →</a>
+            </div>
+          </div>
+
+          <!-- Bento 3: Quản lý lớp học Azota có ảnh giáo viên làm việc -->
+          <div class="bento-card bento-card-medium">
+            <div class="bento-thumb-wrap">
+              <img src="assets/kiyoedu-teacher-scan.jpg" alt="Quản lý lớp học và chấm thi Azota" width="600" height="340" loading="lazy">
+              <span class="bento-overlay-badge">🏫 PHONG CÁCH AZOTA</span>
+            </div>
+            <div class="bento-content-pad">
+              <h3>Quản Lý Lớp Học &amp; Bài Tập Về Nhà</h3>
+              <p>Giao bài tập theo tuần, đặt lịch khóa đề, chống chuyển tab khi làm bài và xuất bảng điểm Excel gửi phụ huynh nhanh chóng.</p>
+              <a href="http://localhost:3000/classes/join" target="_blank" class="bento-link">Tham gia lớp học →</a>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ────────────────────────────────────────────────────────────────────────
+         CHẶNG 5: ĐÍCH ĐẾN & KÊU GỌI HÀNH ĐỘNG (Minimalist CTA Với Ảnh Campus Tươi Sáng)
+         ──────────────────────────────────────────────────────────────────────── -->
+    <section class="stage-section stage-cta" id="chang-5-cta" data-stage="4">
+      <div class="cta-resolution-container">
+
+        <!-- Banner ảnh học sinh tự tin trên sân trường -->
+        <div class="cta-campus-banner">
+          <img src="assets/kiyoedu-success-campus.jpg" alt="Các bạn học sinh tự tin, rạng rỡ bước đi trên sân trường ngập tràn ánh nắng" width="1200" height="500" loading="lazy">
+          <div class="campus-overlay-card">
+            <span>Hơn <strong>10,000+</strong> học sinh &amp; giáo viên đang cùng tiến bộ mỗi ngày</span>
+          </div>
+        </div>
+
+        <div class="cta-badge-wrap">
+          <span class="cta-tag">CHẶNG 05 · BẮT ĐẦU NGAY HÔM NAY</span>
+        </div>
+
+        <h2 class="cta-headline">
+          Sẵn sàng nâng tầm phương pháp dạy &amp; học cùng <span class="text-gradient">KiyoEdu</span>
+        </h2>
+
+        <p class="cta-lead">
+          Được tin dùng bởi hàng nghìn giáo viên và học sinh trên cả nước. Khởi tạo tài khoản miễn phí chỉ trong 30 giây, không cần cài đặt phần mềm.
+        </p>
+
+        <div class="cta-button-group">
+          <a href="http://localhost:3000/register" target="_blank" class="btn-cta-main">
+            Bắt đầu miễn phí ngay
+            <span class="btn-arrow-right">→</span>
+          </a>
+          <a href="http://localhost:3000/login" target="_blank" class="btn-cta-outline">
+            Đăng nhập tài khoản
+          </a>
+        </div>
+
+        <!-- Thanh nhập mã lớp nhanh tích hợp ngay trong khối CTA -->
+        <div class="cta-quick-box">
+          <span class="cq-label">Bạn là học sinh? Vào lớp nhanh:</span>
+          <form class="cq-form" onsubmit="event.preventDefault(); window.open('http://localhost:3000/classes/join?code=' + encodeURIComponent(document.getElementById('cta-class-code').value || 'KY-8821'), '_blank');">
+            <input type="text" id="cta-class-code" placeholder="NHẬP MÃ LỚP (VÍ DỤ KY-8821)" value="KY-8821">
+            <button type="submit">Vào lớp →</button>
+          </form>
+        </div>
+
+        <div class="cta-trust-items">
+          <div class="trust-item">
+            <span class="trust-check">✓</span>
+            <span>Miễn phí trọn đời cho giáo viên &amp; học sinh</span>
+          </div>
+          <div class="trust-item">
+            <span class="trust-check">✓</span>
+            <span>Ngân hàng 50,000+ câu hỏi cập nhật liên tục</span>
+          </div>
+          <div class="trust-item">
+            <span class="trust-check">✓</span>
+            <span>Bảo mật dữ liệu học sinh theo tiêu chuẩn</span>
+          </div>
+        </div>
+
+        <!-- Footer trang nhã tích hợp -->
+        <footer class="site-footer">
+          <div class="footer-brand-line">
+            <strong>KiyoEdu v2.0</strong> · Hệ sinh thái Giáo dục Trực tuyến &amp; Đấu trường Quiz Thông Minh
+          </div>
+          <div class="footer-note">
+            Thiết kế tối giản theo chuẩn Scrollytelling 60FPS. Tôn vinh trải nghiệm dạy và học thực chất.
+          </div>
+        </footer>
 
       </div>
     </section>
 
   </main>
 
-  <!-- ══════════════════════════════════════════════════════════════════════════
-       MINIMAL CINE FOOTER
-       ══════════════════════════════════════════════════════════════════════════ -->
-  <footer class="site-footer" role="contentinfo">
-    <div class="footer-inner">
-      <div class="footer-left">
-        <span class="footer-logo">KIYOEDU</span>
-        <span class="footer-sub">VIỆN NGHỆ THUẬT ĐIỆN ẢNH &amp; QUANG HỌC THỊ GIÁC</span>
-      </div>
-      <div class="footer-right">
-        <span>© 2025 KIYOEDU · CHUẨN ĐIỆN ẢNH 35MM · MỌI QUYỀN BẢO LƯU</span>
-      </div>
-    </div>
-  </footer>
-
+  <!-- Script điều khiển kịch bản chuyển động Scrollytelling Native -->
   <script type="module" src="main.js"></script>
 </body>
 </html>

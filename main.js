@@ -1,242 +1,250 @@
 /* ============================================================================
-   KIYOEDU SCROLLYTELLING RUNTIME · MASTER EDITION
-   Fixed WebGPU canvas + 6 distinct chapter layouts synced via native scroll.
-   Continuous Story Coordinate · Zero Dead Zones · Zero Hitching
-   Live SMPTE Timecode · Dynamic DoF Meter · Tactical Cam Staging · Aspect Gates
+   KIYOEDU SCROLLYTELLING RUNTIME · MASTER CONTROLLER (WEBEDU V2.0)
+   Native IntersectionObserver + requestAnimationFrame 60FPS Orchestration
+   Zero Scroll Hijacking · Micro-Parallax · Sticky Cross-Fade · Live Count-Up
    ============================================================================ */
 
 import { ScrollytellingEngine } from './webgpu-story-engine.js';
 
-const HEADER_H = 60; // px — matches CSS --header-h
+const HEADER_HEIGHT = 70;
 
-async function init() {
-  // ── 1. Init WebGPU / WebGL2 / Canvas2D Engine ─────────────────────────────
+async function initScrollytelling() {
+  // ── 1. Subtle Canvas Dot Grid ─────────────────────────────────────────────
   const canvas = document.getElementById('scrolly-canvas');
-  if (!canvas) {
-    console.warn('[KiyoEdu] #scrolly-canvas not found.');
-    return;
+  let engine = null;
+  if (canvas) {
+    engine = new ScrollytellingEngine(canvas);
+    await engine.init();
+
+    function renderLoop(t) {
+      engine.render(t);
+      requestAnimationFrame(renderLoop);
+    }
+    requestAnimationFrame(renderLoop);
   }
 
-  const engine = new ScrollytellingEngine(canvas);
-  const rendererType = await engine.init();
-  console.log(`[KiyoEdu] Visual Stage Engine: ${rendererType}`);
-
-  // ── 2. Render Loop (drives canvas smoothly via spring tracking) ───────────
-  function loop(t) {
-    engine.render(t);
-    requestAnimationFrame(loop);
-  }
-  requestAnimationFrame(loop);
-
-  document.addEventListener('visibilitychange', () => {
-    engine.isDirty = !document.hidden;
-  });
-
-  // ── 3. DOM Cache ──────────────────────────────────────────────────────────
-  const chapters = Array.from(document.querySelectorAll('.story-chapter'));
-  const progressBar = document.getElementById('header-progress');
+  // ── 2. DOM Elements Cache ─────────────────────────────────────────────────
+  const stages = Array.from(document.querySelectorAll('.stage-section'));
+  const headerProgress = document.getElementById('header-progress');
   const navLinks = Array.from(document.querySelectorAll('.nav-link'));
-  const dofBar = document.getElementById('dof-bar');
-  const dofReadout = document.getElementById('dof-readout');
-  const timecodeEl = document.getElementById('smpte-timecode');
-  const camPos1 = document.getElementById('cam-pos-1');
-  const camPos2 = document.getElementById('cam-pos-2');
-  const camPos3 = document.getElementById('cam-pos-3');
-  const ratioChips = Array.from(document.querySelectorAll('.ratio-chip'));
-  const ratioCaption = document.getElementById('ratio-caption');
 
-  // ── 4. Live 24fps SMPTE Timecode Ticker ───────────────────────────────────
-  let tcHour = 1, tcMin = 24, tcSec = 14, tcFrame = 8;
-  setInterval(() => {
-    tcFrame++;
-    if (tcFrame >= 24) {
-      tcFrame = 0;
-      tcSec++;
-      if (tcSec >= 60) {
-        tcSec = 0;
-        tcMin++;
-        if (tcMin >= 60) {
-          tcMin = 0;
-          tcHour++;
+  // Chặng 1: Hero
+  const heroTarget = document.getElementById('hero-parallax-target');
+  const heroScrollCue = document.getElementById('hero-scroll-cue');
+
+  // Chặng 2: Split-Screen Steps & Display Layers
+  const stepCards = Array.from(document.querySelectorAll('.narrative-step-card'));
+  const displayLayers = Array.from(document.querySelectorAll('.sticky-display-layer'));
+  const stickyVisualLabel = document.getElementById('sticky-visual-label');
+  const stickyStatusText = document.getElementById('sticky-status-text');
+
+  const stepMeta = [
+    { title: 'KiyoEdu Studio · Bóc tách đề thi SI & OCR', status: 'Quét SI tự động (3s)' },
+    { title: 'KiyoEdu Arena · Đấu trường Quiz Trực tiếp', status: '38 Học sinh thi đấu' },
+    { title: 'KiyoEdu Manage · Quản lý Lớp học Azota', status: '38/40 Đã chấm điểm' }
+  ];
+
+  // Chặng 3: Timeline Track
+  const timelineTrack = document.getElementById('timeline-track');
+  const timelineLineFill = document.getElementById('timeline-line-fill');
+  const timelineNodes = Array.from(document.querySelectorAll('.timeline-node-item'));
+
+  // Chặng 4: Stats & Bento
+  const statsStrip = document.getElementById('stats-counter-strip');
+  const statValues = Array.from(document.querySelectorAll('.stat-value'));
+  const bentoCards = Array.from(document.querySelectorAll('.bento-card'));
+  let statsCounted = false;
+
+  // ── 3. Chặng 1: Hero Parallax (KHÔNG can thiệp opacity, luôn rõ nét 100%) ──
+  function updateHeroParallax(scrollY) {
+    if (!heroTarget) return;
+    const heroH = window.innerHeight;
+    if (scrollY <= heroH) {
+      const progress = scrollY / heroH;
+      // Chỉ dịch chuyển micro-translate nhẹ 20px, giữ opacity luôn 100% rõ nét
+      const translateY = -(progress * 20);
+      heroTarget.style.transform = `translate3d(0, ${translateY}px, 0)`;
+      heroTarget.style.opacity = '1';
+
+      if (heroScrollCue) {
+        heroScrollCue.style.opacity = progress > 0.05 ? '0' : '1';
+      }
+    } else {
+      heroTarget.style.transform = 'none';
+      heroTarget.style.opacity = '1';
+    }
+  }
+
+  // ── 4. Chặng 2: Sticky Split-Screen Step Observer ─────────────────────────
+  const stepObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const activeIndex = parseInt(entry.target.dataset.step, 10);
+
+          // Cập nhật thẻ dẫn chuyện bên phải
+          stepCards.forEach((card, idx) => {
+            card.classList.toggle('is-active', idx === activeIndex);
+          });
+
+          // Chuyển đổi lớp hiển thị tương tác bên trái (Cross-Fade mượt mà)
+          displayLayers.forEach((layer, idx) => {
+            layer.classList.toggle('is-active', idx === activeIndex);
+          });
+
+          // Cập nhật thanh tiêu đề và trạng thái studio
+          if (stepMeta[activeIndex]) {
+            if (stickyVisualLabel) stickyVisualLabel.textContent = stepMeta[activeIndex].title;
+            if (stickyStatusText) stickyStatusText.textContent = stepMeta[activeIndex].status;
+          }
         }
+      });
+    },
+    {
+      root: null,
+      rootMargin: '-30% 0px -30% 0px',
+      threshold: 0.1
+    }
+  );
+
+  stepCards.forEach((card) => stepObserver.observe(card));
+
+  // ── 5. Chặng 3: Scroll-Linked Timeline Progress Line ──────────────────────
+  function updateTimelineProgress() {
+    if (!timelineTrack || !timelineLineFill) return;
+    const rect = timelineTrack.getBoundingClientRect();
+    const windowH = window.innerHeight;
+
+    const startY = windowH * 0.75;
+    const totalDistance = rect.height;
+    const currentProgress = (startY - rect.top) / totalDistance;
+    const fillPercent = Math.max(0, Math.min(100, currentProgress * 100));
+
+    timelineLineFill.style.height = `${fillPercent}%`;
+
+    timelineNodes.forEach((node) => {
+      const nodeRect = node.getBoundingClientRect();
+      const nodeCenter = nodeRect.top + nodeRect.height * 0.35;
+      const isActive = nodeCenter <= windowH * 0.75;
+      node.classList.toggle('is-active', isActive);
+    });
+  }
+
+  // ── 6. Chặng 4: Smooth Count-Up Animation & Bento Reveal ──────────────────
+  function runCountUp(el, target, duration = 1500) {
+    let startTimestamp = null;
+    const startVal = 0;
+
+    function step(timestamp) {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+      const easeProgress = 1 - Math.pow(1 - progress, 3);
+      const currentVal = Math.floor(startVal + (target - startVal) * easeProgress);
+
+      el.textContent = currentVal.toLocaleString('en-US');
+
+      if (progress < 1) {
+        requestAnimationFrame(step);
+      } else {
+        el.textContent = target.toLocaleString('en-US');
       }
     }
-    if (timecodeEl) {
-      const pad = (n) => String(n).padStart(2, '0');
-      timecodeEl.textContent = `${pad(tcHour)}:${pad(tcMin)}:${pad(tcSec)}:${pad(tcFrame)}`;
-    }
-  }, 1000 / 24);
+    requestAnimationFrame(step);
+  }
 
-  // ── 5. Continuous Scroll Sync (Zero Dead Zones, Zero Hitching) ────────────
+  const showcaseObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          if (!statsCounted) {
+            statsCounted = true;
+            document.querySelectorAll('.stat-counter-item').forEach((item, idx) => {
+              setTimeout(() => item.classList.add('is-visible'), idx * 70);
+            });
+            statValues.forEach((valEl) => {
+              const target = parseFloat(valEl.dataset.count || '0');
+              runCountUp(valEl, target, 1500);
+            });
+          }
+
+          bentoCards.forEach((card, idx) => {
+            setTimeout(() => card.classList.add('is-visible'), 100 + idx * 90);
+          });
+        }
+      });
+    },
+    { threshold: 0.15 }
+  );
+
+  if (statsStrip) showcaseObserver.observe(statsStrip);
+
+  // ── 7. Global Scroll Loop (RAF Passive Sync) ──────────────────────────────
   let rafPending = false;
 
   function onScroll() {
     if (rafPending) return;
     rafPending = true;
+
     requestAnimationFrame(() => {
       rafPending = false;
-
       const scrollY = window.scrollY;
       const docH = document.documentElement.scrollHeight - window.innerHeight;
       const globalProgress = docH > 0 ? Math.max(0, Math.min(1, scrollY / docH)) : 0;
 
-      // Update header ink line
-      if (progressBar) {
-        progressBar.style.width = (globalProgress * 100) + '%';
+      // Cập nhật thanh tiến trình header
+      if (headerProgress) {
+        headerProgress.style.width = `${globalProgress * 100}%`;
       }
 
-      // Compute scroll start offsets for each chapter
-      const chapterStarts = chapters.map((ch, i) => {
-        return i === 0 ? 0 : ch.offsetTop - HEADER_H;
+      updateHeroParallax(scrollY);
+      updateTimelineProgress();
+
+      // Đồng bộ trạng thái active cho Top Nav Links
+      let activeStage = 0;
+      stages.forEach((stage, idx) => {
+        const r = stage.getBoundingClientRect();
+        if (r.top <= window.innerHeight * 0.45 && r.bottom >= window.innerHeight * 0.45) {
+          activeStage = idx;
+        }
       });
 
-      let activeChapter = 0;
-      let localProg = 0;
-      let storyPos = 0;
-
-      if (scrollY <= 0) {
-        activeChapter = 0;
-        localProg = 0;
-        storyPos = 0;
-      } else if (scrollY >= docH) {
-        activeChapter = chapters.length - 1;
-        localProg = 1.0;
-        storyPos = chapters.length - 1;
-      } else {
-        // Continuous linear story mapping across chapter spans
-        let found = false;
-        for (let i = 0; i < chapters.length - 1; i++) {
-          const s0 = chapterStarts[i];
-          const s1 = chapterStarts[i + 1];
-          if (scrollY >= s0 && scrollY < s1) {
-            activeChapter = i;
-            localProg = (scrollY - s0) / (s1 - s0);
-            storyPos = i + localProg;
-            found = true;
-            break;
-          }
-        }
-        if (!found) {
-          activeChapter = chapters.length - 1;
-          const sLast = chapterStarts[chapters.length - 1];
-          const denom = Math.max(1, docH - sLast);
-          localProg = Math.max(0, Math.min(1, (scrollY - sLast) / denom));
-          storyPos = activeChapter + localProg;
-        }
-      }
-
-      // Send continuous story coordinate to WebGPU engine (smoothly interpolates)
-      engine.setStoryPos(storyPos, globalProgress);
-
-      // Chapter-specific live micro-interactions:
-      // Act 1: Dynamic DoF gauge bar
-      if (activeChapter === 1 && dofBar && dofReadout) {
-        const leftPercent = 15 + localProg * 25;
-        const widthPercent = 12 + localProg * 55;
-        dofBar.style.left = `${leftPercent}%`;
-        dofBar.style.width = `${widthPercent}%`;
-        if (localProg < 0.3) {
-          dofReadout.textContent = 'f/1.4 — VÙNG NÉT: 4 INCHES (ĐẶC TẢ)';
-        } else if (localProg < 0.7) {
-          dofReadout.textContent = 'f/4.0 — VÙNG NÉT: 1.8 FEET (TRUNG CẢNH)';
-        } else {
-          dofReadout.textContent = 'f/16 — VÙNG NÉT: TOÀN DẢI VÔ CỰC (ĐẠI CẢNH)';
-        }
-      }
-
-      // Act 3: Tactical camera active position tracking
-      if (activeChapter === 3) {
-        if (camPos1) camPos1.classList.toggle('is-active', localProg < 0.35);
-        if (camPos2) camPos2.classList.toggle('is-active', localProg >= 0.35 && localProg < 0.70);
-        if (camPos3) camPos3.classList.toggle('is-active', localProg >= 0.70);
-      }
-
-      // Act 4: Dynamic aspect ratio sync
-      if (activeChapter === 4 && ratioChips.length > 0) {
-        let activeIdx = 1;
-        if (localProg < 0.33) activeIdx = 0;
-        else if (localProg > 0.66) activeIdx = 2;
-        ratioChips.forEach((chip, idx) => {
-          chip.classList.toggle('is-active', idx === activeIdx);
-        });
-        if (ratioCaption) {
-          if (activeIdx === 0) ratioCaption.textContent = '1.33:1 Academy — Tỉ lệ điện ảnh kinh điển 35mm 4-perf.';
-          else if (activeIdx === 1) ratioCaption.textContent = '1.85:1 Flat DCI — Chuẩn khung hình chiếu rạp tiêu chuẩn quốc tế.';
-          else ratioCaption.textContent = '2.39:1 Anamorphic Scope — Đại cảnh điện ảnh tráng lệ chuẩn Hollywood.';
-        }
-      }
-
-      // Highlight active nav link
-      navLinks.forEach(link => {
-        const href = link.getAttribute('href');
-        const id = href ? href.slice(1) : '';
-        const targetCh = chapters.find(c => c.id === id);
-        if (!targetCh) return;
-        const r = targetCh.getBoundingClientRect();
-        const isActive = r.top <= window.innerHeight * 0.55 && r.bottom >= 0;
-        link.classList.toggle('is-active', isActive);
+      navLinks.forEach((link, idx) => {
+        link.classList.toggle('is-active', idx === activeStage);
       });
+
+      if (engine) {
+        engine.setStoryPos(activeStage, globalProgress);
+      }
     });
   }
 
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', () => {
-    engine.resize();
+    if (engine) engine.resize();
     onScroll();
   }, { passive: true });
 
-  // Initial trigger
   onScroll();
 
-  // ── 6. Smooth Scroll for Anchor Links (Navigates without fighting wheel physics)
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', e => {
+  // ── 8. Smooth Anchor Navigation ───────────────────────────────────────────
+  document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+    anchor.addEventListener('click', (e) => {
       const href = anchor.getAttribute('href');
       if (!href || href === '#') return;
       const targetId = href.slice(1);
       const targetEl = document.getElementById(targetId);
       if (targetEl) {
         e.preventDefault();
-        const targetY = targetId === 'khoi-nguon' ? 0 : targetEl.offsetTop - HEADER_H;
+        const targetY = targetId === 'chang-1-hero' ? 0 : targetEl.offsetTop - HEADER_HEIGHT;
         window.scrollTo({ top: Math.max(0, targetY), behavior: 'smooth' });
       }
     });
   });
-
-  // ── 7. Aspect Ratio Chip Click Handlers ────────────────────────────────────
-  ratioChips.forEach(chip => {
-    chip.addEventListener('click', () => {
-      ratioChips.forEach(c => c.classList.remove('is-active'));
-      chip.classList.add('is-active');
-      const ratio = parseFloat(chip.dataset.ratio || '1.85');
-      if (ratioCaption) {
-        if (ratio < 1.5) ratioCaption.textContent = '1.33:1 Academy — Tỉ lệ điện ảnh kinh điển 35mm 4-perf.';
-        else if (ratio < 2.0) ratioCaption.textContent = '1.85:1 Flat DCI — Chuẩn khung hình chiếu rạp tiêu chuẩn quốc tế.';
-        else ratioCaption.textContent = '2.39:1 Anamorphic Scope — Đại cảnh điện ảnh tráng lệ chuẩn Hollywood.';
-      }
-    });
-  });
-
-  // ── 8. Application Form Submission Handler ─────────────────────────────────
-  const form = document.getElementById('apply-form');
-  if (form) {
-    form.addEventListener('submit', e => {
-      e.preventDefault();
-      const nameInput = document.getElementById('input-author-name');
-      const authorName = (nameInput && nameInput.value) ? nameInput.value.trim() : 'Tác giả';
-      form.innerHTML = `
-        <div style="padding: 1.5rem 0; font-family: var(--f-mono); font-size: 0.8125rem; color: var(--c-ink); line-height: 1.8;">
-          <div style="font-weight: 700; margin-bottom: 0.5rem; text-transform: uppercase;">✓ HỒ SƠ ĐÃ ĐƯỢC TIẾP NHẬN</div>
-          <p style="color: var(--c-muted); margin: 0;">Cảm ơn ${authorName}. Hội đồng chuyên môn KiyoEdu sẽ xem xét hồ sơ và liên lạc qua số điện thoại/email trong vòng 48 giờ làm việc.</p>
-        </div>
-      `;
-    });
-  }
 }
 
 // Bootstrap
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', init);
+  document.addEventListener('DOMContentLoaded', initScrollytelling);
 } else {
-  init();
+  initScrollytelling();
 }
