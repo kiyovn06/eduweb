@@ -32,15 +32,17 @@ async function initScrollytelling() {
   const heroTarget = document.getElementById('hero-parallax-target');
   const heroScrollCue = document.getElementById('hero-scroll-cue');
 
-  // Chặng 2: Split-Screen Steps & Display Layers
+  // Chặng 2: Split-Screen Steps, Display Layers & Mode Tabs
   const stepCards = Array.from(document.querySelectorAll('.narrative-step-card'));
   const displayLayers = Array.from(document.querySelectorAll('.sticky-display-layer'));
+  const modeTabs = Array.from(document.querySelectorAll('.mode-tab'));
+  const stepDirectBtns = Array.from(document.querySelectorAll('.step-direct-btn'));
   const stickyVisualLabel = document.getElementById('sticky-visual-label');
   const stickyStatusText = document.getElementById('sticky-status-text');
 
   const stepMeta = [
     { title: 'KiyoEdu Studio · Bóc tách đề thi SI & OCR', status: 'Quét SI tự động (3s)' },
-    { title: 'KiyoEdu Arena · Đấu trường Quiz Trực tiếp', status: '38 Học sinh thi đấu' },
+    { title: 'KiyoEdu Arena · Đấu trường Quiz Trực tiếp', status: '42 Học sinh thi đấu' },
     { title: 'KiyoEdu Manage · Quản lý Lớp học Azota', status: '38/40 Đã chấm điểm' }
   ];
 
@@ -49,11 +51,19 @@ async function initScrollytelling() {
   const timelineLineFill = document.getElementById('timeline-line-fill');
   const timelineNodes = Array.from(document.querySelectorAll('.timeline-node-item'));
 
-  // Chặng 4: Stats & Bento
+  // Chặng 4: Stats & Bento Interactive Levels
   const statsStrip = document.getElementById('stats-counter-strip');
   const statValues = Array.from(document.querySelectorAll('.stat-value'));
   const bentoCards = Array.from(document.querySelectorAll('.bento-card'));
+  const levelTabs = Array.from(document.querySelectorAll('.level-tab'));
+  const examPreviewTitle = document.getElementById('exam-preview-title');
+  const examPreviewBadge = document.getElementById('exam-preview-badge');
+  const examPreviewItems = document.getElementById('exam-preview-items');
   let statsCounted = false;
+
+  // Chặng 5: CTA Quick Chips
+  const cqChips = Array.from(document.querySelectorAll('.cq-chip'));
+  const ctaClassCodeInput = document.getElementById('cta-class-code');
 
   // ── 3. Chặng 1: Hero Parallax (KHÔNG can thiệp opacity, luôn rõ nét 100%) ──
   function updateHeroParallax(scrollY) {
@@ -61,7 +71,7 @@ async function initScrollytelling() {
     const heroH = window.innerHeight;
     if (scrollY <= heroH) {
       const progress = scrollY / heroH;
-      // Chỉ dịch chuyển micro-translate nhẹ 20px, giữ opacity luôn 100% rõ nét
+      // Giữ opacity luôn 100% rõ nét, chỉ dịch nhẹ translate
       const translateY = -(progress * 20);
       heroTarget.style.transform = `translate3d(0, ${translateY}px, 0)`;
       heroTarget.style.opacity = '1';
@@ -75,28 +85,38 @@ async function initScrollytelling() {
     }
   }
 
-  // ── 4. Chặng 2: Sticky Split-Screen Step Observer ─────────────────────────
+  // ── 4. Chặng 2: Sticky Split-Screen Step Observer & Tab Switching ─────────
+  function activateStep(activeIndex) {
+    // Cập nhật thẻ dẫn chuyện bên phải
+    stepCards.forEach((card, idx) => {
+      card.classList.toggle('is-active', idx === activeIndex);
+    });
+
+    // Chuyển đổi lớp hiển thị tương tác bên trái (Cross-Fade mượt mà)
+    displayLayers.forEach((layer, idx) => {
+      layer.classList.toggle('is-active', idx === activeIndex);
+    });
+
+    // Cập nhật Mode Tabs trên Mockup Header
+    modeTabs.forEach((tab, idx) => {
+      const isCurrent = idx === activeIndex;
+      tab.classList.toggle('is-active', isCurrent);
+      tab.setAttribute('aria-selected', isCurrent ? 'true' : 'false');
+    });
+
+    // Cập nhật thanh tiêu đề và trạng thái studio
+    if (stepMeta[activeIndex]) {
+      if (stickyVisualLabel) stickyVisualLabel.textContent = stepMeta[activeIndex].title;
+      if (stickyStatusText) stickyStatusText.textContent = stepMeta[activeIndex].status;
+    }
+  }
+
   const stepObserver = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           const activeIndex = parseInt(entry.target.dataset.step, 10);
-
-          // Cập nhật thẻ dẫn chuyện bên phải
-          stepCards.forEach((card, idx) => {
-            card.classList.toggle('is-active', idx === activeIndex);
-          });
-
-          // Chuyển đổi lớp hiển thị tương tác bên trái (Cross-Fade mượt mà)
-          displayLayers.forEach((layer, idx) => {
-            layer.classList.toggle('is-active', idx === activeIndex);
-          });
-
-          // Cập nhật thanh tiêu đề và trạng thái studio
-          if (stepMeta[activeIndex]) {
-            if (stickyVisualLabel) stickyVisualLabel.textContent = stepMeta[activeIndex].title;
-            if (stickyStatusText) stickyStatusText.textContent = stepMeta[activeIndex].status;
-          }
+          activateStep(activeIndex);
         }
       });
     },
@@ -108,6 +128,30 @@ async function initScrollytelling() {
   );
 
   stepCards.forEach((card) => stepObserver.observe(card));
+
+  // Tương tác bấm tab Mockup trực tiếp hoặc bấm nút "Xem demo"
+  modeTabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      const targetStep = parseInt(tab.dataset.tab, 10);
+      if (stepCards[targetStep]) {
+        stepCards[targetStep].scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      activateStep(targetStep);
+    });
+  });
+
+  stepDirectBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const targetStep = parseInt(btn.dataset.targetStep, 10);
+      activateStep(targetStep);
+      // Rung nhẹ hoặc hiệu ứng focus vào mockup
+      const mockup = document.getElementById('sticky-app-mockup');
+      if (mockup) {
+        mockup.style.transform = 'scale(1.02)';
+        setTimeout(() => { mockup.style.transform = 'none'; }, 300);
+      }
+    });
+  });
 
   // ── 5. Chặng 3: Scroll-Linked Timeline Progress Line ──────────────────────
   function updateTimelineProgress() {
@@ -177,6 +221,84 @@ async function initScrollytelling() {
   );
 
   if (statsStrip) showcaseObserver.observe(statsStrip);
+
+  // ── 6b. Chặng 4: Bento Interactive Difficulty Level Switcher ──────────────
+  const levelData = {
+    '1': {
+      title: '📄 Đề kiểm tra 15 phút · Đại số 9',
+      badge: 'Mức 1 · Tỷ lệ ăn điểm 94%',
+      items: [
+        { text: '<strong>Câu 1:</strong> Cho phương trình <em>ax² + bx + c = 0 (a ≠ 0)</em>. Biệt thức <em>Δ</em> là?', tag: 'Δ = b² − 4ac' },
+        { text: '<strong>Câu 2:</strong> Căn bậc hai số học của 25 là số nào?', tag: '5 (Không lấy −5)' }
+      ]
+    },
+    '2': {
+      title: '📄 Đề kiểm tra 15 phút · Đại số 9',
+      badge: 'Mức 2 · Tỷ lệ ăn điểm 78%',
+      items: [
+        { text: '<strong>Câu 1:</strong> Điều kiện của <em>m</em> để phương trình <em>x² − 2x + m = 0</em> có 2 nghiệm phân biệt:', tag: 'm < 1' },
+        { text: '<strong>Câu 2:</strong> Hàm số <em>y = (m − 1)x + 2</em> đồng biến trên R khi nào?', tag: 'm > 1' }
+      ]
+    },
+    '3': {
+      title: '📄 Đề kiểm tra 1 tiết · Đại số 9',
+      badge: 'Mức 3 · Tỷ lệ ăn điểm 52%',
+      items: [
+        { text: '<strong>Câu 1:</strong> Cho phương trình <em>x² − 2(m−1)x + m² − 3 = 0</em>. Tìm <em>m</em> để <em>x₁² + x₂² = 10</em>:', tag: 'm = 2 hoặc m = −1' },
+        { text: '<strong>Câu 2:</strong> Mảnh đất hình chữ nhật có diện tích 360m², tăng chiều rộng thêm 2m...', tag: 'Dài 24m, Rộng 15m' }
+      ]
+    },
+    '4': {
+      title: '📄 Đề thi thử vào lớp 10 Chuyên',
+      badge: 'Mức 4 · Phân hóa điểm 9 - 10',
+      items: [
+        { text: '<strong>Câu 1:</strong> Tìm GTNN của <em>P = (x² + y²)/(xy)</em> với <em>x, y > 0</em> và <em>x + y = 4</em>:', tag: 'Min P = 2 khi x = y = 2' },
+        { text: '<strong>Câu 2:</strong> Giải hệ phương trình đối xứng: <em>{ x³ − 3x = y³ − 3y, x² + y² = 4 }</em>:', tag: '(x,y) = (√2, √2), (−√2, −√2)' }
+      ]
+    }
+  };
+
+  levelTabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      const level = tab.dataset.level;
+      if (!levelData[level]) return;
+
+      levelTabs.forEach((t) => t.classList.toggle('is-active', t === tab));
+
+      const data = levelData[level];
+      if (examPreviewTitle) examPreviewTitle.textContent = data.title;
+      if (examPreviewBadge) examPreviewBadge.textContent = data.badge;
+
+      if (examPreviewItems) {
+        examPreviewItems.style.opacity = '0';
+        setTimeout(() => {
+          examPreviewItems.innerHTML = data.items.map(it => `
+            <div class="e-item">
+              <span class="e-txt">${it.text}</span>
+              <span class="e-tag-green">${it.tag}</span>
+            </div>
+          `).join('');
+          examPreviewItems.style.opacity = '1';
+        }, 150);
+      }
+    });
+  });
+
+  // ── 6c. Chặng 5: Quick Join Preset Chips ──────────────────────────────────
+  cqChips.forEach((chip) => {
+    chip.addEventListener('click', () => {
+      const code = chip.dataset.code;
+      if (ctaClassCodeInput && code) {
+        ctaClassCodeInput.value = code;
+        ctaClassCodeInput.focus();
+        const joinBtn = document.getElementById('cta-join-btn');
+        if (joinBtn) {
+          joinBtn.style.transform = 'scale(1.05)';
+          setTimeout(() => { joinBtn.style.transform = 'none'; }, 200);
+        }
+      }
+    });
+  });
 
   // ── 7. Global Scroll Loop (RAF Passive Sync) ──────────────────────────────
   let rafPending = false;
