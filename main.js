@@ -151,7 +151,30 @@ async function initScrollytelling() {
 
   if (statsStrip) showcaseObserver.observe(statsStrip);
 
-  // ── 6. Sync Lenis Scroll with UI ──────────────────────────────────────────
+  // ── 6. Flow-In Observer (Chảy vô từ bên trái & bên phải) ─────────────────
+  const flowObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+        }
+      });
+    },
+    { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+  );
+
+  document.querySelectorAll('.flow-in-left, .flow-in-right').forEach((el) => {
+    flowObserver.observe(el);
+  });
+
+  // Trigger hero elements immediately on load
+  setTimeout(() => {
+    document.querySelectorAll('.stage-hero .flow-in-left, .stage-hero .flow-in-right').forEach((el) => {
+      el.classList.add('is-visible');
+    });
+  }, 80);
+
+  // ── 7. Sync Lenis Scroll with UI ──────────────────────────────────────────
   function onScrollUpdate(scrollY) {
     const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
 

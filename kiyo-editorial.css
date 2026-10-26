@@ -252,67 +252,77 @@ body {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   01: HERO NỀN TẢNG
-   ══════════════════════════════════════════════════════════════════════ */
+   SCROLLYTELLING FLOW-IN TRANSITIONS (Chảy vô từ bên trái & bên phải)
+   ══════════════════════════════════════════════════════════════════════════ */
+.flow-in-left {
+  opacity: 0;
+  transform: translate3d(-50px, 0, 0);
+  transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.flow-in-right {
+  opacity: 0;
+  transform: translate3d(50px, 0, 0);
+  transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.flow-in-left.is-visible,
+.flow-in-right.is-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   01: HERO NỀN TẢNG (SPLIT LAYOUT)
+   ══════════════════════════════════════════════════════════════════════════ */
 .stage-hero {
   min-height: calc(100vh - var(--header-height));
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 5rem 1.5rem 4rem;
+  padding: 5rem 2rem 4rem;
   border-bottom: 1px solid var(--border-light);
+  position: relative;
 }
 
-.hero-container {
+.hero-split-container {
   width: 100%;
   max-width: var(--content-max-width);
   margin: 0 auto;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 3.5rem;
   align-items: center;
 }
 
-.hero-badge-wrap {
-  margin-bottom: 1.25rem;
-}
-
-.hero-badge {
-  display: inline-block;
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  color: var(--accent-blue);
-  background: var(--accent-blue-soft);
-  padding: 0.35rem 0.85rem;
-  border-radius: 999px;
-  border: 1px solid #bfdbfe;
+.hero-text-col {
+  text-align: left;
 }
 
 .hero-title {
-  font-size: 3.75rem;
+  font-size: 3.85rem;
   font-weight: 800;
   letter-spacing: -0.04em;
-  line-height: 1.15;
+  line-height: 1.12;
   color: var(--text-primary);
   margin-bottom: 1.25rem;
-  max-width: 800px;
 }
 
 .hero-lead {
-  font-size: 1.125rem;
+  font-size: 1.15rem;
   color: var(--text-muted);
-  max-width: 720px;
-  margin-bottom: 2.5rem;
   line-height: 1.7;
+  margin-bottom: 2.25rem;
+  max-width: 580px;
 }
 
 .hero-actions {
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 1rem;
-  margin-bottom: 3.5rem;
 }
 
 .btn-hero-primary {
@@ -321,7 +331,7 @@ body {
   font-weight: 600;
   color: #ffffff;
   background-color: var(--accent-blue);
-  padding: 0.75rem 1.6rem;
+  padding: 0.8rem 1.75rem;
   border-radius: var(--radius-sm);
   border: 1px solid var(--accent-blue);
   transition: background-color 0.2s ease;
@@ -338,7 +348,7 @@ body {
   font-weight: 600;
   color: var(--text-primary);
   background-color: var(--bg-surface);
-  padding: 0.75rem 1.6rem;
+  padding: 0.8rem 1.75rem;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-card);
   transition: all 0.2s ease;
@@ -348,133 +358,27 @@ body {
   background-color: var(--bg-subtle);
 }
 
-.hero-showcase-grid {
-  display: grid;
-  grid-template-columns: 1.2fr 0.8fr;
-  gap: 1.5rem;
+.hero-visual-col {
   width: 100%;
-  max-width: 1000px;
-  margin-top: 1rem;
-  text-align: left;
 }
 
-.showcase-card {
+.hero-showcase-frame {
   background: var(--bg-surface);
   border: 1px solid var(--border-card);
   border-radius: var(--radius-md);
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
   transition: border-color 0.2s ease;
 }
 
-.showcase-card:hover {
+.hero-showcase-frame:hover {
   border-color: #cbd5e1;
 }
 
-.showcase-thumb-wrap img {
+.hero-showcase-frame img {
   width: 100%;
-  height: 240px;
+  height: 380px;
   object-fit: cover;
   display: block;
-  border-bottom: 1px solid var(--border-card);
-}
-
-.showcase-card-body {
-  padding: 1.5rem;
-}
-
-.card-tag {
-  display: inline-block;
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  color: var(--accent-blue);
-  margin-bottom: 0.35rem;
-}
-
-.card-title {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 0.35rem;
-}
-
-.card-sub {
-  font-size: 0.9rem;
-  color: var(--text-muted);
-  line-height: 1.5;
-}
-
-.showcase-join-card {
-  padding: 2rem;
-  justify-content: center;
-}
-
-.join-header h3 {
-  font-size: 1.35rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 0.35rem;
-}
-
-.join-header p {
-  font-size: 0.875rem;
-  color: var(--text-muted);
-  margin-bottom: 1.5rem;
-}
-
-.input-label {
-  display: block;
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  color: var(--text-secondary);
-  margin-bottom: 0.4rem;
-}
-
-.class-code-input {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  font-size: 0.95rem;
-  font-family: var(--font-mono);
-  font-weight: 600;
-  border: 1px solid var(--border-card);
-  border-radius: var(--radius-sm);
-  background: var(--bg-surface);
-  color: var(--text-primary);
-  outline: none;
-  transition: border-color 0.2s ease;
-  margin-bottom: 1rem;
-}
-
-.class-code-input:focus {
-  border-color: var(--accent-blue);
-}
-
-.btn-join-submit {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: #ffffff;
-  background-color: var(--accent-blue);
-  border: 1px solid var(--accent-blue);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.btn-join-submit:hover {
-  background-color: var(--accent-blue-hover);
-  border-color: var(--accent-blue-hover);
-}
-
-.join-meta-note {
-  font-size: 0.75rem;
-  color: var(--text-dim);
-  margin-top: 1.25rem;
-  line-height: 1.4;
 }
 
 .hero-scroll-cue {
@@ -1572,8 +1476,26 @@ body {
    RESPONSIVE DESIGN
    ══════════════════════════════════════════════════════════════════════════ */
 @media (max-width: 1024px) {
+  .hero-split-container {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .hero-text-col {
+    text-align: center;
+  }
+
+  .hero-lead {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-actions {
+    justify-content: center;
+  }
+
   .hero-title {
-    font-size: 3rem;
+    font-size: 2.85rem;
   }
 
   .chapter-grid-split,
