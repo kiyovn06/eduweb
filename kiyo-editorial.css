@@ -1,11 +1,12 @@
 /* ============================================================================
-   KIYOEDU SCROLLYTELLING · MASTER EDITORIAL STYLESHEET (V2.0 MINIMAL)
-   Aesthetic: Tối Giản · Sắc Nét · Tinh Tế (Clean Minimalist Editorial)
-   ZERO Black Blurry Borders / Shadows · ZERO Icons · Minimalist Copy
+   KIYOEDU SCROLLYTELLING MASTER STYLESHEET (V3.0 EXPANDED NARRATIVE)
+   Standards: SCROLLYTELLING WEBSITE MASTER SKILL (26/10/2026)
+   Aesthetic: Tối Giản · Sắc Nét · Điện Ảnh (Apple / Linear / Stripe Editorial)
+   ZERO Black Blurry Borders/Shadows · ZERO Icons · Native Continuous Scroll
    ============================================================================ */
 
 :root {
-  /* Clean Minimal Palette */
+  /* Editorial Color Palette */
   --bg-page: #f8fafc;
   --bg-surface: #ffffff;
   --bg-subtle: #f1f5f9;
@@ -34,7 +35,7 @@
   --shadow-elevated: none;
 
   --header-height: 64px;
-  --content-max-width: 1200px;
+  --content-max-width: 1240px;
 
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
@@ -79,7 +80,7 @@ body {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   SITE HEADER
+   SITE HEADER (Cuộn tự nhiên theo trang, không đứng im)
    ══════════════════════════════════════════════════════════════════════════ */
 .site-header {
   position: relative;
@@ -111,12 +112,12 @@ body {
 .header-nav {
   display: flex;
   align-items: center;
-  gap: 1.75rem;
+  gap: 1.5rem;
 }
 
 .nav-link {
   text-decoration: none;
-  font-size: 0.875rem;
+  font-size: 0.85rem;
   font-weight: 500;
   color: var(--text-muted);
   transition: color 0.2s ease;
@@ -224,18 +225,25 @@ body {
   font-weight: 800;
   letter-spacing: -0.03em;
   color: var(--text-primary);
+  margin-bottom: 0.75rem;
+}
+
+.section-desc {
+  font-size: 1.05rem;
+  color: var(--text-muted);
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   CHẶNG 1: HERO
-   ══════════════════════════════════════════════════════════════════════════ */
+   HỒI 01: KHỞI NGUYÊN (HERO)
+   ══════════════════════════════════════════════════════════════════════ */
 .stage-hero {
   min-height: calc(100vh - var(--header-height));
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 5rem 1.5rem 4rem;
-  margin-top: 0;
   border-bottom: 1px solid var(--border-light);
 }
 
@@ -278,7 +286,7 @@ body {
 .hero-lead {
   font-size: 1.125rem;
   color: var(--text-muted);
-  max-width: 620px;
+  max-width: 720px;
   margin-bottom: 2.5rem;
   line-height: 1.7;
 }
@@ -324,31 +332,31 @@ body {
   background-color: var(--bg-subtle);
 }
 
-/* HERO SHOWCASE GRID */
 .hero-showcase-grid {
   display: grid;
   grid-template-columns: 1.2fr 0.8fr;
   gap: 1.5rem;
   width: 100%;
-  max-width: 960px;
+  max-width: 1000px;
   margin-top: 1rem;
   text-align: left;
 }
 
-.showcase-quiz-card,
-.showcase-quickjoin-card {
+.showcase-card {
   background: var(--bg-surface);
   border: 1px solid var(--border-card);
   border-radius: var(--radius-md);
   overflow: hidden;
-}
-
-.showcase-quiz-card {
   display: flex;
   flex-direction: column;
+  transition: border-color 0.2s ease;
 }
 
-.quiz-visual-header img {
+.showcase-card:hover {
+  border-color: #cbd5e1;
+}
+
+.showcase-thumb-wrap img {
   width: 100%;
   height: 240px;
   object-fit: cover;
@@ -357,30 +365,38 @@ body {
 }
 
 .showcase-card-body {
-  padding: 1.25rem 1.5rem;
+  padding: 1.5rem;
+}
+
+.card-tag {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--accent-blue);
+  margin-bottom: 0.35rem;
 }
 
 .card-title {
-  font-size: 1.15rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.35rem;
 }
 
 .card-sub {
-  font-size: 0.875rem;
+  font-size: 0.9rem;
   color: var(--text-muted);
+  line-height: 1.5;
 }
 
-.showcase-quickjoin-card {
-  padding: 2rem 1.75rem;
-  display: flex;
-  flex-direction: column;
+.showcase-join-card {
+  padding: 2rem;
   justify-content: center;
 }
 
 .join-header h3 {
-  font-size: 1.25rem;
+  font-size: 1.35rem;
   font-weight: 700;
   color: var(--text-primary);
   margin-bottom: 0.35rem;
@@ -392,8 +408,13 @@ body {
   margin-bottom: 1.5rem;
 }
 
-.quickjoin-form .input-group {
-  margin-bottom: 1rem;
+.input-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  margin-bottom: 0.4rem;
 }
 
 .class-code-input {
@@ -408,6 +429,7 @@ body {
   color: var(--text-primary);
   outline: none;
   transition: border-color 0.2s ease;
+  margin-bottom: 1rem;
 }
 
 .class-code-input:focus {
@@ -432,6 +454,13 @@ body {
   border-color: var(--accent-blue-hover);
 }
 
+.join-meta-note {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  margin-top: 1.25rem;
+  line-height: 1.4;
+}
+
 .hero-scroll-cue {
   margin-top: 3.5rem;
   font-size: 0.8rem;
@@ -441,50 +470,61 @@ body {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   CHẶNG 2: GIẢI PHÁP (SPLIT STORY)
+   CHAPTER GENERAL STYLES
    ══════════════════════════════════════════════════════════════════════════ */
-.stage-split-story {
-  padding: 5rem 1.5rem;
+.stage-chapter {
+  padding: 6rem 1.5rem;
   border-bottom: 1px solid var(--border-light);
 }
 
-.split-story-container {
+.chapter-container {
   max-width: var(--content-max-width);
   margin: 0 auto;
+}
+
+.chapter-grid-split {
   display: grid;
   grid-template-columns: 1.15fr 0.85fr;
   gap: 3.5rem;
-  align-items: start;
+  align-items: center;
+  margin-bottom: 3.5rem;
 }
 
-.sticky-visual-wrapper {
-  position: sticky;
-  top: 2rem;
+.chapter-grid-split.reverse-split {
+  grid-template-columns: 0.85fr 1.15fr;
 }
 
-.sticky-app-mockup {
+.chapter-visual-box {
   background: var(--bg-surface);
   border: 1px solid var(--border-card);
   border-radius: var(--radius-md);
   overflow: hidden;
+  position: relative;
 }
 
-.mockup-header-bar {
+.chapter-visual-box img {
+  width: 100%;
+  height: 380px;
+  object-fit: cover;
+  display: block;
+}
+
+.visual-caption-bar {
+  padding: 0.85rem 1.25rem;
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border-light);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.75rem 1.25rem;
-  background: var(--bg-surface);
-  border-bottom: 1px solid var(--border-light);
 }
 
-.mockup-title {
-  font-size: 0.85rem;
+.cap-title {
+  font-size: 0.9rem;
   font-weight: 600;
   color: var(--text-primary);
 }
 
-.mockup-status span {
+.cap-badge {
   font-size: 0.75rem;
   font-weight: 600;
   color: var(--accent-blue);
@@ -493,150 +533,260 @@ body {
   border-radius: 4px;
 }
 
-.mockup-mode-tabs {
-  display: flex;
-  background: var(--bg-subtle);
-  border-bottom: 1px solid var(--border-card);
-  padding: 0.35rem 0.5rem;
-  gap: 0.35rem;
-}
-
-.mode-tab {
-  flex: 1;
-  padding: 0.5rem 0.75rem;
-  font-size: 0.8rem;
-  font-weight: 600;
-  border: 1px solid transparent;
-  background: transparent;
-  color: var(--text-muted);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  text-align: center;
-}
-
-.mode-tab:hover {
-  color: var(--text-primary);
-}
-
-.mode-tab.is-active {
-  background: var(--bg-surface);
-  color: var(--accent-blue);
-  border-color: var(--border-card);
-}
-
-.sticky-display-layers {
-  position: relative;
-  height: 380px;
-}
-
-.sticky-display-layer {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-}
-
-.sticky-display-layer.is-active {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.layer-photo-container {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-
-.layer-photo-container img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.layer-caption {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 0.75rem 1.25rem;
-  background: rgba(255, 255, 255, 0.95);
-  border-top: 1px solid var(--border-light);
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-/* NARRATIVE STEPS */
-.narrative-steps-col {
+.chapter-details-col {
   display: flex;
   flex-direction: column;
-  gap: 6rem;
-  padding: 3rem 0;
+  gap: 2rem;
 }
 
-.narrative-step-card {
-  padding: 2.5rem;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-card);
-  border-radius: var(--radius-md);
-  transition: border-color 0.2s ease;
+.feature-block {
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
 }
 
-.narrative-step-card.is-active {
-  border-color: var(--accent-blue);
-}
-
-.step-card-header {
-  margin-bottom: 0.75rem;
-}
-
-.step-badge {
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  color: var(--accent-blue);
-  text-transform: uppercase;
-}
-
-.step-headline {
-  font-size: 1.75rem;
+.block-num {
+  font-size: 1.15rem;
   font-weight: 800;
-  letter-spacing: -0.02em;
-  color: var(--text-primary);
-  margin-bottom: 0.75rem;
-  line-height: 1.25;
+  font-family: var(--font-mono);
+  color: var(--accent-blue);
+  background: var(--accent-blue-soft);
+  padding: 0.35rem 0.65rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid #bfdbfe;
+  flex-shrink: 0;
 }
 
-.step-prose {
-  font-size: 1rem;
+.block-content h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.35rem;
+}
+
+.block-content p {
+  font-size: 0.95rem;
   color: var(--text-muted);
   line-height: 1.6;
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   CHẶNG 3: LỘ TRÌNH (TIMELINE)
+   HỒI 02: BẢNG SO SÁNH
    ══════════════════════════════════════════════════════════════════════════ */
-.stage-timeline {
-  padding: 5rem 1.5rem;
+.comparison-panel {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-md);
+  padding: 2rem;
+  margin-top: 2.5rem;
+}
+
+.panel-heading {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+}
+
+.comparison-table {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.comp-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
   border-bottom: 1px solid var(--border-light);
 }
 
-.timeline-container {
-  max-width: 900px;
-  margin: 0 auto;
+.comp-row:last-child {
+  border-bottom: none;
 }
 
+.comp-row.comp-header {
+  background: var(--bg-subtle);
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+}
+
+.comp-col {
+  padding: 0.85rem 1.25rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  border-right: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+}
+
+.comp-col:last-child {
+  border-right: none;
+}
+
+.comp-col.col-label {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.comp-col.comp-highlight {
+  color: var(--accent-blue);
+  font-weight: 600;
+  background: var(--accent-blue-soft);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   HỒI 04: WORKFLOW CARDS
+   ══════════════════════════════════════════════════════════════════════════ */
+.workflow-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+
+.wf-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-md);
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  transition: border-color 0.2s ease;
+}
+
+.wf-card:hover {
+  border-color: #cbd5e1;
+}
+
+.wf-badge {
+  display: inline-block;
+  align-self: flex-start;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--accent-blue);
+  background: var(--accent-blue-soft);
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  border: 1px solid #bfdbfe;
+  margin-bottom: 1rem;
+}
+
+.wf-card h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.wf-card p {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   HỒI 05: BENTO & MA TRẬN PHÂN HÓA
+   ══════════════════════════════════════════════════════════════════════════ */
+.bento-curated-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+.bento-featured-box {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.bento-featured-box img {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+  display: block;
+  border-bottom: 1px solid var(--border-card);
+}
+
+.featured-info {
+  padding: 2rem;
+}
+
+.feat-tag {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--accent-blue);
+  margin-bottom: 0.35rem;
+}
+
+.featured-info h3 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.featured-info p {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.curated-matrix-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.matrix-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  transition: border-color 0.2s ease;
+}
+
+.matrix-card:hover {
+  border-color: #cbd5e1;
+}
+
+.m-level {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--accent-blue);
+  letter-spacing: 0.05em;
+  margin-bottom: 0.35rem;
+}
+
+.matrix-card h4 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.35rem;
+}
+
+.matrix-card p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   HỒI 06: LỘ TRÌNH (TIMELINE)
+   ══════════════════════════════════════════════════════════════════════════ */
 .progress-timeline-track {
   position: relative;
   display: flex;
   flex-direction: column;
   gap: 2.5rem;
+  max-width: 900px;
+  margin: 0 auto;
 }
 
 .timeline-line-base {
@@ -705,6 +855,11 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 1.5rem;
+  transition: border-color 0.2s ease;
+}
+
+.node-card:hover {
+  border-color: #cbd5e1;
 }
 
 .node-card-content {
@@ -744,35 +899,29 @@ body {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   CHẶNG 4: TÍNH NĂNG & SỐ LIỆU (BENTO)
+   HỒI 07: CHỈ SỐ HỆ THỐNG
    ══════════════════════════════════════════════════════════════════════════ */
-.stage-showcase {
-  padding: 5rem 1.5rem;
-  border-bottom: 1px solid var(--border-light);
-}
-
-.showcase-container {
-  max-width: var(--content-max-width);
-  margin: 0 auto;
-}
-
 .stats-counter-strip {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 1.5rem;
-  margin-bottom: 3.5rem;
 }
 
 .stat-counter-item {
   background: var(--bg-surface);
   border: 1px solid var(--border-card);
   border-radius: var(--radius-md);
-  padding: 1.75rem 1.5rem;
+  padding: 2rem 1.5rem;
   text-align: center;
+  transition: border-color 0.2s ease;
+}
+
+.stat-counter-item:hover {
+  border-color: #cbd5e1;
 }
 
 .stat-number-wrap {
-  font-size: 2.25rem;
+  font-size: 2.5rem;
   font-weight: 800;
   letter-spacing: -0.03em;
   color: var(--accent-blue);
@@ -782,74 +931,27 @@ body {
 }
 
 .stat-label {
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  font-weight: 500;
-}
-
-/* BENTO GRID */
-.bento-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
-}
-
-.bento-card {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-card);
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-.bento-card-image-box img {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-  display: block;
-  border-bottom: 1px solid var(--border-card);
-}
-
-.bento-card-body {
-  padding: 1.5rem;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.bento-tag {
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  color: var(--accent-blue);
-  text-transform: uppercase;
-  margin-bottom: 0.35rem;
-}
-
-.bento-card-body h3 {
-  font-size: 1.15rem;
-  font-weight: 700;
+  font-size: 0.95rem;
   color: var(--text-primary);
-  margin-bottom: 0.35rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
 }
 
-.bento-card-body p {
-  font-size: 0.875rem;
+.stat-sub {
+  font-size: 0.8rem;
   color: var(--text-muted);
-  line-height: 1.5;
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   CHẶNG 5: BẮT ĐẦU (CTA)
+   HỒI 08: ĐÍCH ĐẾN (CTA)
    ══════════════════════════════════════════════════════════════════════════ */
 .stage-cta {
-  padding: 5rem 1.5rem 3rem;
+  padding: 6rem 1.5rem 4rem;
   background: var(--bg-surface);
 }
 
 .cta-resolution-container {
-  max-width: 800px;
+  max-width: 860px;
   margin: 0 auto;
   text-align: center;
 }
@@ -863,7 +965,7 @@ body {
 
 .cta-campus-banner img {
   width: 100%;
-  height: 280px;
+  height: 320px;
   object-fit: cover;
   display: block;
 }
@@ -892,6 +994,9 @@ body {
   font-size: 1.05rem;
   color: var(--text-muted);
   margin-bottom: 2rem;
+  max-width: 640px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .cta-button-group {
@@ -936,7 +1041,7 @@ body {
 }
 
 .cta-quick-box {
-  max-width: 420px;
+  max-width: 440px;
   margin: 0 auto 4rem;
 }
 
@@ -947,7 +1052,7 @@ body {
 
 .cq-form input {
   flex: 1;
-  padding: 0.7rem 1rem;
+  padding: 0.75rem 1rem;
   font-size: 0.9rem;
   font-family: var(--font-mono);
   font-weight: 600;
@@ -964,7 +1069,7 @@ body {
 }
 
 .cq-form button {
-  padding: 0.7rem 1.25rem;
+  padding: 0.75rem 1.35rem;
   font-size: 0.9rem;
   font-weight: 600;
   color: #ffffff;
@@ -986,8 +1091,15 @@ body {
 }
 
 .footer-brand-line {
-  font-size: 0.85rem;
-  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.footer-meta {
+  font-size: 0.8rem;
+  color: var(--text-dim);
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
@@ -998,17 +1110,17 @@ body {
     font-size: 3rem;
   }
 
-  .split-story-container {
+  .chapter-grid-split,
+  .chapter-grid-split.reverse-split {
     grid-template-columns: 1fr;
-    gap: 3rem;
+    gap: 2.5rem;
   }
 
-  .sticky-visual-wrapper {
-    position: relative;
-    top: 0;
+  .workflow-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 
-  .bento-grid {
+  .bento-curated-grid {
     grid-template-columns: 1fr;
   }
 
@@ -1032,6 +1144,27 @@ body {
 
   .hero-showcase-grid {
     grid-template-columns: 1fr;
+  }
+
+  .workflow-cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .curated-matrix-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .comparison-panel {
+    padding: 1.25rem;
+  }
+
+  .comp-row {
+    grid-template-columns: 1fr;
+  }
+
+  .comp-col {
+    border-right: none;
+    border-bottom: 1px solid var(--border-light);
   }
 
   .node-card {

@@ -1,15 +1,14 @@
 /* ============================================================================
-   KIYOEDU SCROLLYTELLING RUNTIME · MASTER CONTROLLER (WEBEDU V2.0 MINIMAL)
+   KIYOEDU SCROLLYTELLING RUNTIME · MASTER CONTROLLER (EXPANDED 8-ACT NARRATIVE)
+   Engineered under Scrollytelling Website Master Principles
    Native IntersectionObserver + requestAnimationFrame 60FPS Orchestration
-   Zero Scroll Hijacking · Micro-Parallax · Sticky Cross-Fade · Live Count-Up
+   Zero Scroll Hijacking · Micro-Parallax · Smooth Continuous Progression
    ============================================================================ */
 
 import { ScrollytellingEngine } from './webgpu-story-engine.js';
 
-const HEADER_HEIGHT = 70;
-
 async function initScrollytelling() {
-  // ── 1. Canvas Dot Grid Background ─────────────────────────────────────────
+  // ── 1. Canvas Background Engine ───────────────────────────────────────────
   const canvas = document.getElementById('scrolly-canvas');
   let engine = null;
   if (canvas) {
@@ -28,41 +27,27 @@ async function initScrollytelling() {
   const headerProgress = document.getElementById('header-progress');
   const navLinks = Array.from(document.querySelectorAll('.nav-link'));
 
-  // Chặng 1: Hero
+  // Hero
   const heroTarget = document.getElementById('hero-parallax-target');
   const heroScrollCue = document.getElementById('hero-scroll-cue');
 
-  // Chặng 2: Split-Screen Steps, Display Layers & Mode Tabs
-  const stepCards = Array.from(document.querySelectorAll('.narrative-step-card'));
-  const displayLayers = Array.from(document.querySelectorAll('.sticky-display-layer'));
-  const modeTabs = Array.from(document.querySelectorAll('.mode-tab'));
-  const stickyVisualLabel = document.getElementById('sticky-visual-label');
-  const stickyStatusText = document.getElementById('sticky-status-text');
-
-  const stepMeta = [
-    { title: 'KiyoEdu Studio · Bóc tách SI', status: 'Bóc tách SI (3s)' },
-    { title: 'KiyoEdu Arena · Live Quiz', status: 'Trực tiếp 0ms' },
-    { title: 'KiyoEdu Manage · Sổ điểm Azota', status: 'Tự động chấm' }
-  ];
-
-  // Chặng 3: Timeline Track
+  // Timeline Track (Hồi 06)
   const timelineTrack = document.getElementById('timeline-track');
   const timelineLineFill = document.getElementById('timeline-line-fill');
   const timelineNodes = Array.from(document.querySelectorAll('.timeline-node-item'));
 
-  // Chặng 4: Stats & Bento
+  // Stats Counters (Hồi 07)
   const statsStrip = document.getElementById('stats-counter-strip');
   const statValues = Array.from(document.querySelectorAll('.stat-value'));
-  const bentoCards = Array.from(document.querySelectorAll('.bento-card'));
   let statsCounted = false;
 
-  // ── 3. Chặng 1: Hero Parallax ─────────────────────────────────────────────
+  // ── 3. Hero Subtle Parallax ───────────────────────────────────────────────
   function updateHeroParallax(scrollY) {
     if (!heroTarget) return;
     const heroH = window.innerHeight;
     if (scrollY <= heroH) {
       const progress = scrollY / heroH;
-      const translateY = -(progress * 20);
+      const translateY = -(progress * 24);
       heroTarget.style.transform = `translate3d(0, ${translateY}px, 0)`;
       heroTarget.style.opacity = '1';
 
@@ -75,73 +60,21 @@ async function initScrollytelling() {
     }
   }
 
-  // ── 4. Chặng 2: Sticky Split-Screen Step Observer & Tab Switching ─────────
-  function activateStep(activeIndex) {
-    stepCards.forEach((card, idx) => {
-      card.classList.toggle('is-active', idx === activeIndex);
-    });
-
-    displayLayers.forEach((layer, idx) => {
-      layer.classList.toggle('is-active', idx === activeIndex);
-    });
-
-    modeTabs.forEach((tab, idx) => {
-      const isCurrent = idx === activeIndex;
-      tab.classList.toggle('is-active', isCurrent);
-      tab.setAttribute('aria-selected', isCurrent ? 'true' : 'false');
-    });
-
-    if (stepMeta[activeIndex]) {
-      if (stickyVisualLabel) stickyVisualLabel.textContent = stepMeta[activeIndex].title;
-      if (stickyStatusText) stickyStatusText.textContent = stepMeta[activeIndex].status;
-    }
-  }
-
-  const stepObserver = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const activeIndex = parseInt(entry.target.dataset.step, 10);
-          if (!isNaN(activeIndex)) {
-            activateStep(activeIndex);
-          }
-        }
-      });
-    },
-    {
-      root: null,
-      rootMargin: '-30% 0px -30% 0px',
-      threshold: 0.1
-    }
-  );
-
-  stepCards.forEach((card) => stepObserver.observe(card));
-
-  modeTabs.forEach((tab) => {
-    tab.addEventListener('click', () => {
-      const targetStep = parseInt(tab.dataset.tab, 10);
-      if (stepCards[targetStep]) {
-        stepCards[targetStep].scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-      activateStep(targetStep);
-    });
-  });
-
-  // ── 5. Chặng 3: Scroll-Linked Timeline Progress Line ──────────────────────
+  // ── 4. Timeline Progress Line (Hồi 06) ────────────────────────────────────
   function updateTimelineProgress() {
     if (!timelineTrack || !timelineLineFill) return;
     const rect = timelineTrack.getBoundingClientRect();
     const windowH = window.innerHeight;
 
-    if (rect.top <= windowH * 0.7 && rect.bottom >= windowH * 0.3) {
+    if (rect.top <= windowH * 0.75 && rect.bottom >= windowH * 0.25) {
       const totalDist = rect.height;
-      const passedDist = (windowH * 0.7) - rect.top;
+      const passedDist = (windowH * 0.75) - rect.top;
       const progress = Math.max(0, Math.min(1, passedDist / totalDist));
       timelineLineFill.style.height = `${progress * 100}%`;
 
       timelineNodes.forEach((node) => {
         const nodeRect = node.getBoundingClientRect();
-        if (nodeRect.top < windowH * 0.7) {
+        if (nodeRect.top < windowH * 0.75) {
           node.classList.add('is-passed');
         } else {
           node.classList.remove('is-passed');
@@ -150,8 +83,8 @@ async function initScrollytelling() {
     }
   }
 
-  // ── 6. Chặng 4: Real Metrics Count-Up ────────────────────────────────────
-  function runCountUp(el, target, duration = 1200) {
+  // ── 5. Real Metrics Count-Up (Hồi 07) ────────────────────────────────────
+  function runCountUp(el, target, duration = 1400) {
     const start = 0;
     const startTime = performance.now();
     const isDecimal = target % 1 !== 0;
@@ -188,20 +121,11 @@ async function initScrollytelling() {
   const showcaseObserver = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          if (!statsCounted) {
-            statsCounted = true;
-            document.querySelectorAll('.stat-counter-item').forEach((item, idx) => {
-              setTimeout(() => item.classList.add('is-visible'), idx * 70);
-            });
-            statValues.forEach((valEl) => {
-              const target = parseFloat(valEl.dataset.count || '0');
-              runCountUp(valEl, target, 1200);
-            });
-          }
-
-          bentoCards.forEach((card, idx) => {
-            setTimeout(() => card.classList.add('is-visible'), 100 + idx * 90);
+        if (entry.isIntersecting && !statsCounted) {
+          statsCounted = true;
+          statValues.forEach((valEl) => {
+            const target = parseFloat(valEl.dataset.count || '0');
+            runCountUp(valEl, target, 1400);
           });
         }
       });
@@ -211,7 +135,7 @@ async function initScrollytelling() {
 
   if (statsStrip) showcaseObserver.observe(statsStrip);
 
-  // ── 7. Global Scroll & Navigation Tracker ─────────────────────────────────
+  // ── 6. Global Scroll Tracking ─────────────────────────────────────────────
   function onScroll() {
     const scrollY = window.pageYOffset || document.documentElement.scrollTop;
     const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
@@ -220,19 +144,19 @@ async function initScrollytelling() {
     if (headerProgress && totalScroll > 0) {
       const progress = Math.max(0, Math.min(1, scrollY / totalScroll));
       headerProgress.style.transform = `scaleX(${progress})`;
-      if (engine) engine.setStoryPos(progress * 5, progress);
+      if (engine) engine.setStoryPos(progress * 8, progress);
     }
 
     // Hero parallax
     updateHeroParallax(scrollY);
 
-    // Timeline line progress
+    // Timeline progress
     updateTimelineProgress();
 
     // Nav active link tracking
     stages.forEach((stage, idx) => {
       const rect = stage.getBoundingClientRect();
-      if (rect.top <= HEADER_HEIGHT + 100 && rect.bottom >= HEADER_HEIGHT + 100) {
+      if (rect.top <= 120 && rect.bottom >= 120) {
         navLinks.forEach((link, lIdx) => {
           link.classList.toggle('is-active', lIdx === idx);
         });
