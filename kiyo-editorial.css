@@ -236,7 +236,7 @@ body {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   HỒI 01: KHỞI NGUYÊN (HERO)
+   01: HERO NỀN TẢNG
    ══════════════════════════════════════════════════════════════════════ */
 .stage-hero {
   min-height: calc(100vh - var(--header-height));
@@ -571,7 +571,7 @@ body {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   HỒI 02: BẢNG SO SÁNH
+   02: BẢNG SO SÁNH
    ══════════════════════════════════════════════════════════════════════════ */
 .comparison-panel {
   background: var(--bg-surface);
@@ -638,7 +638,7 @@ body {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   HỒI 04: WORKFLOW CARDS
+   03: WORKFLOW CARDS
    ══════════════════════════════════════════════════════════════════════════ */
 .workflow-cards-grid {
   display: grid;
@@ -688,7 +688,7 @@ body {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   HỒI 05: BENTO & MA TRẬN PHÂN HÓA
+   04: BENTO & MA TRẬN PHÂN HÓA
    ══════════════════════════════════════════════════════════════════════════ */
 .bento-curated-grid {
   display: grid;
@@ -778,7 +778,67 @@ body {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   HỒI 06: LỘ TRÌNH (TIMELINE)
+   05: PHÂN TÍCH PHỔ ĐIỂM
+   ══════════════════════════════════════════════════════════════════════════ */
+.analytics-showcase-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.analytics-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-md);
+  padding: 2.25rem 2rem;
+  display: flex;
+  flex-direction: column;
+  transition: border-color 0.2s ease;
+}
+
+.analytics-card:hover {
+  border-color: #cbd5e1;
+}
+
+.ana-tag {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--accent-blue);
+  text-transform: uppercase;
+  margin-bottom: 0.85rem;
+}
+
+.analytics-card h3 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
+}
+
+.analytics-card p {
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  flex: 1;
+}
+
+.ana-spec {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  background: var(--bg-subtle);
+  padding: 0.4rem 0.75rem;
+  border-radius: var(--radius-sm);
+  display: inline-block;
+  align-self: flex-start;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   06: LỘ TRÌNH 4 BƯỚC (TIMELINE)
    ══════════════════════════════════════════════════════════════════════════ */
 .progress-timeline-track {
   position: relative;
@@ -899,7 +959,112 @@ body {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   HỒI 07: CHỈ SỐ HỆ THỐNG
+   07: BẢNG TÍNH NĂNG & GÓI TRIỂN KHAI
+   ══════════════════════════════════════════════════════════════════════════ */
+.pricing-tiers-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  align-items: stretch;
+}
+
+.tier-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-md);
+  padding: 2.25rem 2rem;
+  display: flex;
+  flex-direction: column;
+  transition: border-color 0.2s ease;
+}
+
+.tier-card:hover {
+  border-color: #cbd5e1;
+}
+
+.tier-card.tier-highlighted {
+  border: 2px solid var(--accent-blue);
+  background: var(--bg-surface);
+}
+
+.tier-header {
+  margin-bottom: 1.5rem;
+}
+
+.tier-tag {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--accent-blue);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.tier-card h3 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.tier-price {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--accent-blue);
+  font-family: var(--font-mono);
+}
+
+.tier-feature-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 2rem 0;
+  flex: 1;
+}
+
+.tier-feature-list li {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.tier-feature-list li:last-child {
+  border-bottom: none;
+}
+
+.btn-tier-action {
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: center;
+  color: var(--text-primary);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-card);
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  transition: all 0.2s ease;
+  display: block;
+}
+
+.btn-tier-action:hover {
+  background: var(--bg-subtle);
+  border-color: #cbd5e1;
+}
+
+.btn-tier-action.btn-tier-primary {
+  background: var(--accent-blue);
+  color: #ffffff;
+  border-color: var(--accent-blue);
+}
+
+.btn-tier-action.btn-tier-primary:hover {
+  background: var(--accent-blue-hover);
+  border-color: var(--accent-blue-hover);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   08: CHỈ SỐ HỆ THỐNG
    ══════════════════════════════════════════════════════════════════════════ */
 .stats-counter-strip {
   display: grid;
@@ -943,7 +1108,7 @@ body {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   HỒI 08: ĐÍCH ĐẾN (CTA)
+   09: BẮT ĐẦU TRẢI NGHIỆM (CTA)
    ══════════════════════════════════════════════════════════════════════════ */
 .stage-cta {
   padding: 6rem 1.5rem 4rem;
@@ -1121,6 +1286,11 @@ body {
   }
 
   .bento-curated-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .analytics-showcase-grid,
+  .pricing-tiers-grid {
     grid-template-columns: 1fr;
   }
 

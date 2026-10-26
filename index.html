@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KiyoEdu · Nền Tảng Dạy &amp; Học Trắc Nghiệm Thông Minh</title>
+  <title>KiyoEdu · Nền Tảng Khảo Thí &amp; Quản Lý Lớp Học Số</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%232563eb'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-weight='bold' font-size='18' fill='white'>K</text></svg>">
   <link rel="stylesheet" href="kiyo-editorial.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,19 +14,21 @@
 
   <!-- HEADER (Cuộn tự nhiên theo trang, không đứng im) -->
   <header class="site-header" role="banner">
-    <a href="#hoi-01-khoi-nguyen" class="brand" aria-label="KiyoEdu">
+    <a href="#tong-quan" class="brand" aria-label="KiyoEdu">
       <span class="brand-name">KiyoEdu</span>
     </a>
 
     <nav class="header-nav" aria-label="Điều hướng">
-      <a href="#hoi-01-khoi-nguyen" class="nav-link is-active">Khởi nguyên</a>
-      <a href="#hoi-02-boc-tach-si"  class="nav-link">Bóc tách SI</a>
-      <a href="#hoi-03-live-quiz"     class="nav-link">Live Quiz</a>
-      <a href="#hoi-04-quan-ly-lop"   class="nav-link">Quản lý</a>
-      <a href="#hoi-05-ngan-hang-de"  class="nav-link">Ngân hàng đề</a>
-      <a href="#hoi-06-lo-trinh"      class="nav-link">Lộ trình</a>
-      <a href="#hoi-07-chi-so"        class="nav-link">Chỉ số</a>
-      <a href="#hoi-08-bat-dau"       class="nav-link">Bắt đầu</a>
+      <a href="#tong-quan"    class="nav-link is-active">Tổng quan</a>
+      <a href="#boc-tach-ai"  class="nav-link">Bóc tách AI</a>
+      <a href="#live-quiz"    class="nav-link">Live Quiz</a>
+      <a href="#quan-ly-lop"  class="nav-link">Quản lý</a>
+      <a href="#ngan-hang-de" class="nav-link">Ngân hàng</a>
+      <a href="#pho-diem"     class="nav-link">Phổ điểm</a>
+      <a href="#quy-trinh"    class="nav-link">Quy trình</a>
+      <a href="#tinh-nang"    class="nav-link">Gói dịch vụ</a>
+      <a href="#thong-so"     class="nav-link">Thông số</a>
+      <a href="#bat-dau"      class="nav-link">Bắt đầu</a>
     </nav>
 
     <div class="header-actions">
@@ -39,16 +41,16 @@
 
   <canvas id="scrolly-canvas" aria-hidden="true"></canvas>
 
-  <main id="story-main" aria-label="Hành trình Scrollytelling KiyoEdu">
+  <main id="story-main" aria-label="Nền tảng khảo thí số KiyoEdu">
 
     <!-- ══════════════════════════════════════════════════════════════════════
-         HỒI 01: KHỞI NGUYÊN & TẦM NHÌN
+         01: TỔNG QUAN NỀN TẢNG
          ══════════════════════════════════════════════════════════════════════ -->
-    <section class="stage-section stage-hero" id="hoi-01-khoi-nguyen" data-stage="0">
+    <section class="stage-section stage-hero" id="tong-quan" data-stage="0">
       <div class="hero-container" id="hero-parallax-target">
         
         <div class="hero-badge-wrap">
-          <span class="hero-badge">NỀN TẢNG DẠY VÀ HỌC THẾ HỆ MỚI</span>
+          <span class="hero-badge">NỀN TẢNG KHẢO THÍ SỐ THẾ HỆ MỚI</span>
         </div>
 
         <h1 class="hero-title">
@@ -56,15 +58,15 @@
         </h1>
 
         <p class="hero-lead">
-          KiyoEdu số hóa toàn diện quy trình kiểm tra trắc nghiệm: Bóc tách đề thi bằng SI, ngân hàng 50.000 câu hỏi chuẩn Bộ Giáo dục, đấu trường tương tác trực tiếp và quản lý bài tập theo phong cách Azota tinh gọn.
+          Khảo thí trắc nghiệm tự động · Bóc tách đề AI trong 3 giây · Đấu trường trực tiếp 0ms
         </p>
 
         <div class="hero-actions">
           <a href="http://localhost:3000/register" target="_blank" class="btn-hero-primary">
             Bắt đầu miễn phí
           </a>
-          <a href="#hoi-02-boc-tach-si" class="btn-hero-secondary">
-            Khám phá chi tiết
+          <a href="#boc-tach-ai" class="btn-hero-secondary">
+            Khám phá tính năng
           </a>
         </div>
 
@@ -73,12 +75,12 @@
           
           <div class="showcase-card showcase-image-card">
             <div class="showcase-thumb-wrap">
-              <img src="assets/kiyoedu-student-tablet.jpg" alt="Học sinh giải trắc nghiệm trên tablet" width="600" height="340" loading="eager">
+              <img src="assets/kiyoedu-student-tablet.jpg" alt="Thi trắc nghiệm trên tablet" width="600" height="340" loading="eager">
             </div>
             <div class="showcase-card-body">
               <span class="card-tag">ĐẤU TRƯỜNG THỜI GIAN THỰC</span>
               <h3 class="card-title">Live Quiz Không Độ Trễ</h3>
-              <p class="card-sub">Học sinh tranh tài trực tiếp qua mã PIN, cập nhật bảng xếp hạng tức thì qua WebSocket.</p>
+              <p class="card-sub">Tranh tài trực tiếp bằng mã PIN, cập nhật bảng xếp hạng tức thì qua WebSocket.</p>
             </div>
           </div>
 
@@ -91,47 +93,47 @@
 
             <form class="quickjoin-form" onsubmit="event.preventDefault(); window.open('http://localhost:3000/classes/join?code=' + encodeURIComponent(document.getElementById('hero-class-code').value || 'KY-8821'), '_blank');">
               <div class="input-group">
-                <label for="hero-class-code" class="input-label">MÃ LỚP HỌC</label>
-                <input type="text" id="hero-class-code" class="class-code-input" placeholder="Mã lớp (VD: KY-8821)" value="KY-8821" maxlength="12">
+                <label for="hero-class-code" class="input-label">MÃ PHÒNG THI</label>
+                <input type="text" id="hero-class-code" class="class-code-input" placeholder="Mã phòng (VD: KY-8821)" value="KY-8821" maxlength="12">
               </div>
               <button type="submit" class="btn-join-submit">
-                Tham gia lớp ngay
+                Tham gia ngay
               </button>
             </form>
 
             <div class="join-meta-note">
-              Không yêu cầu cài đặt ứng dụng · Tương thích điện thoại, tablet và máy tính
+              Không cần cài đặt · Tương thích điện thoại, máy tính bảng và máy tính
             </div>
           </div>
 
         </div>
 
         <div class="hero-scroll-cue" id="hero-scroll-cue" aria-hidden="true">
-          <span>Cuộn trang để bắt đầu hành trình</span>
+          <span>Cuộn trang để khám phá</span>
         </div>
 
       </div>
     </section>
 
     <!-- ══════════════════════════════════════════════════════════════════════
-         HỒI 02: BÓC TÁCH ĐỀ THI BẰNG SI & OCR
+         02: CÔNG NGHỆ BÓC TÁCH ĐỀ THI AI (OCR)
          ══════════════════════════════════════════════════════════════════════ -->
-    <section class="stage-section stage-chapter" id="hoi-02-boc-tach-si" data-stage="1">
+    <section class="stage-section stage-chapter" id="boc-tach-ai" data-stage="1">
       <div class="chapter-container">
 
         <div class="section-intro">
-          <span class="section-tag">HỒI 02 · TRỢ LÝ SOẠN ĐỀ</span>
-          <h2 class="section-title">Bóc Tách Đề Thi Tự Động Trong 3 Giây</h2>
-          <p class="section-desc">Chấm dứt việc gõ lại từng câu hỏi và căn chỉnh công thức thủ công.</p>
+          <span class="section-tag">01 · TRỢ LÝ SOẠN ĐỀ</span>
+          <h2 class="section-title">Bóc Tách Đề Thi Trong 3 Giây</h2>
+          <p class="section-desc">Tự động nhận diện câu hỏi, đáp án và công thức toán học từ Word, PDF và ảnh chụp.</p>
         </div>
 
         <div class="chapter-grid-split">
           
           <div class="chapter-visual-box">
-            <img src="assets/kiyoedu-teacher-scan.jpg" alt="Giáo viên sử dụng trợ lý SI bóc tách đề" width="800" height="520" loading="lazy">
+            <img src="assets/kiyoedu-teacher-scan.jpg" alt="Trợ lý SI bóc tách đề" width="800" height="520" loading="lazy">
             <div class="visual-caption-bar">
               <span class="cap-title">Trợ Lý SI KiyoEdu Studio</span>
-              <span class="cap-badge">Xử lý 40 câu / 2.8 giây</span>
+              <span class="cap-badge">40 câu / 2.8 giây</span>
             </div>
           </div>
 
@@ -139,8 +141,8 @@
             <div class="feature-block">
               <span class="block-num">01</span>
               <div class="block-content">
-                <h3>Nhận Diện Đa Định Dạng</h3>
-                <p>Tải lên tài liệu Word (.docx), file PDF hoặc ảnh chụp đề kiểm tra. Hệ thống tự động tách câu hỏi, 4 phương án A-B-C-D và đáp án chuẩn.</p>
+                <h3>Đa Định Dạng Tải Lên</h3>
+                <p>Nhận diện file Word (.docx), PDF và ảnh chụp. Tự động tách câu hỏi và 4 phương án A-B-C-D.</p>
               </div>
             </div>
 
@@ -148,15 +150,15 @@
               <span class="block-num">02</span>
               <div class="block-content">
                 <h3>Chuẩn Hóa KaTeX Tự Động</h3>
-                <p>Bảo toàn tuyệt đối các công thức toán học, căn thức, phân số, phương trình tích phân, hóa học và sơ đồ hình học không gian.</p>
+                <p>Bảo toàn 100% công thức toán học, tích phân, hóa học và hình học không gian.</p>
               </div>
             </div>
 
             <div class="feature-block">
               <span class="block-num">03</span>
               <div class="block-content">
-                <h3>Phân Loại Ma Trận 4 Mức Độ</h3>
-                <p>Tự động gán nhãn Nhận biết, Thông hiểu, Vận dụng và Vận dụng cao theo đúng khung phân hóa năng lực của Bộ GD&amp;ĐT.</p>
+                <h3>Đảo 24 Mã Đề Tức Thì</h3>
+                <p>Xáo trộn vị trí câu hỏi và đáp án chỉ với 1 click, xuất file PDF đề thi kèm bảng đáp án.</p>
               </div>
             </div>
           </div>
@@ -169,7 +171,7 @@
           <div class="comparison-table">
             <div class="comp-row comp-header">
               <div class="comp-col">Tiêu chí</div>
-              <div class="comp-col">Cách làm truyền thống</div>
+              <div class="comp-col">Soạn đề truyền thống</div>
               <div class="comp-col comp-highlight">Nền tảng KiyoEdu</div>
             </div>
             <div class="comp-row">
@@ -179,12 +181,12 @@
             </div>
             <div class="comp-row">
               <div class="comp-col col-label">Căn chỉnh công thức toán</div>
-              <div class="comp-col">Dễ lỗi định dạng, vỡ font</div>
+              <div class="comp-col">Dễ lỗi font và vỡ khung</div>
               <div class="comp-col comp-highlight">Chuẩn hóa KaTeX 100% sắc nét</div>
             </div>
             <div class="comp-row">
-              <div class="comp-col col-label">Đảo đề và xáo trộn câu</div>
-              <div class="comp-col">Mất hàng giờ copy paste</div>
+              <div class="comp-col col-label">Tạo nhiều mã đề</div>
+              <div class="comp-col">Mất hàng giờ copy thủ công</div>
               <div class="comp-col comp-highlight">1 chạm tạo 24 mã đề riêng biệt</div>
             </div>
           </div>
@@ -194,15 +196,15 @@
     </section>
 
     <!-- ══════════════════════════════════════════════════════════════════════
-         HỒI 03: ĐẤU TRƯỜNG LIVE QUIZ
+         03: ĐẤU TRƯỜNG LIVE QUIZ
          ══════════════════════════════════════════════════════════════════════ -->
-    <section class="stage-section stage-chapter" id="hoi-03-live-quiz" data-stage="2">
+    <section class="stage-section stage-chapter" id="live-quiz" data-stage="2">
       <div class="chapter-container">
 
         <div class="section-intro">
-          <span class="section-tag">HỒI 03 · TƯƠNG TÁC THỜI GIAN THỰC</span>
+          <span class="section-tag">02 · TƯƠNG TÁC THỜI GIAN THỰC</span>
           <h2 class="section-title">Đấu Trường Trắc Nghiệm Trực Tiếp</h2>
-          <p class="section-desc">Kích thích phản xạ học tập và biến mỗi tiết học thành đấu trường trí tuệ sôi nổi.</p>
+          <p class="section-desc">Kích thích phản xạ học tập và biến mỗi tiết học thành đấu trường sôi nổi.</p>
         </div>
 
         <div class="chapter-grid-split reverse-split">
@@ -212,32 +214,32 @@
               <span class="block-num">01</span>
               <div class="block-content">
                 <h3>Tham Gia Bằng Mã PIN</h3>
-                <p>Học sinh quét mã QR hoặc nhập 6 ký tự để bước vào phòng thi đấu. Không bắt buộc đăng ký tài khoản rườm rà.</p>
+                <p>Học sinh nhập mã 6 ký tự để vào thi ngay. Không bắt buộc đăng ký tài khoản phức tạp.</p>
               </div>
             </div>
 
             <div class="feature-block">
               <span class="block-num">02</span>
               <div class="block-content">
-                <h3>Bảng Xếp Hạng Thời Gian Thực</h3>
-                <p>Cập nhật điểm số ngay khi học sinh chốt đáp án qua hạ tầng WebSocket 0ms độ trễ. Tăng 300% mức độ tập trung trong lớp.</p>
+                <h3>Xếp Hạng Thời Gian Thực</h3>
+                <p>Cập nhật điểm số tức thì khi chốt đáp án qua hạ tầng WebSocket độ trễ 0ms.</p>
               </div>
             </div>
 
             <div class="feature-block">
               <span class="block-num">03</span>
               <div class="block-content">
-                <h3>Thuật Toán Chống Gian Lận</h3>
-                <p>Đảo vị trí câu hỏi, hoán vị 4 phương án A-B-C-D ngẫu nhiên và đếm ngược thời gian độc lập trên màn hình từng học sinh.</p>
+                <h3>Khóa Chống Gian Lận</h3>
+                <p>Tự động đảo câu hỏi ngẫu nhiên và cảnh báo tức thời khi học sinh rời khỏi màn hình thi.</p>
               </div>
             </div>
           </div>
 
           <div class="chapter-visual-box">
-            <img src="assets/kiyoedu-quiz-arena.jpg" alt="Lớp học hào hứng thi đấu trắc nghiệm Live Quiz" width="800" height="520" loading="lazy">
+            <img src="assets/kiyoedu-quiz-arena.jpg" alt="Đấu trường Live Quiz" width="800" height="520" loading="lazy">
             <div class="visual-caption-bar">
-              <span class="cap-title">Đấu Trường Live Quiz Lớp 9A1</span>
-              <span class="cap-badge">42 Học sinh cùng trực tuyến</span>
+              <span class="cap-title">Đấu Trường Live Quiz Trực Tiếp</span>
+              <span class="cap-badge">42 Học sinh trực tuyến</span>
             </div>
           </div>
 
@@ -247,15 +249,15 @@
     </section>
 
     <!-- ══════════════════════════════════════════════════════════════════════
-         HỒI 04: QUẢN LÝ LỚP HỌC & BÀI TẬP TUẦN
+         04: QUẢN LÝ LỚP HỌC & BÀI TẬP TUẦN
          ══════════════════════════════════════════════════════════════════════ -->
-    <section class="stage-section stage-chapter" id="hoi-04-quan-ly-lop" data-stage="3">
+    <section class="stage-section stage-chapter" id="quan-ly-lop" data-stage="3">
       <div class="chapter-container">
 
         <div class="section-intro">
-          <span class="section-tag">HỒI 04 · QUẢN LÝ LỚP HỌC</span>
+          <span class="section-tag">03 · QUẢN LÝ LỚP HỌC</span>
           <h2 class="section-title">Giao Bài Tập Tuần &amp; Sổ Điểm Tự Động</h2>
-          <p class="section-desc">Mô hình giao nhận bài tập theo phong cách Azota tinh gọn và chuẩn hóa học đường.</p>
+          <p class="section-desc">Mô hình giao nhận bài tập tinh gọn, chấm tự động 100%.</p>
         </div>
 
         <div class="workflow-cards-grid">
@@ -263,25 +265,25 @@
           <div class="wf-card">
             <div class="wf-badge">BƯỚC 1</div>
             <h3>Giao Bài Định Kỳ</h3>
-            <p>Thiết lập thời hạn nộp bài, thời gian làm bài, cấu hình chống chuyển tab và chế độ cho phép xem lời giải sau khi nộp.</p>
+            <p>Thiết lập thời hạn nộp bài, thời gian làm bài, cấu hình chống chuyển tab và chế độ xem giải thích.</p>
           </div>
 
           <div class="wf-card">
             <div class="wf-badge">BƯỚC 2</div>
             <h3>Học Sinh Nộp Bài</h3>
-            <p>Làm trực tiếp trên trình duyệt hoặc chụp ảnh bài giải tự luận nộp kèm. Hệ thống ghi nhận chính xác thời gian nộp bài của từng học sinh.</p>
+            <p>Làm trực tiếp trên trình duyệt hoặc chụp ảnh bài giải tự luận nộp kèm. Ghi nhận chính xác mốc giờ.</p>
           </div>
 
           <div class="wf-card">
             <div class="wf-badge">BƯỚC 3</div>
-            <h3>Chấm Thi Tức Thì</h3>
-            <p>100% câu hỏi trắc nghiệm được chấm tự động. Hệ thống phân tích phổ điểm lớp học và xếp loại học lực theo thang điểm 10.</p>
+            <h3>Chấm Điểm Tức Thì</h3>
+            <p>100% câu hỏi trắc nghiệm được chấm tự động. Hệ thống xếp loại học lực theo thang điểm 10.</p>
           </div>
 
           <div class="wf-card">
             <div class="wf-badge">BƯỚC 4</div>
             <h3>Xuất Sổ Điểm Excel</h3>
-            <p>Xuất file danh sách bảng điểm chuẩn định dạng, sẵn sàng đồng bộ trực tiếp vào hệ thống quản lý trường học VnEdu hoặc SMAS.</p>
+            <p>Xuất file danh sách bảng điểm chuẩn, đồng bộ trực tiếp vào hệ thống VnEdu hoặc SMAS.</p>
           </div>
 
         </div>
@@ -290,15 +292,15 @@
     </section>
 
     <!-- ══════════════════════════════════════════════════════════════════════
-         HỒI 05: NGÂN HÀNG 50.000+ CÂU HỎI
+         05: NGÂN HÀNG 50.000+ CÂU HỎI
          ══════════════════════════════════════════════════════════════════════ -->
-    <section class="stage-section stage-chapter" id="hoi-05-ngan-hang-de" data-stage="4">
+    <section class="stage-section stage-chapter" id="ngan-hang-de" data-stage="4">
       <div class="chapter-container">
 
         <div class="section-intro">
-          <span class="section-tag">HỒI 05 · TÀI NGUYÊN HỌC TẬP</span>
-          <h2 class="section-title">Kho Đề Thi &amp; Ma Trận Phân Hóa</h2>
-          <p class="section-desc">Hơn 50.000 câu hỏi bám sát chương trình giáo dục phổ thông mới.</p>
+          <span class="section-tag">04 · TÀI NGUYÊN KHẢO THÍ</span>
+          <h2 class="section-title">Ngân Hàng 50.000+ Câu Hỏi</h2>
+          <p class="section-desc">Bám sát chương trình giáo dục phổ thông mới và ma trận 4 mức độ của Bộ GD&amp;ĐT.</p>
         </div>
 
         <div class="bento-curated-grid">
@@ -307,8 +309,8 @@
             <img src="assets/webedu-archive.jpg" alt="Kho tài liệu thư viện số KiyoEdu" width="800" height="420" loading="lazy">
             <div class="featured-info">
               <span class="feat-tag">BỘ SÁCH GIÁO KHOA MỚI</span>
-              <h3>Bám Sát Kết Nối Tri Thức, Cánh Diều, Chân Trời Sáng Tạo</h3>
-              <p>Tất cả đề kiểm tra 15 phút, 1 tiết, giữa kỳ và học kỳ được cập nhật liên tục theo chuẩn cấu trúc mới của Bộ Giáo dục &amp; Đào tạo.</p>
+              <h3>Kết Nối Tri Thức · Cánh Diều · Chân Trời Sáng Tạo</h3>
+              <p>Cập nhật liên tục đề kiểm tra 15 phút, giữa kỳ và học kỳ các môn Toán, Lý, Hóa, Sinh, Anh.</p>
             </div>
           </div>
 
@@ -317,25 +319,25 @@
             <div class="matrix-card">
               <div class="m-level">MỨC ĐỘ 1 · NHẬN BIẾT (40%)</div>
               <h4>Kiến Thức Cốt Lõi</h4>
-              <p>Câu hỏi định nghĩa, công thức cơ bản và nhận diện đối tượng kiến thức trực tiếp trong sách giáo khoa.</p>
+              <p>Câu hỏi định nghĩa, nhận diện công thức và kiến thức nền tảng trong sách giáo khoa.</p>
             </div>
 
             <div class="matrix-card">
               <div class="m-level">MỨC ĐỘ 2 · THÔNG HIỂU (30%)</div>
               <h4>Giải Thích &amp; Biến Đổi</h4>
-              <p>Yêu cầu học sinh giải thích bản chất hiện tượng, suy luận logic và giải các bài toán đơn bước.</p>
+              <p>Giải thích bản chất hiện tượng, suy luận logic và giải quyết các bài toán cơ bản.</p>
             </div>
 
             <div class="matrix-card">
               <div class="m-level">MỨC ĐỘ 3 · VẬN DỤNG (20%)</div>
               <h4>Giải Quyết Vấn Đề</h4>
-              <p>Áp dụng kiến thức liên môn để giải các bài toán tổng hợp và tình huống thực tiễn sinh động.</p>
+              <p>Áp dụng kiến thức tổng hợp để xử lý tình huống thực tế và bài toán liên môn.</p>
             </div>
 
             <div class="matrix-card">
               <div class="m-level">MỨC ĐỘ 4 · VẬN DỤNG CAO (10%)</div>
               <h4>Phân Hóa Điểm 9 - 10</h4>
-              <p>Câu hỏi thử thách tư duy phản biện, phương pháp tối ưu và các bài toán phân loại học sinh xuất sắc.</p>
+              <p>Bài toán nâng cao, tư duy phản biện và phân loại học sinh xuất sắc.</p>
             </div>
 
           </div>
@@ -346,15 +348,55 @@
     </section>
 
     <!-- ══════════════════════════════════════════════════════════════════════
-         HỒI 06: LỘ TRÌNH 4 BƯỚC TRIỂN KHAI
+         06: PHÂN TÍCH PHỔ ĐIỂM & ĐÁNH GIÁ NĂNG LỰC
          ══════════════════════════════════════════════════════════════════════ -->
-    <section class="stage-section stage-chapter" id="hoi-06-lo-trinh" data-stage="5">
+    <section class="stage-section stage-chapter" id="pho-diem" data-stage="5">
       <div class="chapter-container">
 
         <div class="section-intro">
-          <span class="section-tag">HỒI 06 · QUY TRÌNH TINH GỌN</span>
+          <span class="section-tag">05 · THỐNG KÊ &amp; CHUẨN ĐOÁN</span>
+          <h2 class="section-title">Phân Tích Phổ Điểm &amp; Năng Lực</h2>
+          <p class="section-desc">Tự động phát hiện lỗ hổng kiến thức ngay khi hoàn tất bài kiểm tra.</p>
+        </div>
+
+        <div class="analytics-showcase-grid">
+          
+          <div class="analytics-card">
+            <span class="ana-tag">BIỂU ĐỒ TRỰC QUAN</span>
+            <h3>Phổ Điểm Toàn Lớp</h3>
+            <p>Vẽ biểu đồ phân bố điểm số hình chuông, tỷ lệ Giỏi - Khá - Trung bình theo chuẩn thống kê.</p>
+            <div class="ana-spec">Thống kê tự động 100%</div>
+          </div>
+
+          <div class="analytics-card">
+            <span class="ana-tag">ĐỊNH VỊ LỖ HỔNG</span>
+            <h3>Cảnh Báo Câu Sai Nhiều</h3>
+            <p>Liệt kê những câu hỏi có tỷ lệ sai trên 50% để giáo viên kịp thời chữa đề trong tiết học.</p>
+            <div class="ana-spec">Phân tích từng câu hỏi</div>
+          </div>
+
+          <div class="analytics-card">
+            <span class="ana-tag">KẾT NỐI PHỤ HUYNH</span>
+            <h3>Báo Cáo Tự Động</h3>
+            <p>Xuất báo cáo chi tiết gửi đến phụ huynh, ghi nhận tiến độ và sự tiến bộ qua từng tuần.</p>
+            <div class="ana-spec">Xuất file PDF &amp; Zalo</div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════════════
+         07: LỘ TRÌNH 4 BƯỚC TRIỂN KHAI
+         ══════════════════════════════════════════════════════════════════════ -->
+    <section class="stage-section stage-chapter" id="quy-trinh" data-stage="6">
+      <div class="chapter-container">
+
+        <div class="section-intro">
+          <span class="section-tag">06 · QUY TRÌNH TINH GỌN</span>
           <h2 class="section-title">Triển Khai Trong 4 Bước</h2>
-          <p class="section-desc">Chỉ mất 60 giây để bắt đầu một buổi dạy học hoặc kiểm tra trắc nghiệm chuyên nghiệp.</p>
+          <p class="section-desc">Chỉ mất 60 giây để bắt đầu một buổi dạy học hoặc kiểm tra trắc nghiệm.</p>
         </div>
 
         <div class="progress-timeline-track" id="timeline-track">
@@ -368,8 +410,8 @@
             <div class="node-card">
               <div class="node-card-content">
                 <span class="node-card-badge">BƯỚC 1 · THIẾT LẬP</span>
-                <h3>Tạo Tài Khoản &amp; Lớp Học</h3>
-                <p>Khởi tạo lớp học mới, tạo mã lớp hoặc liên kết tham gia chia sẻ cho học sinh trên mọi thiết bị.</p>
+                <h3>Tạo Lớp Học &amp; Mã Phòng</h3>
+                <p>Khởi tạo lớp mới, lấy mã lớp hoặc đường link gửi học sinh tham gia trên mọi thiết bị.</p>
               </div>
               <div class="node-card-thumb">
                 <img src="assets/webedu-hero.jpg" alt="Thiết lập lớp học" width="240" height="150" loading="lazy">
@@ -384,8 +426,8 @@
             <div class="node-card">
               <div class="node-card-content">
                 <span class="node-card-badge">BƯỚC 2 · SOẠN ĐỀ</span>
-                <h3>Bóc Tách Bằng Trợ Lý SI</h3>
-                <p>Tải file Word đề thi lên hệ thống. SI tự động trích xuất, định dạng KaTeX và hoàn tất đề trong 3 giây.</p>
+                <h3>Bóc Tách Bằng Trợ Lý AI</h3>
+                <p>Tải file Word hoặc PDF đề thi lên hệ thống. Tự động chuẩn hóa câu hỏi và đáp án trong 3 giây.</p>
               </div>
               <div class="node-card-thumb">
                 <img src="assets/kiyoedu-teacher-scan.jpg" alt="Soạn đề SI" width="240" height="150" loading="lazy">
@@ -399,9 +441,9 @@
             </div>
             <div class="node-card">
               <div class="node-card-content">
-                <span class="node-card-badge">BƯỚC 3 · THỰC CHIẾN</span>
-                <h3>Tổ Chức Thi Đấu &amp; Giao Bài</h3>
-                <p>Mở phòng Live Quiz trực tiếp trong lớp học hoặc giao bài tập về nhà định kỳ theo tuần.</p>
+                <span class="node-card-badge">BƯỚC 3 · THỰC HIỆN</span>
+                <h3>Thi Đấu &amp; Giao Bài</h3>
+                <p>Mở phòng Live Quiz trực tiếp trên lớp hoặc giao bài tập về nhà với thời hạn cụ thể.</p>
               </div>
               <div class="node-card-thumb">
                 <img src="assets/kiyoedu-quiz-arena.jpg" alt="Tổ chức thi đấu" width="240" height="150" loading="lazy">
@@ -417,7 +459,7 @@
               <div class="node-card-content">
                 <span class="node-card-badge">BƯỚC 4 · TỔNG KẾT</span>
                 <h3>Chấm Tự Động &amp; Báo Cáo</h3>
-                <p>Nhận ngay phổ điểm, lời giải chi tiết cho từng học sinh và xuất file Excel chuẩn Sở GD&amp;ĐT.</p>
+                <p>Nhận ngay bảng điểm chi tiết, phổ điểm lớp học và xuất file Excel chuẩn VnEdu / SMAS.</p>
               </div>
               <div class="node-card-thumb">
                 <img src="assets/kiyoedu-student-tablet.jpg" alt="Tổng kết và báo cáo" width="240" height="150" loading="lazy">
@@ -431,15 +473,79 @@
     </section>
 
     <!-- ══════════════════════════════════════════════════════════════════════
-         HỒI 07: CHỈ SỐ HỆ THỐNG & NĂNG LỰC
+         08: BẢNG TÍNH NĂNG & GÓI TRIỂN KHAI
          ══════════════════════════════════════════════════════════════════════ -->
-    <section class="stage-section stage-chapter" id="hoi-07-chi-so" data-stage="6">
+    <section class="stage-section stage-chapter" id="tinh-nang" data-stage="7">
       <div class="chapter-container">
 
         <div class="section-intro">
-          <span class="section-tag">HỒI 07 · HIỆU QUẢ THỰC TẾ</span>
+          <span class="section-tag">07 · GIẢI PHÁP ĐỒNG BỘ</span>
+          <h2 class="section-title">Mô Hình Dành Cho Mọi Đối Tượng</h2>
+          <p class="section-desc">Tối ưu hóa riêng biệt cho học sinh, giáo viên và đơn vị nhà trường.</p>
+        </div>
+
+        <div class="pricing-tiers-grid">
+          
+          <div class="tier-card">
+            <div class="tier-header">
+              <span class="tier-tag">DÀNH CHO HỌC SINH</span>
+              <h3>Tự Học &amp; Làm Bài</h3>
+              <div class="tier-price">Miễn phí 100%</div>
+            </div>
+            <ul class="tier-feature-list">
+              <li>Làm bài trắc nghiệm không giới hạn</li>
+              <li>Xem giải thích chi tiết từng câu</li>
+              <li>Tham gia Live Quiz bằng mã PIN</li>
+              <li>Luyện tập ngân hàng 50.000 câu hỏi</li>
+            </ul>
+            <a href="http://localhost:3000/register" target="_blank" class="btn-tier-action">Tham gia ngay</a>
+          </div>
+
+          <div class="tier-card tier-highlighted">
+            <div class="tier-header">
+              <span class="tier-tag">DÀNH CHO GIÁO VIÊN</span>
+              <h3>Lớp Học Thông Minh</h3>
+              <div class="tier-price">Miễn phí trọn đời</div>
+            </div>
+            <ul class="tier-feature-list">
+              <li>Bóc tách đề AI từ Word/PDF/Ảnh</li>
+              <li>Mở phòng Live Quiz trực tiếp 0ms</li>
+              <li>Giao bài tập tuần &amp; chấm tự động</li>
+              <li>Xuất sổ điểm Excel chuẩn Bộ GD&amp;ĐT</li>
+            </ul>
+            <a href="http://localhost:3000/register" target="_blank" class="btn-tier-action btn-tier-primary">Tạo lớp miễn phí</a>
+          </div>
+
+          <div class="tier-card">
+            <div class="tier-header">
+              <span class="tier-tag">DÀNH CHO TRƯỜNG HỌC</span>
+              <h3>Quản Trị Toàn Diện</h3>
+              <div class="tier-price">Giải pháp chuẩn hóa</div>
+            </div>
+            <ul class="tier-feature-list">
+              <li>Quản lý danh sách lớp &amp; giáo viên</li>
+              <li>Ngân hàng đề thi nội bộ tập trung</li>
+              <li>Thống kê phổ điểm toàn trường</li>
+              <li>Hỗ trợ kỹ thuật &amp; tích hợp hệ thống</li>
+            </ul>
+            <a href="http://localhost:3000/register" target="_blank" class="btn-tier-action">Liên hệ triển khai</a>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════════════
+         09: CHỈ SỐ HỆ THỐNG & NĂNG LỰC
+         ══════════════════════════════════════════════════════════════════════ -->
+    <section class="stage-section stage-chapter" id="thong-so" data-stage="8">
+      <div class="chapter-container">
+
+        <div class="section-intro">
+          <span class="section-tag">08 · HIỆU QUẢ THỰC TẾ</span>
           <h2 class="section-title">Chỉ Số Vận Hành Hệ Thống</h2>
-          <p class="section-desc">Được xây dựng trên nền tảng kỹ thuật vững chắc và độ tin cậy tuyệt đối.</p>
+          <p class="section-desc">Hạ tầng công nghệ cao, ổn định và bảo mật dữ liệu.</p>
         </div>
 
         <div class="stats-counter-strip" id="stats-counter-strip">
@@ -447,14 +553,14 @@
             <div class="stat-number-wrap">
               <span class="stat-value" data-count="50000">0</span><span class="stat-suffix">+</span>
             </div>
-            <div class="stat-label">Câu hỏi ngân hàng đề</div>
-            <div class="stat-sub">Phân hóa 4 mức độ</div>
+            <div class="stat-label">Câu hỏi chuẩn hóa</div>
+            <div class="stat-sub">Phân chia 4 mức độ</div>
           </div>
           <div class="stat-counter-item">
             <div class="stat-number-wrap">
               <span class="stat-value" data-count="1200">0</span><span class="stat-suffix">+</span>
             </div>
-            <div class="stat-label">Trường học áp dụng</div>
+            <div class="stat-label">Trường học tin dùng</div>
             <div class="stat-sub">Trên toàn quốc</div>
           </div>
           <div class="stat-counter-item">
@@ -468,8 +574,8 @@
             <div class="stat-number-wrap">
               <span class="stat-value" data-count="0">0</span><span class="stat-suffix">ms</span>
             </div>
-            <div class="stat-label">Độ trễ bảng xếp hạng</div>
-            <div class="stat-sub">WebSocket thời gian thực</div>
+            <div class="stat-label">Độ trễ thời gian thực</div>
+            <div class="stat-sub">Hạ tầng WebSocket</div>
           </div>
         </div>
 
@@ -477,9 +583,9 @@
     </section>
 
     <!-- ══════════════════════════════════════════════════════════════════════
-         HỒI 08: ĐÍCH ĐẾN & BẮT ĐẦU
+         10: BẮT ĐẦU TRẢI NGHIỆM
          ══════════════════════════════════════════════════════════════════════ -->
-    <section class="stage-section stage-cta" id="hoi-08-bat-dau" data-stage="7">
+    <section class="stage-section stage-cta" id="bat-dau" data-stage="9">
       <div class="cta-resolution-container">
 
         <div class="cta-campus-banner">
@@ -487,7 +593,7 @@
         </div>
 
         <div class="cta-badge-wrap">
-          <span class="cta-tag">HỒI 08 · KHỞI ĐẦU NGAY HÔM NAY</span>
+          <span class="cta-tag">BẮT ĐẦU NGAY HÔM NAY</span>
         </div>
 
         <h2 class="cta-headline">
@@ -509,17 +615,17 @@
 
         <div class="cta-quick-box">
           <form class="cq-form" onsubmit="event.preventDefault(); window.open('http://localhost:3000/classes/join?code=' + encodeURIComponent(document.getElementById('cta-class-code').value || 'KY-8821'), '_blank');">
-            <input type="text" id="cta-class-code" placeholder="Mã lớp học (VD: KY-8821)" value="KY-8821">
-            <button type="submit" id="cta-join-btn">Vào lớp ngay</button>
+            <input type="text" id="cta-class-code" placeholder="Mã phòng thi (VD: KY-8821)" value="KY-8821">
+            <button type="submit" id="cta-join-btn">Vào phòng ngay</button>
           </form>
         </div>
 
         <footer class="site-footer">
           <div class="footer-brand-line">
-            KiyoEdu · Nền tảng dạy và học trắc nghiệm thông minh thế hệ mới
+            KiyoEdu · Nền tảng khảo thí và quản lý lớp học trắc nghiệm thông minh
           </div>
           <div class="footer-meta">
-            Bản quyền thuộc về KiyoEdu. Thiết kế theo tiêu chuẩn Scrollytelling 60FPS.
+            Bản quyền thuộc về KiyoEdu. Trải nghiệm mượt mà 60 FPS trên mọi thiết bị.
           </div>
         </footer>
 

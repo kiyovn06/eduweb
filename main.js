@@ -144,7 +144,7 @@ async function initScrollytelling() {
     if (headerProgress && totalScroll > 0) {
       const progress = Math.max(0, Math.min(1, scrollY / totalScroll));
       headerProgress.style.transform = `scaleX(${progress})`;
-      if (engine) engine.setStoryPos(progress * 8, progress);
+      if (engine) engine.setStoryPos(progress * 10, progress);
     }
 
     // Hero parallax
