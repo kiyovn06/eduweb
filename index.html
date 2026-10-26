@@ -22,8 +22,8 @@
       <a href="#tong-quan"    class="nav-link is-active">Tổng quan</a>
       <a href="#boc-tach-ai"  class="nav-link">Bóc tách AI</a>
       <a href="#live-quiz"    class="nav-link">Live Quiz</a>
-      <a href="#quan-ly-lop"  class="nav-link">Quản lý</a>
-      <a href="#ngan-hang-de" class="nav-link">Ngân hàng</a>
+      <a href="#quan-ly-lop"  class="nav-link">Quản lý lớp</a>
+      <a href="#ngan-hang-de" class="nav-link">Ngân hàng đề</a>
       <a href="#pho-diem"     class="nav-link">Phổ điểm</a>
       <a href="#quy-trinh"    class="nav-link">Quy trình</a>
       <a href="#tinh-nang"    class="nav-link">Gói dịch vụ</a>
@@ -41,16 +41,16 @@
 
   <canvas id="scrolly-canvas" aria-hidden="true"></canvas>
 
-  <main id="story-main" aria-label="Nền tảng khảo thí số KiyoEdu">
+  <main id="story-main" aria-label="Trải nghiệm khảo thí số KiyoEdu">
 
     <!-- ══════════════════════════════════════════════════════════════════════
-         01: TỔNG QUAN NỀN TẢNG
+         01: TỔNG QUAN NỀN TẢNG (HERO STAGE)
          ══════════════════════════════════════════════════════════════════════ -->
     <section class="stage-section stage-hero" id="tong-quan" data-stage="0">
       <div class="hero-container" id="hero-parallax-target">
         
         <div class="hero-badge-wrap">
-          <span class="hero-badge">NỀN TẢNG KHẢO THÍ SỐ THẾ HỆ MỚI</span>
+          <span class="hero-badge">KHẢO THÍ SỐ THẾ HỆ MỚI</span>
         </div>
 
         <h1 class="hero-title">
@@ -58,7 +58,7 @@
         </h1>
 
         <p class="hero-lead">
-          Khảo thí trắc nghiệm tự động · Bóc tách đề AI trong 3 giây · Đấu trường trực tiếp 0ms
+          Bóc tách đề AI trong 3 giây · Đấu trường trực tiếp 0ms · Chấm trắc nghiệm tự động
         </p>
 
         <div class="hero-actions">
@@ -116,7 +116,7 @@
     </section>
 
     <!-- ══════════════════════════════════════════════════════════════════════
-         02: CÔNG NGHỆ BÓC TÁCH ĐỀ THI AI (OCR)
+         02: CÔNG NGHỆ BÓC TÁCH ĐỀ THI AI (LASER SCAN STAGE)
          ══════════════════════════════════════════════════════════════════════ -->
     <section class="stage-section stage-chapter" id="boc-tach-ai" data-stage="1">
       <div class="chapter-container">
@@ -129,8 +129,14 @@
 
         <div class="chapter-grid-split">
           
-          <div class="chapter-visual-box">
+          <div class="chapter-visual-box ocr-scanner-visual">
             <img src="assets/kiyoedu-teacher-scan.jpg" alt="Trợ lý SI bóc tách đề" width="800" height="520" loading="lazy">
+            <div class="laser-scanner-line" aria-hidden="true"></div>
+            <div class="scanner-data-overlay">
+              <span class="chip-data">OCR: 99.8% CHÍNH XÁC</span>
+              <span class="chip-data">40 CÂU TRẮC NGHIỆM</span>
+              <span class="chip-data">CHUẨN KATEX</span>
+            </div>
             <div class="visual-caption-bar">
               <span class="cap-title">Trợ Lý SI KiyoEdu Studio</span>
               <span class="cap-badge">40 câu / 2.8 giây</span>
@@ -196,7 +202,7 @@
     </section>
 
     <!-- ══════════════════════════════════════════════════════════════════════
-         03: ĐẤU TRƯỜNG LIVE QUIZ
+         03: ĐẤU TRƯỜNG LIVE QUIZ (LIVE ARENA BOARD STAGE)
          ══════════════════════════════════════════════════════════════════════ -->
     <section class="stage-section stage-chapter" id="live-quiz" data-stage="2">
       <div class="chapter-container">
@@ -235,8 +241,31 @@
             </div>
           </div>
 
-          <div class="chapter-visual-box">
+          <div class="chapter-visual-box live-arena-visual">
             <img src="assets/kiyoedu-quiz-arena.jpg" alt="Đấu trường Live Quiz" width="800" height="520" loading="lazy">
+            <div class="live-board-hud">
+              <div class="hud-top">
+                <span class="hud-status">PHÒNG THI KY-8821 · ĐANG DIỄN RA</span>
+                <span class="hud-ping">0ms · WEBSOCKET</span>
+              </div>
+              <div class="hud-list">
+                <div class="hud-row hud-lead">
+                  <span class="hud-rank">1</span>
+                  <span class="hud-name">Hoàng Nam (10A1)</span>
+                  <span class="hud-pts">1.000 pts</span>
+                </div>
+                <div class="hud-row">
+                  <span class="hud-rank">2</span>
+                  <span class="hud-name">Thu Hà (10A1)</span>
+                  <span class="hud-pts">960 pts</span>
+                </div>
+                <div class="hud-row">
+                  <span class="hud-rank">3</span>
+                  <span class="hud-name">Minh Quân (10A2)</span>
+                  <span class="hud-pts">920 pts</span>
+                </div>
+              </div>
+            </div>
             <div class="visual-caption-bar">
               <span class="cap-title">Đấu Trường Live Quiz Trực Tiếp</span>
               <span class="cap-badge">42 Học sinh trực tuyến</span>
@@ -249,41 +278,57 @@
     </section>
 
     <!-- ══════════════════════════════════════════════════════════════════════
-         04: QUẢN LÝ LỚP HỌC & BÀI TẬP TUẦN
+         04: QUẢN LÝ LỚP HỌC (AWWWARDS STACKED CARDS STAGE)
          ══════════════════════════════════════════════════════════════════════ -->
     <section class="stage-section stage-chapter" id="quan-ly-lop" data-stage="3">
       <div class="chapter-container">
 
         <div class="section-intro">
-          <span class="section-tag">03 · QUẢN LÝ LỚP HỌC</span>
+          <span class="section-tag">03 · HỌC ĐƯỜNG SỐ</span>
           <h2 class="section-title">Giao Bài Tập Tuần &amp; Sổ Điểm Tự Động</h2>
-          <p class="section-desc">Mô hình giao nhận bài tập tinh gọn, chấm tự động 100%.</p>
+          <p class="section-desc">Mô hình quản lý lớp học dạng thẻ xếp chồng (Stacked Cards), chấm tự động 100%.</p>
         </div>
 
-        <div class="workflow-cards-grid">
+        <div class="stacked-workflow-deck">
           
-          <div class="wf-card">
-            <div class="wf-badge">BƯỚC 1</div>
+          <div class="stacked-card" style="--card-index: 0;">
+            <div class="stacked-header">
+              <span class="stacked-step">BƯỚC 1 / 4</span>
+              <span class="stacked-chip">THIẾT LẬP ĐỀ THI</span>
+            </div>
             <h3>Giao Bài Định Kỳ</h3>
-            <p>Thiết lập thời hạn nộp bài, thời gian làm bài, cấu hình chống chuyển tab và chế độ xem giải thích.</p>
+            <p>Cấu hình thời hạn nộp bài, thời gian làm bài, chế độ chống chuyển tab và tùy chọn cho phép xem giải thích chi tiết sau khi nộp.</p>
+            <div class="stacked-footer-spec">Giao bài cho toàn bộ học sinh trong 1 click</div>
           </div>
 
-          <div class="wf-card">
-            <div class="wf-badge">BƯỚC 2</div>
+          <div class="stacked-card" style="--card-index: 1;">
+            <div class="stacked-header">
+              <span class="stacked-step">BƯỚC 2 / 4</span>
+              <span class="stacked-chip">ĐA THIẾT BỊ</span>
+            </div>
             <h3>Học Sinh Nộp Bài</h3>
-            <p>Làm trực tiếp trên trình duyệt hoặc chụp ảnh bài giải tự luận nộp kèm. Ghi nhận chính xác mốc giờ.</p>
+            <p>Làm trực tiếp trên trình duyệt điện thoại, máy tính bảng hoặc chụp ảnh bài giải tự luận nộp kèm. Ghi nhận chính xác mốc thời gian nộp.</p>
+            <div class="stacked-footer-spec">Không yêu cầu cài app, hỗ trợ tải ảnh dung lượng cao</div>
           </div>
 
-          <div class="wf-card">
-            <div class="wf-badge">BƯỚC 3</div>
+          <div class="stacked-card" style="--card-index: 2;">
+            <div class="stacked-header">
+              <span class="stacked-step">BƯỚC 3 / 4</span>
+              <span class="stacked-chip">CHẤM TỰ ĐỘNG</span>
+            </div>
             <h3>Chấm Điểm Tức Thì</h3>
-            <p>100% câu hỏi trắc nghiệm được chấm tự động. Hệ thống xếp loại học lực theo thang điểm 10.</p>
+            <p>100% câu hỏi trắc nghiệm được chấm tự động ngay khi học sinh ấn nộp bài. Xếp loại học lực theo thang điểm 10 chuẩn Bộ GD&amp;ĐT.</p>
+            <div class="stacked-footer-spec">Tiết kiệm 5 giờ chấm bài mỗi tuần cho giáo viên</div>
           </div>
 
-          <div class="wf-card">
-            <div class="wf-badge">BƯỚC 4</div>
-            <h3>Xuất Sổ Điểm Excel</h3>
-            <p>Xuất file danh sách bảng điểm chuẩn, đồng bộ trực tiếp vào hệ thống VnEdu hoặc SMAS.</p>
+          <div class="stacked-card" style="--card-index: 3;">
+            <div class="stacked-header">
+              <span class="stacked-step">BƯỚC 4 / 4</span>
+              <span class="stacked-chip">ĐỒNG BỘ DỮ LIỆU</span>
+            </div>
+            <h3>Xuất Sổ Điểm Chuẩn</h3>
+            <p>Xuất file danh sách bảng điểm định dạng Excel chuẩn hóa, sẵn sàng đồng bộ trực tiếp vào hệ thống quản lý trường học VnEdu và SMAS.</p>
+            <div class="stacked-footer-spec">Định dạng file tương thích 100% hệ thống Sở GD&amp;ĐT</div>
           </div>
 
         </div>
@@ -292,7 +337,7 @@
     </section>
 
     <!-- ══════════════════════════════════════════════════════════════════════
-         05: NGÂN HÀNG 50.000+ CÂU HỎI
+         05: NGÂN HÀNG 50.000+ CÂU HỎI (MA TRẬN 4 TẦNG)
          ══════════════════════════════════════════════════════════════════════ -->
     <section class="stage-section stage-chapter" id="ngan-hang-de" data-stage="4">
       <div class="chapter-container">
@@ -317,25 +362,49 @@
           <div class="curated-matrix-cards">
             
             <div class="matrix-card">
-              <div class="m-level">MỨC ĐỘ 1 · NHẬN BIẾT (40%)</div>
+              <div class="m-head-row">
+                <span class="m-level">MỨC ĐỘ 1 · NHẬN BIẾT</span>
+                <span class="m-pct">40%</span>
+              </div>
+              <div class="m-bar-track">
+                <div class="m-bar-val" style="width: 40%;"></div>
+              </div>
               <h4>Kiến Thức Cốt Lõi</h4>
               <p>Câu hỏi định nghĩa, nhận diện công thức và kiến thức nền tảng trong sách giáo khoa.</p>
             </div>
 
             <div class="matrix-card">
-              <div class="m-level">MỨC ĐỘ 2 · THÔNG HIỂU (30%)</div>
+              <div class="m-head-row">
+                <span class="m-level">MỨC ĐỘ 2 · THÔNG HIỂU</span>
+                <span class="m-pct">30%</span>
+              </div>
+              <div class="m-bar-track">
+                <div class="m-bar-val" style="width: 30%;"></div>
+              </div>
               <h4>Giải Thích &amp; Biến Đổi</h4>
               <p>Giải thích bản chất hiện tượng, suy luận logic và giải quyết các bài toán cơ bản.</p>
             </div>
 
             <div class="matrix-card">
-              <div class="m-level">MỨC ĐỘ 3 · VẬN DỤNG (20%)</div>
+              <div class="m-head-row">
+                <span class="m-level">MỨC ĐỘ 3 · VẬN DỤNG</span>
+                <span class="m-pct">20%</span>
+              </div>
+              <div class="m-bar-track">
+                <div class="m-bar-val" style="width: 20%;"></div>
+              </div>
               <h4>Giải Quyết Vấn Đề</h4>
               <p>Áp dụng kiến thức tổng hợp để xử lý tình huống thực tế và bài toán liên môn.</p>
             </div>
 
             <div class="matrix-card">
-              <div class="m-level">MỨC ĐỘ 4 · VẬN DỤNG CAO (10%)</div>
+              <div class="m-head-row">
+                <span class="m-level">MỨC ĐỘ 4 · VẬN DỤNG CAO</span>
+                <span class="m-pct">10%</span>
+              </div>
+              <div class="m-bar-track">
+                <div class="m-bar-val" style="width: 10%;"></div>
+              </div>
               <h4>Phân Hóa Điểm 9 - 10</h4>
               <p>Bài toán nâng cao, tư duy phản biện và phân loại học sinh xuất sắc.</p>
             </div>
@@ -348,7 +417,7 @@
     </section>
 
     <!-- ══════════════════════════════════════════════════════════════════════
-         06: PHÂN TÍCH PHỔ ĐIỂM & ĐÁNH GIÁ NĂNG LỰC
+         06: PHÂN TÍCH PHỔ ĐIỂM (BELL CURVE DIAGNOSTIC STAGE)
          ══════════════════════════════════════════════════════════════════════ -->
     <section class="stage-section stage-chapter" id="pho-diem" data-stage="5">
       <div class="chapter-container">
@@ -359,8 +428,48 @@
           <p class="section-desc">Tự động phát hiện lỗ hổng kiến thức ngay khi hoàn tất bài kiểm tra.</p>
         </div>
 
+        <div class="bell-curve-showcase">
+          <div class="bell-curve-chart-box">
+            <div class="chart-header">
+              <span class="chart-title">PHỔ ĐIỂM TOÀN LỚP · BÀI KIỂM TRA GIỮA KỲ</span>
+              <span class="chart-avg">ĐIỂM TRUNG BÌNH: 7.8</span>
+            </div>
+            
+            <svg class="bell-curve-svg" viewBox="0 0 600 180" preserveAspectRatio="none" aria-hidden="true">
+              <path class="bell-curve-bg-fill" d="M 0 180 L 0 170 Q 150 165 240 80 Q 300 20 360 80 Q 450 165 600 170 L 600 180 Z"></path>
+              <path class="bell-curve-line" d="M 0 170 Q 150 165 240 80 Q 300 20 360 80 Q 450 165 600 170"></path>
+              <line x1="300" y1="20" x2="300" y2="180" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4,4"></line>
+              <circle cx="300" cy="20" r="4" fill="#2563eb"></circle>
+              <text x="312" y="28" font-family="'JetBrains Mono', monospace" font-size="11" fill="#2563eb" font-weight="700">Đỉnh phổ điểm: 8.0</text>
+            </svg>
+
+            <div class="chart-axis-labels">
+              <span>0</span>
+              <span>2</span>
+              <span>4</span>
+              <span>6</span>
+              <span>8</span>
+              <span>10</span>
+            </div>
+          </div>
+
+          <div class="bell-diagnostics-row">
+            <div class="diag-stat">
+              <span class="diag-label">TỶ LỆ GIỎI &gt; 8.0</span>
+              <span class="diag-val">48%</span>
+            </div>
+            <div class="diag-stat">
+              <span class="diag-label">CẦN ÔN TẬP LẠI</span>
+              <span class="diag-val">Câu 38 &amp; 40</span>
+            </div>
+            <div class="diag-stat">
+              <span class="diag-label">TỰ ĐỘNG BÁO CÁO</span>
+              <span class="diag-val">100% Phụ huynh</span>
+            </div>
+          </div>
+        </div>
+
         <div class="analytics-showcase-grid">
-          
           <div class="analytics-card">
             <span class="ana-tag">BIỂU ĐỒ TRỰC QUAN</span>
             <h3>Phổ Điểm Toàn Lớp</h3>
@@ -381,7 +490,6 @@
             <p>Xuất báo cáo chi tiết gửi đến phụ huynh, ghi nhận tiến độ và sự tiến bộ qua từng tuần.</p>
             <div class="ana-spec">Xuất file PDF &amp; Zalo</div>
           </div>
-
         </div>
 
       </div>

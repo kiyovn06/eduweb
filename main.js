@@ -1,14 +1,30 @@
 /* ============================================================================
-   KIYOEDU SCROLLYTELLING RUNTIME · MASTER CONTROLLER (EXPANDED 8-ACT NARRATIVE)
-   Engineered under Scrollytelling Website Master Principles
-   Native IntersectionObserver + requestAnimationFrame 60FPS Orchestration
-   Zero Scroll Hijacking · Micro-Parallax · Smooth Continuous Progression
+   KIYOEDU AWWWARDS SCROLLYTELLING RUNTIME · MASTER CONTROLLER
+   Standards: Awwwards Site of the Day / Studio Freight / Lenis Integration
+   Zero Scroll Locking · Continuous Inertial Flow · Micro-Parallax Orchestration
    ============================================================================ */
 
+import Lenis from 'lenis';
 import { ScrollytellingEngine } from './webgpu-story-engine.js';
 
 async function initScrollytelling() {
-  // ── 1. Canvas Background Engine ───────────────────────────────────────────
+  // ── 0. Lenis Smooth Scroll Engine (Awwwards Industry Benchmark) ──────────
+  const lenis = new Lenis({
+    duration: 1.2,
+    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    smoothWheel: true,
+    smoothTouch: false,
+    wheelMultiplier: 1.0,
+    touchMultiplier: 1.5,
+  });
+
+  function raf(time) {
+    lenis.raf(time);
+    requestAnimationFrame(raf);
+  }
+  requestAnimationFrame(raf);
+
+  // ── 1. Technical Canvas Background Engine ─────────────────────────────────
   const canvas = document.getElementById('scrolly-canvas');
   let engine = null;
   if (canvas) {
@@ -27,21 +43,21 @@ async function initScrollytelling() {
   const headerProgress = document.getElementById('header-progress');
   const navLinks = Array.from(document.querySelectorAll('.nav-link'));
 
-  // Hero
+  // Hero Parallax Target
   const heroTarget = document.getElementById('hero-parallax-target');
   const heroScrollCue = document.getElementById('hero-scroll-cue');
 
-  // Timeline Track (Hồi 06)
+  // Timeline Track
   const timelineTrack = document.getElementById('timeline-track');
   const timelineLineFill = document.getElementById('timeline-line-fill');
   const timelineNodes = Array.from(document.querySelectorAll('.timeline-node-item'));
 
-  // Stats Counters (Hồi 07)
+  // Stats Counters
   const statsStrip = document.getElementById('stats-counter-strip');
   const statValues = Array.from(document.querySelectorAll('.stat-value'));
   let statsCounted = false;
 
-  // ── 3. Hero Subtle Parallax ───────────────────────────────────────────────
+  // ── 3. Smooth Hero Parallax ───────────────────────────────────────────────
   function updateHeroParallax(scrollY) {
     if (!heroTarget) return;
     const heroH = window.innerHeight;
@@ -60,7 +76,7 @@ async function initScrollytelling() {
     }
   }
 
-  // ── 4. Timeline Progress Line (Hồi 06) ────────────────────────────────────
+  // ── 4. Timeline Progress Line ─────────────────────────────────────────────
   function updateTimelineProgress() {
     if (!timelineTrack || !timelineLineFill) return;
     const rect = timelineTrack.getBoundingClientRect();
@@ -83,7 +99,7 @@ async function initScrollytelling() {
     }
   }
 
-  // ── 5. Real Metrics Count-Up (Hồi 07) ────────────────────────────────────
+  // ── 5. Real Metrics Count-Up ─────────────────────────────────────────────
   function runCountUp(el, target, duration = 1400) {
     const start = 0;
     const startTime = performance.now();
@@ -135,9 +151,8 @@ async function initScrollytelling() {
 
   if (statsStrip) showcaseObserver.observe(statsStrip);
 
-  // ── 6. Global Scroll Tracking ─────────────────────────────────────────────
-  function onScroll() {
-    const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+  // ── 6. Sync Lenis Scroll with UI ──────────────────────────────────────────
+  function onScrollUpdate(scrollY) {
     const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
 
     // Header progress bar
@@ -164,13 +179,30 @@ async function initScrollytelling() {
     });
   }
 
-  window.addEventListener('scroll', onScroll, { passive: true });
+  lenis.on('scroll', (e) => {
+    onScrollUpdate(e.scroll);
+  });
+
+  // Smooth anchor link scrolling via Lenis
+  document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+    anchor.addEventListener('click', (e) => {
+      const targetId = anchor.getAttribute('href');
+      if (targetId && targetId !== '#') {
+        const targetEl = document.querySelector(targetId);
+        if (targetEl) {
+          e.preventDefault();
+          lenis.scrollTo(targetEl, { offset: -20, duration: 1.2 });
+        }
+      }
+    });
+  });
+
   window.addEventListener('resize', () => {
     if (engine) engine.resize();
   }, { passive: true });
 
-  // Initial call
-  onScroll();
+  // Initial update
+  onScrollUpdate(window.pageYOffset || 0);
 }
 
 if (document.readyState === 'loading') {
