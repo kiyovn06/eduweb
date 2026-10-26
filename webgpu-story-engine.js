@@ -1,7 +1,7 @@
 /* ============================================================================
-   KIYOEDU SCROLLYTELLING ENGINE · SUBTLE MINIMALIST ACADEMIC GRID
-   Lightweight, Quiet & Resilient Background Canvas Engine
-   Zero AI Glow · Zero Noise · Pure Technical Elegance
+   KIYOEDU SCROLLYTELLING ENGINE · SUBTLE MINIMALIST TECHNICAL CANVAS
+   Engineered under Scrollytelling Website Master Principles
+   High Performance · Zero AI Glow · Zero Blurry Shadows · Pure Hairline Grid
    ============================================================================ */
 
 export class ScrollytellingEngine {
@@ -22,7 +22,7 @@ export class ScrollytellingEngine {
 
   async init() {
     this.resize();
-    return 'canvas2d-minimal';
+    return 'canvas2d-editorial-master';
   }
 
   resize() {
@@ -48,20 +48,20 @@ export class ScrollytellingEngine {
   render(timestamp = 0) {
     if (!this.ctx || !this.active) return;
 
-    // Smooth spring interpolation for story position
-    this.storyPos += (this.targetStoryPos - this.storyPos) * 0.12;
-    this.globalProgress += (this.targetGlobalProgress - this.globalProgress) * 0.12;
+    // Smooth spring interpolation for scroll progress
+    this.storyPos += (this.targetStoryPos - this.storyPos) * 0.10;
+    this.globalProgress += (this.targetGlobalProgress - this.globalProgress) * 0.10;
 
     const ctx = this.ctx;
     ctx.clearRect(0, 0, this.width, this.height);
 
-    // Subtle minimalist dot grid (spacing: 48px)
-    const gridSize = 48;
-    const dotRadius = 0.85;
+    // 1. Subtle Minimalist Dot Grid (spacing: 56px)
+    const gridSize = 56;
+    const dotRadius = 0.8;
     const offsetX = (this.width % gridSize) / 2;
     const offsetY = (this.height % gridSize) / 2;
 
-    ctx.fillStyle = 'rgba(15, 23, 42, 0.035)';
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.04)';
 
     for (let x = offsetX; x < this.width; x += gridSize) {
       for (let y = offsetY; y < this.height; y += gridSize) {
@@ -70,5 +70,16 @@ export class ScrollytellingEngine {
         ctx.fill();
       }
     }
+
+    // 2. Technical Subtle Hairline Axis (Follows Story Progress)
+    const axisY = (this.height * 0.25) + (this.globalProgress * (this.height * 0.5));
+    ctx.strokeStyle = 'rgba(37, 99, 235, 0.05)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 12]);
+    ctx.beginPath();
+    ctx.moveTo(offsetX, axisY);
+    ctx.lineTo(this.width - offsetX, axisY);
+    ctx.stroke();
+    ctx.setLineDash([]);
   }
 }
