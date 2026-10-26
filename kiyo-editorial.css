@@ -82,10 +82,8 @@ body {
    SITE HEADER
    ══════════════════════════════════════════════════════════════════════════ */
 .site-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  position: relative;
+  width: 100%;
   height: var(--header-height);
   background: var(--bg-surface);
   border-bottom: 1px solid var(--border-light);
@@ -237,7 +235,7 @@ body {
   align-items: center;
   justify-content: center;
   padding: 5rem 1.5rem 4rem;
-  margin-top: var(--header-height);
+  margin-top: 0;
   border-bottom: 1px solid var(--border-light);
 }
 
@@ -461,7 +459,7 @@ body {
 
 .sticky-visual-wrapper {
   position: sticky;
-  top: calc(var(--header-height) + 2rem);
+  top: 2rem;
 }
 
 .sticky-app-mockup {
