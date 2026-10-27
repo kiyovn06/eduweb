@@ -524,7 +524,7 @@ body {
   border: none;
 }
 
-/* STICKY TRACK FOR SECTION 02: BÓC TÁCH (ẢNH 6/7 THU NHỎ XUỐNG 4/7 · HIỆN XUỐNG BÊN DƯỚI HƠN NỮA · CHỮ LẦN LƯỢT TỪ PHẢI VÀO) */
+/* STICKY TRACK FOR SECTION 02: BÓC TÁCH (ẢNH 6/7 THU NHỎ XUỐNG 4/7 · CÁCH ĐỀU ĐÚNG 30PX TRÊN VÀ DƯỚI · KHÔNG BỊ BO GÓC TRÊN) */
 .stage-boc-tach-track {
   position: relative;
   min-height: 220vh;
@@ -540,7 +540,7 @@ body {
   align-items: center;
   justify-content: flex-start;
   width: 100%;
-  padding: 70px clamp(2rem, 3.5vw, 4rem) 40px 0; /* HIỆN ẢNH XUỐNG BÊN DƯỚI HƠN NỮA */
+  padding: 30px clamp(2rem, 3.5vw, 4rem) 30px 0; /* CÁCH ĐỀU ĐÚNG 30PX TRÊN VÀ DƯỚI */
   box-sizing: border-box;
   overflow: hidden;
 }
@@ -550,7 +550,7 @@ body {
   align-items: center;
   gap: clamp(2rem, 3.5vw, 3.5rem);
   width: 100%;
-  height: calc(100vh - 110px); /* 100vh - 70px top - 40px bottom: KHỚP VỚI PADDING MỚI */
+  height: calc(100vh - 60px); /* 100vh - 30px top - 30px bottom: CÁCH ĐỀU ĐÚNG 30PX */
   position: relative;
 }
 
