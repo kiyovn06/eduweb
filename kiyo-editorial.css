@@ -555,7 +555,7 @@ body {
   top: 100px;
 }
 
-/* INTERACTIVE TABLET VIEWPORT (Bàn tay bấm -> Phóng to -> Vào màn hình -> Kéo cuộn) */
+/* INTERACTIVE TABLET VIEWPORT (Cái tay 1 ảnh + Cái màn hình 1 ảnh -> Phóng to -> Vào màn hình -> Kéo cuộn) */
 .interactive-tablet-viewport {
   position: relative;
   width: 100%;
@@ -564,14 +564,34 @@ body {
   background: #0f172a;
 }
 
+/* Layer 1: Cái màn hình là 1 ảnh */
+.layer-tablet-device {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform-origin: 50% 50%;
+  will-change: transform, opacity;
+  z-index: 1;
+}
+
+.layer-tablet-device img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Layer 2: Cái tay là 1 ảnh riêng biệt */
 .layer-hand-tap {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  transform-origin: 52% 48%;
+  transform-origin: 50% 50%;
   will-change: transform, opacity;
-  z-index: 2;
+  z-index: 3;
+  pointer-events: none;
 }
 
 .layer-hand-tap img {
@@ -584,7 +604,7 @@ body {
 .tap-ripple-effect {
   position: absolute;
   top: 48%;
-  left: 52%;
+  left: 50%;
   width: 48px;
   height: 48px;
   margin: -24px 0 0 -24px;
@@ -593,6 +613,7 @@ body {
   box-shadow: 0 0 24px rgba(56, 189, 248, 0.7);
   animation: ripplePulse 1.8s ease-out infinite;
   pointer-events: none;
+  z-index: 4;
 }
 
 @keyframes ripplePulse {

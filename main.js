@@ -52,6 +52,7 @@ async function initScrollytelling() {
 
   // Stage 02: Interactive Zoom-Dive-Scroll Tablet Viewport
   const bocTachSection = document.getElementById('boc-tach-ai');
+  const tabletDeviceLayer = document.getElementById('layer-tablet-device');
   const handTapLayer = document.getElementById('layer-hand-tap');
   const screenDiveLayer = document.getElementById('layer-screen-dive');
   const screenScrollTrack = document.getElementById('screen-scroll-track');
@@ -103,9 +104,9 @@ async function initScrollytelling() {
     }
   }
 
-  // ── 3.1 Interactive Zoom & Screen Dive on Scroll (Bàn tay bấm -> Phóng to -> Vào màn hình -> Kéo) ───
+  // ── 3.1 Interactive Zoom & Screen Dive on Scroll (Cái tay 1 ảnh + Cái màn hình 1 ảnh -> Phóng to -> Vào màn hình -> Kéo) ───
   function updateBocTachZoomScroll() {
-    if (!bocTachSection || !handTapLayer || !screenDiveLayer || !screenScrollTrack) return;
+    if (!bocTachSection || !tabletDeviceLayer || !handTapLayer || !screenDiveLayer || !screenScrollTrack) return;
     const rect = bocTachSection.getBoundingClientRect();
     const windowH = window.innerHeight;
     const totalDist = rect.height + windowH;
@@ -113,20 +114,29 @@ async function initScrollytelling() {
     const progress = Math.min(1, Math.max(0, currentPos / totalDist));
 
     if (progress <= 0.42) {
-      // Phase 1: Bàn tay chạm màn hình và PHÓNG TO
+      // Phase 1: Cái tay di chuyển bấm vô màn hình và PHÓNG TO
       const p1 = progress / 0.42;
-      const scale = 1 + p1 * 1.5; // Zoom từ 1 lên 2.5
-      const opacity = p1 > 0.65 ? Math.max(0, 1 - (p1 - 0.65) / 0.35) : 1;
-      handTapLayer.style.transform = `scale(${scale})`;
-      handTapLayer.style.opacity = opacity;
+
+      // Tay di chuyển từ ngoài vào bấm màn hình (hover effect)
+      const handHoverY = p1 < 0.25 ? (1 - p1 / 0.25) * 28 : 0;
+      const handHoverX = p1 < 0.25 ? (1 - p1 / 0.25) * 20 : 0;
+      const zoomScale = 1 + p1 * 1.5; // Zoom cả tay lẫn màn hình từ 1.0 lên 2.5
+
+      tabletDeviceLayer.style.transform = `scale(${zoomScale})`;
+      tabletDeviceLayer.style.opacity = '1';
+
+      const handOpacity = p1 > 0.65 ? Math.max(0, 1 - (p1 - 0.65) / 0.35) : 1;
+      handTapLayer.style.transform = `translate3d(${handHoverX}px, ${handHoverY}px, 0) scale(${zoomScale})`;
+      handTapLayer.style.opacity = handOpacity;
 
       screenDiveLayer.style.opacity = p1 > 0.5 ? (p1 - 0.5) / 0.5 : 0;
       screenDiveLayer.style.transform = `scale(${0.88 + p1 * 0.12})`;
       screenScrollTrack.style.transform = 'translate3d(0, 0, 0)';
-      if (capScanStatus) capScanStatus.textContent = '1 Chạm Quét Đề AI';
+      if (capScanStatus) capScanStatus.textContent = p1 < 0.25 ? 'Chạm ngón tay lên tablet...' : '1 Chạm Quét Đề AI';
     } else {
       // Phase 2: ĐI VÀO TRONG MÀN HÌNH VÀ KÉO NỘI DUNG CUỘN TRANG
       handTapLayer.style.opacity = 0;
+      tabletDeviceLayer.style.opacity = 0;
       screenDiveLayer.style.opacity = 1;
       screenDiveLayer.style.transform = 'scale(1)';
 
