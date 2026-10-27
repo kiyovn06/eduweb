@@ -179,42 +179,42 @@ async function initScrollytelling() {
     const stageW = Math.min(window.innerWidth, 1440);
     const scaleFactor = Math.max(0.72, Math.min(1.0, stageW / 1366));
 
-    // Base step at rest: exactly 65px for perfectly equal visible strips
-    const baseStep = 65 * scaleFactor;
-    const targetL1 = 240 * scaleFactor;
-    const targetL2 = 445 * scaleFactor;
+    // Base preview at rest: che nhiều, xem trước chỉ gần 10px và hơi chéo chéo
+    const baseOff1 = 5 * scaleFactor;
+    const baseRot1 = 1.8;
+    const targetOff1 = 240 * scaleFactor;
+    const targetRot1 = 3.5;
 
-    // Phase 1: Left 1 & Right 1 (ló đều 65px khi chưa cuộn, cuộn xuống xòe ra 260px)
-    const pL1 = Math.min(1, Math.max(0, progress / 0.65));
-    const distL1 = -baseStep - (targetL1 - baseStep) * pL1;
-    const rotL1 = -2.5 * pL1;
+    const baseOff2 = 10 * scaleFactor;
+    const baseRot2 = 3.6;
+    const targetOff2 = 450 * scaleFactor;
+    const targetRot2 = 7.0;
+
+    // Phase 1: Left 1 & Right 1 (bắt đầu che nhiều ló ~10px chéo, cuộn xuống xòe rộng ra)
+    const p1 = Math.min(1, Math.max(0, progress / 0.65));
+    const dist1 = baseOff1 + (targetOff1 - baseOff1) * p1;
+    const rot1 = baseRot1 + (targetRot1 - baseRot1) * p1;
+
     if (fanCardL1) {
-      fanCardL1.style.transform = `translate(calc(-50% + ${distL1}px), -50%) rotate(${rotL1}deg)`;
+      fanCardL1.style.transform = `translate(calc(-50% - ${dist1}px), -50%) rotate(${-rot1}deg)`;
       fanCardL1.style.opacity = '1';
     }
-
-    const pR1 = Math.min(1, Math.max(0, progress / 0.65));
-    const distR1 = baseStep + (targetL1 - baseStep) * pR1;
-    const rotR1 = 2.5 * pR1;
     if (fanCardR1) {
-      fanCardR1.style.transform = `translate(calc(-50% + ${distR1}px), -50%) rotate(${rotR1}deg)`;
+      fanCardR1.style.transform = `translate(calc(-50% + ${dist1}px), -50%) rotate(${rot1}deg)`;
       fanCardR1.style.opacity = '1';
     }
 
-    // Phase 2: Left 2 & Right 2 (ló đều 130px khi chưa cuộn, cuộn xuống xòe ra 480px)
-    const pL2 = Math.min(1, Math.max(0, (progress - 0.12) / 0.72));
-    const distL2 = -baseStep * 2 - (targetL2 - baseStep * 2) * pL2;
-    const rotL2 = -5.0 * pL2;
+    // Phase 2: Left 2 & Right 2 (bắt đầu che nhiều ló ~10px chéo, cuộn xuống xòe xa nhất)
+    const p2 = Math.min(1, Math.max(0, (progress - 0.12) / 0.72));
+    const dist2 = baseOff2 + (targetOff2 - baseOff2) * p2;
+    const rot2 = baseRot2 + (targetRot2 - baseRot2) * p2;
+
     if (fanCardL2) {
-      fanCardL2.style.transform = `translate(calc(-50% + ${distL2}px), -50%) rotate(${rotL2}deg)`;
+      fanCardL2.style.transform = `translate(calc(-50% - ${dist2}px), -50%) rotate(${-rot2}deg)`;
       fanCardL2.style.opacity = '1';
     }
-
-    const pR2 = Math.min(1, Math.max(0, (progress - 0.12) / 0.72));
-    const distR2 = baseStep * 2 + (targetL2 - baseStep * 2) * pR2;
-    const rotR2 = 5.0 * pR2;
     if (fanCardR2) {
-      fanCardR2.style.transform = `translate(calc(-50% + ${distR2}px), -50%) rotate(${rotR2}deg)`;
+      fanCardR2.style.transform = `translate(calc(-50% + ${dist2}px), -50%) rotate(${rot2}deg)`;
       fanCardR2.style.opacity = '1';
     }
 

@@ -791,16 +791,16 @@ body {
     opacity: 1;
   }
   .fan-card-l1 {
-    transform: translate(calc(-50% - 65px), -50%);
+    transform: translate(calc(-50% - 5px), -50%) rotate(-1.8deg);
   }
   .fan-card-l2 {
-    transform: translate(calc(-50% - 130px), -50%);
+    transform: translate(calc(-50% - 10px), -50%) rotate(-3.6deg);
   }
   .fan-card-r1 {
-    transform: translate(calc(-50% + 65px), -50%);
+    transform: translate(calc(-50% + 5px), -50%) rotate(1.8deg);
   }
   .fan-card-r2 {
-    transform: translate(calc(-50% + 130px), -50%);
+    transform: translate(calc(-50% + 10px), -50%) rotate(3.6deg);
   }
 }
 
