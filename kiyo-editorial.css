@@ -730,18 +730,19 @@ body {
   position: relative;
   width: 100%;
   height: clamp(520px, 70vh, 690px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
   perspective: 1400px;
   transform-style: preserve-3d;
   margin: 0;
 }
 
-/* BASE CARD STYLING: Khung ảnh bo tròn tinh tế, không viền đen */
+/* BASE CARD STYLING: Khung ảnh bo tròn tinh tế, không viền đen, khóa vị trí chính tâm 50% */
 .fan-card {
   position: absolute;
-  border-radius: 30px;
+  top: 50%;
+  left: 50%;
+  width: clamp(340px, 28vw, 420px);
+  height: clamp(480px, 64vh, 620px);
+  border-radius: 28px;
   overflow: hidden;
   background: #ffffff;
   border: none !important;
@@ -764,28 +765,17 @@ body {
   border-radius: inherit;
 }
 
-/* ẢNH TRUNG TÂM: To hơn hẳn, thuần hình ảnh KHÔNG CÓ VIỀN ĐEN */
+/* ẢNH TRUNG TÂM: Cùng kích thước chuẩn, độ sâu bóng đổ cao nhất, KHÔNG VIỀN ĐEN */
 .fan-center-card {
-  width: clamp(350px, 30vw, 440px);
-  height: clamp(500px, 68vh, 640px);
-  border-radius: 32px;
-  background: #ffffff;
+  z-index: 10;
+  box-shadow: 0 34px 76px rgba(15, 23, 42, 0.25), 0 4px 16px rgba(15, 23, 42, 0.08);
   padding: 0 !important;
   border: none !important;
-  box-sizing: border-box;
-  z-index: 10;
-  box-shadow: 0 36px 80px rgba(15, 23, 42, 0.26), 0 4px 16px rgba(15, 23, 42, 0.08);
-  position: relative;
-  flex-shrink: 0;
-  transform-origin: center center;
-  will-change: transform;
 }
 
-/* CÁC THẺ 2 BÊN: To hơn đồng đều, chưa kéo xuống vẫn thấy ló ra một tí ở sau */
+/* CÁC THẺ 2 BÊN: Đồng kích thước chuẩn 100% với ảnh giữa */
 .fan-card-side {
-  width: clamp(300px, 26vw, 380px);
-  height: clamp(440px, 60vh, 560px);
-  border-radius: 28px;
+  /* Kích thước thừa hưởng hoàn toàn từ .fan-card để bằng nhau 100% */
 }
 
 .fan-card-l2 { z-index: 4; }
@@ -794,20 +784,23 @@ body {
 .fan-card-r2 { z-index: 4; }
 
 @media (min-width: 769px) {
+  .fan-center-card {
+    transform: translate(-50%, -50%);
+  }
   .fan-card-side {
     opacity: 1;
   }
   .fan-card-l1 {
-    transform: translateX(-55px) scale(0.95) rotate(-2deg);
+    transform: translate(calc(-50% - 65px), -50%);
   }
   .fan-card-l2 {
-    transform: translateX(-110px) scale(0.90) rotate(-4deg);
+    transform: translate(calc(-50% - 130px), -50%);
   }
   .fan-card-r1 {
-    transform: translateX(55px) scale(0.95) rotate(2deg);
+    transform: translate(calc(-50% + 65px), -50%);
   }
   .fan-card-r2 {
-    transform: translateX(110px) scale(0.90) rotate(4deg);
+    transform: translate(calc(-50% + 130px), -50%);
   }
 }
 
@@ -1886,9 +1879,12 @@ body {
     -webkit-overflow-scrolling: touch;
   }
 
+  .fan-card,
   .fan-center-card,
   .fan-card-side {
     position: static !important;
+    top: auto !important;
+    left: auto !important;
     flex: 0 0 280px !important;
     height: 400px !important;
     scroll-snap-align: center !important;

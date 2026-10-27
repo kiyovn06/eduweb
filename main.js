@@ -179,48 +179,49 @@ async function initScrollytelling() {
     const stageW = Math.min(window.innerWidth, 1440);
     const scaleFactor = Math.max(0.72, Math.min(1.0, stageW / 1366));
 
-    // Phase 1: Left 1 & Right 1 (bắt đầu ló sẵn một tí, cuộn xuống xòe rộng ra)
+    // Base step at rest: exactly 65px for perfectly equal visible strips
+    const baseStep = 65 * scaleFactor;
+    const targetL1 = 240 * scaleFactor;
+    const targetL2 = 445 * scaleFactor;
+
+    // Phase 1: Left 1 & Right 1 (ló đều 65px khi chưa cuộn, cuộn xuống xòe ra 260px)
     const pL1 = Math.min(1, Math.max(0, progress / 0.65));
-    const distL1 = (-55 - 205 * pL1) * scaleFactor;
-    const rotL1 = -2.0 - 0.5 * pL1;
-    const scaleL1 = 0.95 + 0.03 * pL1;
+    const distL1 = -baseStep - (targetL1 - baseStep) * pL1;
+    const rotL1 = -2.5 * pL1;
     if (fanCardL1) {
-      fanCardL1.style.transform = `translateX(${distL1}px) scale(${scaleL1}) rotate(${rotL1}deg)`;
+      fanCardL1.style.transform = `translate(calc(-50% + ${distL1}px), -50%) rotate(${rotL1}deg)`;
       fanCardL1.style.opacity = '1';
     }
 
     const pR1 = Math.min(1, Math.max(0, progress / 0.65));
-    const distR1 = (55 + 205 * pR1) * scaleFactor;
-    const rotR1 = 2.0 + 0.5 * pR1;
-    const scaleR1 = 0.95 + 0.03 * pR1;
+    const distR1 = baseStep + (targetL1 - baseStep) * pR1;
+    const rotR1 = 2.5 * pR1;
     if (fanCardR1) {
-      fanCardR1.style.transform = `translateX(${distR1}px) scale(${scaleR1}) rotate(${rotR1}deg)`;
+      fanCardR1.style.transform = `translate(calc(-50% + ${distR1}px), -50%) rotate(${rotR1}deg)`;
       fanCardR1.style.opacity = '1';
     }
 
-    // Phase 2: Left 2 & Right 2 (ló sẵn ở tầng ngoài, cuộn xuống xòe xa nhất)
+    // Phase 2: Left 2 & Right 2 (ló đều 130px khi chưa cuộn, cuộn xuống xòe ra 480px)
     const pL2 = Math.min(1, Math.max(0, (progress - 0.12) / 0.72));
-    const distL2 = (-110 - 370 * pL2) * scaleFactor;
-    const rotL2 = -4.0 - 1.0 * pL2;
-    const scaleL2 = 0.90 + 0.04 * pL2;
+    const distL2 = -baseStep * 2 - (targetL2 - baseStep * 2) * pL2;
+    const rotL2 = -5.0 * pL2;
     if (fanCardL2) {
-      fanCardL2.style.transform = `translateX(${distL2}px) scale(${scaleL2}) rotate(${rotL2}deg)`;
+      fanCardL2.style.transform = `translate(calc(-50% + ${distL2}px), -50%) rotate(${rotL2}deg)`;
       fanCardL2.style.opacity = '1';
     }
 
     const pR2 = Math.min(1, Math.max(0, (progress - 0.12) / 0.72));
-    const distR2 = (110 + 370 * pR2) * scaleFactor;
-    const rotR2 = 4.0 + 1.0 * pR2;
-    const scaleR2 = 0.90 + 0.04 * pR2;
+    const distR2 = baseStep * 2 + (targetL2 - baseStep * 2) * pR2;
+    const rotR2 = 5.0 * pR2;
     if (fanCardR2) {
-      fanCardR2.style.transform = `translateX(${distR2}px) scale(${scaleR2}) rotate(${rotR2}deg)`;
+      fanCardR2.style.transform = `translate(calc(-50% + ${distR2}px), -50%) rotate(${rotR2}deg)`;
       fanCardR2.style.opacity = '1';
     }
 
-    // Center card: Subtle elevation / scale as cards emerge
+    // Center card: Giữ chuẩn vị trí tâm chính xác
     const pCenter = Math.min(1, Math.max(0, progress / 0.6));
     const tabletScale = 1.0 + 0.02 * pCenter;
-    fanCenterTablet.style.transform = `scale(${tabletScale})`;
+    fanCenterTablet.style.transform = `translate(-50%, -50%) scale(${tabletScale})`;
   }
 
   // ── 4. Timeline Progress Line ─────────────────────────────────────────────
