@@ -524,7 +524,7 @@ body {
   border: none;
 }
 
-/* STICKY TRACK FOR SECTION 02: BÓC TÁCH (ẢNH CHẠM TRÊN TRÁI 4/5 THU NHỎ XUỐNG 2/5 KHI CUỘN) */
+/* STICKY TRACK FOR SECTION 02: BÓC TÁCH (ẢNH CHẠM TRÊN TRÁI 4/5 THU NHỎ XUỐNG 3/5 KHI CUỘN) */
 .stage-boc-tach-track {
   position: relative;
   min-height: 210vh;
@@ -534,27 +534,28 @@ body {
 
 .boc-tach-sticky-wrapper {
   position: sticky;
-  top: 64px;
-  height: calc(100vh - 64px);
+  top: 0;
+  height: 100vh;
   display: flex;
-  align-items: stretch;
+  align-items: center; /* CĂN GIỮA DỌC VIEWPORT: KHOẢNG CÁCH TRÊN VÀ DƯỚI CÁCH ĐỀU BẰNG NHAU (ẢNH 3 & 4) */
+  justify-content: flex-start;
   width: 100%;
-  padding: 1.25rem clamp(2rem, 4vw, 4.5rem) 1.5rem 0; /* padding-left is 0! Ảnh chạm mép trái màn hình */
+  padding: 0 clamp(2rem, 3.5vw, 4rem) 0 0; /* padding-left is 0! Ảnh chạm sát mép trái màn hình */
   box-sizing: border-box;
   overflow: hidden;
 }
 
 .chapter-shrink-split {
   display: flex;
-  align-items: stretch;
-  gap: clamp(2rem, 3.5vw, 4rem);
+  align-items: center;
+  gap: clamp(2rem, 3.5vw, 3.5rem);
   width: 100%;
-  height: 100%;
+  height: clamp(480px, 70vh, 580px); /* Khoảng cách trên và dưới bằng nhau */
   position: relative;
 }
 
 .boc-tach-visual-col {
-  width: 80%; /* Ban đầu chiếm 4/5 chạm mép trên trái, to nhất có thể */
+  width: 80%; /* Ban đầu chiếm 4/5, kéo xuống thu nhỏ xuống 3/5 (60%) theo yêu cầu */
   height: 100%;
   flex-shrink: 0;
   position: relative;
@@ -564,7 +565,6 @@ body {
 .boc-tach-visual-col .chapter-visual-box {
   width: 100%;
   height: 100%;
-  max-height: calc(100vh - 96px);
   border-top-left-radius: 0px !important;
   border-bottom-left-radius: 0px !important;
   border-top-right-radius: 32px;
@@ -597,43 +597,23 @@ body {
 }
 
 .boc-tach-header-group {
-  margin-bottom: 0.25rem;
-}
-
-.boc-tach-stage-badge {
-  display: inline-block;
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: #2563eb;
-  background: #eff6ff;
-  border: 1px solid #bfdbfe;
-  padding: 4px 12px;
-  border-radius: 999px;
-  margin-bottom: 0.75rem;
-  text-transform: uppercase;
+  margin-bottom: 0.5rem;
 }
 
 .boc-tach-header-group .section-title {
-  font-size: clamp(1.8rem, 2.4vw, 2.4rem);
+  white-space: nowrap !important; /* KHÔNG ĐƯỢC XUỐNG DÒNG NHƯ ẢNH 2 */
+  font-size: clamp(1.4rem, 1.8vw, 2.1rem);
   font-weight: 700;
   color: #0f172a;
   line-height: 1.25;
-  margin: 0 0 0.5rem 0;
-  letter-spacing: -0.02em;
-}
-
-.boc-tach-header-group .section-desc {
-  color: #64748b;
-  font-size: clamp(0.9rem, 1.05vw, 1rem);
-  line-height: 1.5;
   margin: 0;
+  letter-spacing: -0.02em;
 }
 
 .boc-tach-feature-cards {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.85rem;
 }
 
 .chapter-container {

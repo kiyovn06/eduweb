@@ -114,10 +114,10 @@ async function initScrollytelling() {
     const passed = -rect.top;
     const progress = Math.min(1, Math.max(0, passed / totalDist));
 
-    // 1. Ảnh bên trái: Ban đầu 4/5 (80%), kéo xuống thu nhỏ xuống 2/5 (40%) hoàn tất ở 65% quãng đường
+    // 1. Ảnh bên trái: Ban đầu 4/5 (80%), kéo xuống thu nhỏ xuống 3/5 (60%) hoàn tất ở 65% quãng đường
     const shrinkProgress = Math.min(1, progress / 0.65);
     const startWidth = 80; // 4/5
-    const endWidth = 40;   // 2/5
+    const endWidth = 60;   // 3/5 theo yêu cầu: "hiện ảnh là 3/5 web"
     const currentWidth = startWidth - shrinkProgress * (startWidth - endWidth);
     bocTachVisualCol.style.width = `${currentWidth}%`;
 
