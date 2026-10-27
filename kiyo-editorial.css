@@ -1245,7 +1245,7 @@ body {
 .status-time {
   font-size: 14px;
   font-weight: 700;
-  color: #ffffff;
+  color: #0f172a;
   letter-spacing: -0.01em;
 }
 
@@ -1295,7 +1295,7 @@ body {
 }
 .icon-signal span {
   width: 2.5px;
-  background: #ffffff;
+  background: #0f172a;
   border-radius: 0.5px;
 }
 .icon-signal span:nth-child(1) { height: 3px; }
@@ -1306,7 +1306,7 @@ body {
 .icon-battery {
   width: 20px;
   height: 11px;
-  border: 1.5px solid #ffffff;
+  border: 1.5px solid #0f172a;
   border-radius: 3px;
   position: relative;
   padding: 1px;
@@ -1319,14 +1319,42 @@ body {
   top: 2.5px;
   width: 1.5px;
   height: 4px;
-  background: #ffffff;
+  background: #0f172a;
   border-radius: 0 1px 1px 0;
 }
 .battery-fill {
   width: 85%;
   height: 100%;
-  background: #ffffff;
+  background: #0f172a;
   border-radius: 1px;
+}
+
+/* Wrapper ảnh màn hình app chuẩn 100% Ảnh 1 & Ảnh 2 */
+.mockup-img-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 46px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: #ffffff;
+  padding-top: 42px;
+  padding-bottom: 24px;
+  box-sizing: border-box;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.mockup-img-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+.mockup-screen-img {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
 /* UI màn hình Doctor's Support chuẩn 100% Ảnh 2 */
@@ -1584,11 +1612,11 @@ body {
   width: 100%;
   height: 100%;
   border-radius: 44px;
-  padding: clamp(30px, 4vh, 46px) clamp(30px, 3vw, 48px);
+  padding: clamp(36px, 5vh, 64px) clamp(36px, 3.5vw, 64px);
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
   overflow-y: auto;
   will-change: transform, opacity;
 }
@@ -1613,47 +1641,22 @@ body {
   color: #0f172a;
 }
 
-/* Badge trên cùng */
-.card-badge {
-  display: inline-flex;
-  align-items: center;
-  align-self: flex-start;
-  font-size: 0.78rem;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  padding: 4px 12px;
-  border-radius: 999px;
-  margin-bottom: 12px;
-}
-
-.badge-blue {
-  background: rgba(255, 255, 255, 0.22);
-  color: #ffffff;
-  backdrop-filter: blur(8px);
-}
-
-.badge-light {
-  background: #eff6ff;
-  color: #2563eb;
-  border: 1px solid #bfdbfe;
-}
-
-/* Tiêu đề & Mô tả */
+/* Tiêu đề & Mô tả tinh giản tối đa (Xóa tất cả icon & pills) */
 .card-title {
-  font-size: clamp(2.1rem, 2.7vw, 2.9rem);
+  font-size: clamp(2.4rem, 3.2vw, 3.8rem);
   font-weight: 800;
-  line-height: 1.16;
+  line-height: 1.15;
   letter-spacing: -0.025em;
-  margin: 0 0 12px;
+  margin: 0 0 20px;
   text-align: left;
 }
 
 .card-desc {
-  font-size: clamp(0.96rem, 1.1vw, 1.1rem);
-  line-height: 1.6;
-  margin: 0 0 20px;
+  font-size: clamp(1.15rem, 1.35vw, 1.4rem);
+  line-height: 1.7;
+  margin: 0;
   text-align: left;
+  max-width: 92%;
 }
 
 .text-white {
