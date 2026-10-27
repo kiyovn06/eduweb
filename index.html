@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="kiyo-editorial.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -44,28 +44,31 @@
   <main id="story-main" aria-label="Trải nghiệm khảo thí số KiyoEdu">
 
     <!-- ══════════════════════════════════════════════════════════════════════
-         01: TỔNG QUAN NỀN TẢNG (HERO STAGE - CINEMATIC FULLSCREEN BACKGROUND)
+         01: TỔNG QUAN NỀN TẢNG (HERO STAGE - CINEMATIC LEFT-ALIGNED HERO)
          ══════════════════════════════════════════════════════════════════════ -->
     <section class="stage-section stage-hero" id="tong-quan" data-stage="0">
       
-      <!-- BACKGROUND: Ảnh ở nền toàn màn hình ("ảnh ở nền" · full ở bên trên) -->
+      <!-- BACKGROUND: Ảnh toàn màn hình không mờ trắng (Crystal-clear visual) -->
       <div class="hero-backdrop" aria-hidden="true">
         <img class="hero-backdrop-img" src="assets/kiyoedu-student-tablet.jpg" alt="Học sinh giải trắc nghiệm trên tablet KiyoEdu" width="1920" height="1080" fetchpriority="high">
         <div class="hero-backdrop-overlay"></div>
       </div>
 
-      <!-- FOREGROUND: Chữ và nút chảy vô từ hai bên -->
+      <!-- FOREGROUND: Chữ bên cạnh bên trái, chia thành 2 phần nghệ thuật, nút to hơn -->
       <div class="hero-foreground-content">
-        <div class="hero-header-block flow-in-left" id="hero-parallax-target">
-          <h1 class="hero-title">
-            Dạy thông minh.<br>Học hào hứng.
-          </h1>
+        <div class="hero-header-block" id="hero-parallax-target">
+          <div class="hero-title-line-1 flow-in-left">
+            Dạy thông minh.
+          </div>
+          <div class="hero-title-line-2 flow-in-left delay-1">
+            Học hào hứng.
+          </div>
 
-          <p class="hero-lead">
+          <p class="hero-lead flow-in-left delay-2">
             Bóc tách đề AI trong 3 giây · Đấu trường trực tiếp 0ms · Chấm trắc nghiệm tự động
           </p>
 
-          <div class="hero-actions flow-in-right">
+          <div class="hero-actions flow-in-left delay-3">
             <a href="http://localhost:3000/register" target="_blank" class="btn-hero-primary">
               Bắt đầu miễn phí
             </a>
@@ -73,11 +76,6 @@
               Khám phá tính năng
             </a>
           </div>
-        </div>
-
-        <div class="hero-floating-badges flow-in-right" aria-hidden="true">
-          <span class="hero-badge-pill"><span class="badge-dot"></span> Live Quiz Không Độ Trễ</span>
-          <span class="hero-badge-pill">42 Học sinh trực tuyến</span>
         </div>
       </div>
 
