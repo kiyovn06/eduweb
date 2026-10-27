@@ -48,6 +48,7 @@ async function initScrollytelling() {
   const heroForeground = document.getElementById('hero-foreground');
   const heroBackdrop = document.getElementById('hero-backdrop');
   const heroBgImg = document.getElementById('hero-bg-img');
+  const heroPoincianaWrap = document.getElementById('hero-poinciana-wrap');
   const heroTarget = document.getElementById('hero-parallax-target');
   const heroScrollCue = document.getElementById('hero-scroll-cue');
 
@@ -89,6 +90,12 @@ async function initScrollytelling() {
     }
     if (heroBgImg) {
       heroBgImg.style.transform = 'none';
+    }
+
+    // 3. Cây phượng vĩ ở bên phải có parallax nhẹ theo scroll
+    if (heroPoincianaWrap) {
+      const poincianaY = -progress * 30;
+      heroPoincianaWrap.style.transform = `translate3d(0, ${poincianaY}px, 0)`;
     }
 
     // 3. Scroll Cue
