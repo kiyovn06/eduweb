@@ -228,7 +228,7 @@ async function initScrollytelling() {
     fanCenterTablet.style.transform = `translate(-50%, -50%) scale(${tabletScale})`;
   }
 
-  // ── 3.3 Stage 04: Grail-Style Editorial Sheet Transition (Ảnh 1 & 2) ─────────
+  // ── 3.3 Stage 04: Grail-Style Editorial Sheet Transition (Chương 03 · Quản lý lớp học) ─────────
   function updateGrailSheetTransition() {
     const sheetCard = document.getElementById('grail-sheet-card');
     const sheetSection = document.getElementById('quan-ly-lop');
@@ -240,18 +240,33 @@ async function initScrollytelling() {
     // Khi trang mới trượt từ dưới lên đè lên Section 03 đang đứng im:
     if (rect.top > 0 && rect.top <= windowH) {
       const progress = 1 - (rect.top / windowH); // 0 khi mới ló ở đáy, 1 khi chạm đỉnh
-      // Chuẩn Grail-app curve (Ảnh 1 & 2): scale từ 0.86 -> 1.0, nghiêng từ 5.5deg -> 0deg
-      const scale = 0.86 + 0.14 * progress;
-      const rot = (1 - progress) * 5.5;
+      const ease = Math.min(1, Math.max(0, progress));
+
+      // Chuẩn Grail-app curve: scale từ 0.88 -> 1.0, nghiêng từ 4.5deg -> 0deg
+      const scale = 0.88 + 0.12 * ease;
+      const rot = (1 - ease) * 4.5;
+      const radius = Math.round((1 - ease) * 36);
+      const maxW = 90 + 10 * ease; // từ 90vw mở rộng dần ra 100vw chạm 2 bên mép
+
       sheetCard.style.transform = `scale(${scale.toFixed(4)}) rotate(${rot.toFixed(3)}deg)`;
       sheetCard.style.transformOrigin = 'center 15%';
+      sheetCard.style.borderRadius = `${radius}px ${radius}px 0 0`;
+      sheetCard.style.maxWidth = `${maxW.toFixed(1)}vw`;
+      sheetCard.style.boxShadow = `0 -${Math.round(28 * (1 - ease))}px ${Math.round(60 * (1 - ease))}px rgba(15, 23, 42, ${((1 - ease) * 0.16).toFixed(3)})`;
     } else if (rect.top <= 0) {
-      // Đã phủ kín toàn màn hình: trả về none để các thẻ con sticky hoạt động trơn tru 100%
+      // Đã phủ kín hoàn toàn màn hình: CHẠM HOÀN TOÀN MÉP TRÁI, PHẢI, DƯỚI (Full screen 100%)
       sheetCard.style.transform = 'none';
+      sheetCard.style.borderRadius = '0';
+      sheetCard.style.maxWidth = '100vw';
+      sheetCard.style.width = '100%';
+      sheetCard.style.boxShadow = 'none';
     } else {
       // Chưa vào màn hình
-      sheetCard.style.transform = 'scale(0.86) rotate(5.5deg)';
+      sheetCard.style.transform = 'scale(0.88) rotate(4.5deg)';
       sheetCard.style.transformOrigin = 'center 15%';
+      sheetCard.style.borderRadius = '36px 36px 0 0';
+      sheetCard.style.maxWidth = '90vw';
+      sheetCard.style.boxShadow = '0 -28px 60px rgba(15, 23, 42, 0.16)';
     }
   }
 
