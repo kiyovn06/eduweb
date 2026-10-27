@@ -146,7 +146,7 @@
       </section>
 
     <!-- ══════════════════════════════════════════════════════════════════════
-         03: ĐẤU TRƯỜNG LIVE QUIZ (LIVE ARENA BOARD STAGE)
+         03: ĐẤU TRƯỜNG LIVE QUIZ (ZIGZAG STREAM · SO LE TRÁI PHẢI · KHÔNG CHỮ TRONG ẢNH)
          ══════════════════════════════════════════════════════════════════════ -->
     <section class="stage-section stage-chapter" id="live-quiz" data-stage="2">
       <div class="chapter-container">
@@ -156,62 +156,61 @@
           <p class="section-desc">Kích thích phản xạ học tập và biến mỗi tiết học thành đấu trường sôi nổi.</p>
         </div>
 
-        <div class="chapter-grid-split reverse-split">
-          
-          <div class="chapter-details-col flow-in-left">
-            <div class="feature-block">
-              <span class="block-num">01</span>
-              <div class="block-content">
-                <h3>Tham Gia Bằng Mã PIN</h3>
-                <p>Học sinh nhập mã 6 ký tự để vào thi ngay. Không bắt buộc đăng ký tài khoản phức tạp.</p>
-              </div>
-            </div>
+        <!-- 1 ẢNH SHOWCASE LỚN Ở DƯỚI TIÊU ĐỀ: KHÔNG CHỨA CHỮ ĐÈ LÊN ẢNH -->
+        <div class="live-arena-hero-showcase flow-in-up">
+          <div class="chapter-visual-box live-arena-hero-box">
+            <img src="assets/kiyoedu-quiz-arena.jpg" alt="Đấu trường Live Quiz trực tiếp trong lớp học" width="1376" height="768" loading="lazy">
+          </div>
+        </div>
 
-            <div class="feature-block">
-              <span class="block-num">02</span>
-              <div class="block-content">
-                <h3>Xếp Hạng Thời Gian Thực</h3>
-                <p>Cập nhật điểm số tức thì khi chốt đáp án qua hạ tầng WebSocket độ trễ 0ms.</p>
-              </div>
-            </div>
+        <!-- CÁC TÍNH NĂNG TIẾP NỐI: SO LE TRÁI - PHẢI - TRÁI - PHẢI, CÓ KHOẢNG CÁCH NHÌN ĐƯỢC ẢNH CŨ -->
+        <div class="live-quiz-zigzag-stream">
 
-            <div class="feature-block">
-              <span class="block-num">03</span>
-              <div class="block-content">
-                <h3>Khóa Chống Gian Lận</h3>
-                <p>Tự động đảo câu hỏi ngẫu nhiên và cảnh báo tức thời khi học sinh rời khỏi màn hình thi.</p>
+          <!-- BƯỚC 01: ẢNH TRÁI · CHỮ PHẢI -->
+          <div class="zigzag-row">
+            <div class="chapter-visual-box zigzag-visual flow-in-left">
+              <img src="assets/kiyoedu-pin-entry.jpg" alt="Học sinh nhập mã PIN 6 ký tự tham gia thi" width="1376" height="768" loading="lazy">
+            </div>
+            <div class="zigzag-content flow-in-right">
+              <div class="feature-block">
+                <span class="block-num">01</span>
+                <div class="block-content">
+                  <h3>Tham Gia Bằng Mã PIN</h3>
+                  <p>Học sinh nhập mã 6 ký tự để vào thi ngay. Không bắt buộc đăng ký tài khoản phức tạp.</p>
+                </div>
               </div>
             </div>
           </div>
 
-          <div class="chapter-visual-box live-arena-visual flow-in-right">
-            <img src="assets/kiyoedu-quiz-arena.jpg" alt="Đấu trường Live Quiz" width="800" height="520" loading="lazy">
-            <div class="live-board-hud">
-              <div class="hud-top">
-                <span class="hud-status">PHÒNG THI KY-8821 · ĐANG DIỄN RA</span>
-                <span class="hud-ping">0ms · WEBSOCKET</span>
-              </div>
-              <div class="hud-list">
-                <div class="hud-row hud-lead">
-                  <span class="hud-rank">1</span>
-                  <span class="hud-name">Hoàng Nam (10A1)</span>
-                  <span class="hud-pts">1.000 pts</span>
-                </div>
-                <div class="hud-row">
-                  <span class="hud-rank">2</span>
-                  <span class="hud-name">Thu Hà (10A1)</span>
-                  <span class="hud-pts">960 pts</span>
-                </div>
-                <div class="hud-row">
-                  <span class="hud-rank">3</span>
-                  <span class="hud-name">Minh Quân (10A2)</span>
-                  <span class="hud-pts">920 pts</span>
+          <!-- BƯỚC 02: CHỮ TRÁI · ẢNH PHẢI -->
+          <div class="zigzag-row zigzag-reverse">
+            <div class="zigzag-content flow-in-left">
+              <div class="feature-block">
+                <span class="block-num">02</span>
+                <div class="block-content">
+                  <h3>Xếp Hạng Thời Gian Thực</h3>
+                  <p>Cập nhật điểm số tức thì khi chốt đáp án qua hạ tầng WebSocket độ trễ 0ms.</p>
                 </div>
               </div>
             </div>
-            <div class="visual-caption-bar">
-              <span class="cap-title">Đấu Trường Live Quiz Trực Tiếp</span>
-              <span class="cap-badge">42 Học sinh trực tuyến</span>
+            <div class="chapter-visual-box zigzag-visual flow-in-right">
+              <img src="assets/webedu-practice.jpg" alt="Xếp hạng trực tiếp và điểm số thời gian thực" width="1376" height="768" loading="lazy">
+            </div>
+          </div>
+
+          <!-- BƯỚC 03: ẢNH TRÁI · CHỮ PHẢI -->
+          <div class="zigzag-row">
+            <div class="chapter-visual-box zigzag-visual flow-in-left">
+              <img src="assets/kiyoedu-anticheat-lock.jpg" alt="Khóa chống gian lận chế độ toàn màn hình trên máy tính bảng" width="1376" height="768" loading="lazy">
+            </div>
+            <div class="zigzag-content flow-in-right">
+              <div class="feature-block">
+                <span class="block-num">03</span>
+                <div class="block-content">
+                  <h3>Khóa Chống Gian Lận</h3>
+                  <p>Tự động đảo câu hỏi ngẫu nhiên và cảnh báo tức thời khi học sinh rời khỏi màn hình thi.</p>
+                </div>
+              </div>
             </div>
           </div>
 

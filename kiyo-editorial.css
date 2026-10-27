@@ -676,91 +676,118 @@ body {
   overflow: hidden;
 }
 
-/* Live Arena Board HUD */
-.live-arena-visual {
-  position: relative;
+/* ══════════════════════════════════════════════════════════════════════════
+   03: ĐẤU TRƯỜNG LIVE QUIZ (ZIGZAG STREAM · SO LE TRÁI PHẢI · KHÔNG CHỮ TRONG ẢNH)
+   ══════════════════════════════════════════════════════════════════════════ */
+.live-arena-hero-showcase {
+  margin-top: 2rem;
+  margin-bottom: 5rem;
+}
+
+.live-arena-hero-box {
+  width: 100%;
+  height: clamp(380px, 50vh, 520px);
+  border-radius: 28px;
   overflow: hidden;
-  border: none !important;
+  box-shadow: 0 20px 48px rgba(15, 23, 42, 0.08);
+  background: var(--bg-surface);
 }
 
-.live-board-hud {
-  position: absolute;
-  bottom: 3.5rem;
-  left: 1rem;
-  right: 1rem;
-  background: rgba(255, 255, 255, 0.96);
-  border: none;
-  border-radius: var(--radius-md);
-  padding: 0.85rem 1rem;
-  z-index: 4;
+.live-arena-hero-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 25%;
+  display: block;
 }
 
-.hud-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 0.5rem;
-  padding-bottom: 0.35rem;
-  border-bottom: none;
-}
-
-.hud-status {
-  font-size: 0.68rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  letter-spacing: 0.04em;
-}
-
-.hud-ping {
-  font-size: 0.65rem;
-  font-family: var(--font-mono);
-  font-weight: 700;
-  color: #16a34a;
-  background: #f0fdf4;
-  padding: 0.15rem 0.45rem;
-  border-radius: 4px;
-  border: none;
-}
-
-.hud-list {
+.live-quiz-zigzag-stream {
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
+  gap: clamp(4rem, 7vw, 6.5rem); /* KHOẢNG CÁCH RỘNG ĐỂ NHÌN ĐƯỢC ẢNH CŨ KHI CUỘN */
+  margin-bottom: 3rem;
 }
 
-.hud-row {
+.zigzag-row {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  align-items: center;
+  gap: clamp(2.5rem, 5vw, 4.5rem);
+}
+
+.zigzag-row.zigzag-reverse {
+  grid-template-columns: 0.85fr 1.15fr;
+}
+
+.zigzag-visual {
+  width: 100%;
+  height: clamp(340px, 44vh, 440px);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+  background: var(--bg-surface);
+}
+
+.zigzag-visual img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.zigzag-visual:hover img {
+  transform: scale(1.03);
+}
+
+.zigzag-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.zigzag-content .feature-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.25rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: clamp(1.75rem, 3vw, 2.5rem);
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.03);
+}
+
+.zigzag-content .block-num {
+  font-family: var(--font-mono, monospace);
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #2563eb;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  font-size: 0.75rem;
-  padding: 0.3rem 0.5rem;
-  border-radius: 4px;
-  background: var(--bg-subtle);
+  justify-content: center;
+  flex-shrink: 0;
 }
 
-.hud-lead {
-  background: var(--accent-blue-soft);
-  border: none;
-}
-
-.hud-rank {
-  font-family: var(--font-mono);
+.zigzag-content .block-content h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: clamp(1.35rem, 1.8vw, 1.65rem);
   font-weight: 700;
-  color: var(--accent-blue);
-  width: 16px;
+  color: #0f172a;
+  letter-spacing: -0.01em;
 }
 
-.hud-name {
-  flex: 1;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-left: 0.4rem;
-}
-
-.hud-pts {
-  font-family: var(--font-mono);
-  font-weight: 700;
-  color: var(--text-secondary);
+.zigzag-content .block-content p {
+  margin: 0;
+  font-size: clamp(0.95rem, 1.1vw, 1.05rem);
+  color: #64748b;
+  line-height: 1.65;
 }
 
 .cap-title {
@@ -1804,6 +1831,20 @@ body {
     width: 100% !important;
     opacity: 1 !important;
     transform: none !important;
+  }
+
+  .zigzag-row,
+  .zigzag-row.zigzag-reverse {
+    grid-template-columns: 1fr !important;
+    gap: 1.75rem !important;
+  }
+
+  .zigzag-visual {
+    height: 280px !important;
+  }
+
+  .zigzag-row.zigzag-reverse .zigzag-visual {
+    order: -1;
   }
 
   .cq-form {
