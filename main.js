@@ -50,6 +50,11 @@ async function initScrollytelling() {
   const heroPoincianaWrap = document.getElementById('hero-poinciana-wrap');
   const heroTarget = document.getElementById('hero-parallax-target');
 
+  // Stage 02: Bóc tách thu nhỏ 4/5 xuống 2/5 khi cuộn
+  const bocTachTrack = document.getElementById('boc-tach-ai');
+  const bocTachVisualCol = document.getElementById('boc-tach-visual-col');
+  const bocTachTextCol = document.getElementById('boc-tach-text-col');
+
   // Timeline Track
   const timelineTrack = document.getElementById('timeline-track');
   const timelineLineFill = document.getElementById('timeline-line-fill');
@@ -94,6 +99,33 @@ async function initScrollytelling() {
       const poincianaY = -progress * 30;
       heroPoincianaWrap.style.transform = `translate3d(0, ${poincianaY}px, 0)`;
     }
+  }
+
+  // ── 3.1 Stage 02: Bóc tách thu nhỏ ảnh từ 4/5 xuống 2/5 để hiện chữ bên phải ───
+  function updateBocTachShrink() {
+    if (!bocTachTrack || !bocTachVisualCol || !bocTachTextCol) return;
+    if (window.innerWidth <= 768) return;
+
+    const rect = bocTachTrack.getBoundingClientRect();
+    const windowH = window.innerHeight;
+    const totalDist = rect.height - windowH;
+    if (totalDist <= 0) return;
+
+    const passed = -rect.top;
+    const progress = Math.min(1, Math.max(0, passed / totalDist));
+
+    // 1. Ảnh bên trái: Ban đầu 4/5 (80%), kéo xuống thu nhỏ xuống 2/5 (40%) hoàn tất ở 65% quãng đường
+    const shrinkProgress = Math.min(1, progress / 0.65);
+    const startWidth = 80; // 4/5
+    const endWidth = 40;   // 2/5
+    const currentWidth = startWidth - shrinkProgress * (startWidth - endWidth);
+    bocTachVisualCol.style.width = `${currentWidth}%`;
+
+    // 2. Chữ bên phải: Mờ và trượt nhẹ vào, canh toàn bộ bên phải
+    const textOpacity = Math.min(1, Math.max(0, (shrinkProgress - 0.08) / 0.72));
+    const textTranslateX = (1 - textOpacity) * 36;
+    bocTachTextCol.style.opacity = textOpacity;
+    bocTachTextCol.style.transform = `translateX(${textTranslateX}px)`;
   }
 
   // ── 4. Timeline Progress Line ─────────────────────────────────────────────
@@ -206,6 +238,9 @@ async function initScrollytelling() {
 
     // Hero parallax
     updateHeroParallax(scrollY);
+
+    // Stage 02: Bóc tách thu nhỏ ảnh từ 4/5 xuống 2/5
+    updateBocTachShrink();
 
     // Timeline progress
     updateTimelineProgress();

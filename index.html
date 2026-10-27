@@ -89,62 +89,71 @@
     <div class="story-curtain-sheet" id="story-sheet">
 
       <!-- ══════════════════════════════════════════════════════════════════════
-           02: CÔNG NGHỆ BÓC TÁCH ĐỀ THI AI (LASER SCAN STAGE)
+           02: CÔNG NGHỆ BÓC TÁCH ĐỀ THI AI (LASER SCAN STAGE - THU NHỎ 4/5 XUỐNG 2/5)
            ══════════════════════════════════════════════════════════════════════ -->
-      <section class="stage-section stage-chapter" id="boc-tach-ai" data-stage="1">
-      <div class="chapter-container">
+      <section class="stage-section stage-chapter stage-boc-tach-track" id="boc-tach-ai" data-stage="1">
+        <div class="boc-tach-sticky-wrapper" id="boc-tach-pinned">
+          <div class="chapter-container">
 
-        <div class="section-intro">
-          <h2 class="section-title">Bóc Tách Đề Thi Trong 3 Giây</h2>
-          <p class="section-desc">Tự động nhận diện câu hỏi, đáp án và công thức toán học từ Word, PDF và ảnh chụp.</p>
-        </div>
+            <div class="section-intro">
+              <h2 class="section-title">Bóc Tách Đề Thi Trong 3 Giây</h2>
+              <p class="section-desc">Tự động nhận diện câu hỏi, đáp án và công thức toán học từ Word, PDF và ảnh chụp.</p>
+            </div>
 
-        <div class="chapter-grid-split">
-          
-          <div class="chapter-visual-box ocr-scanner-visual flow-in-left">
-            <img src="assets/kiyoedu-hand-tap-tablet.jpg" alt="Bàn tay học sinh chạm màn hình KiyoEdu" width="800" height="520" loading="lazy">
-            <div class="laser-scanner-line" aria-hidden="true"></div>
-            <div class="scanner-data-overlay">
-              <span class="chip-data">OCR: 99.8% CHÍNH XÁC</span>
-              <span class="chip-data">40 CÂU TRẮC NGHIỆM</span>
-              <span class="chip-data">CHUẨN KATEX</span>
+            <div class="chapter-shrink-split" id="boc-tach-split">
+              
+              <!-- CỘT ẢNH BÊN TRÁI: Ban đầu chiếm 4/5 (80%), kéo xuống thu nhỏ xuống 2/5 (40%) -->
+              <div class="boc-tach-visual-col" id="boc-tach-visual-col">
+                <div class="chapter-visual-box ocr-scanner-visual">
+                  <img src="assets/kiyoedu-hand-tap-tablet.jpg" alt="Bàn tay học sinh chạm màn hình KiyoEdu" width="800" height="520" loading="lazy">
+                  <div class="laser-scanner-line" aria-hidden="true"></div>
+                  <div class="scanner-data-overlay">
+                    <span class="chip-data">OCR: 99.8% CHÍNH XÁC</span>
+                    <span class="chip-data">40 CÂU TRẮC NGHIỆM</span>
+                    <span class="chip-data">CHUẨN KATEX</span>
+                  </div>
+                  <div class="visual-caption-bar">
+                    <span class="cap-title">Trợ Lý SI KiyoEdu Studio</span>
+                    <span class="cap-badge">40 câu / 2.8 giây</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- CỘT CHỮ BÊN PHẢI: Canh hết bên phải, hiện ra khi ảnh thu nhỏ -->
+              <div class="boc-tach-text-col" id="boc-tach-text-col">
+                <div class="feature-block">
+                  <span class="block-num">01</span>
+                  <div class="block-content">
+                    <h3>Đa Định Dạng Tải Lên</h3>
+                    <p>Nhận diện file Word (.docx), PDF và ảnh chụp. Tự động tách câu hỏi và 4 phương án A-B-C-D.</p>
+                  </div>
+                </div>
+
+                <div class="feature-block">
+                  <span class="block-num">02</span>
+                  <div class="block-content">
+                    <h3>Chuẩn Hóa KaTeX Tự Động</h3>
+                    <p>Bảo toàn 100% công thức toán học, tích phân, hóa học và hình học không gian.</p>
+                  </div>
+                </div>
+
+                <div class="feature-block">
+                  <span class="block-num">03</span>
+                  <div class="block-content">
+                    <h3>Đảo 24 Mã Đề Tức Thì</h3>
+                    <p>Xáo trộn vị trí câu hỏi và đáp án chỉ với 1 click, xuất file PDF đề thi kèm bảng đáp án.</p>
+                  </div>
+                </div>
+              </div>
+
             </div>
-            <div class="visual-caption-bar">
-              <span class="cap-title">Trợ Lý SI KiyoEdu Studio</span>
-              <span class="cap-badge">40 câu / 2.8 giây</span>
-            </div>
+
           </div>
-
-          <div class="chapter-details-col flow-in-right">
-            <div class="feature-block">
-              <span class="block-num">01</span>
-              <div class="block-content">
-                <h3>Đa Định Dạng Tải Lên</h3>
-                <p>Nhận diện file Word (.docx), PDF và ảnh chụp. Tự động tách câu hỏi và 4 phương án A-B-C-D.</p>
-              </div>
-            </div>
-
-            <div class="feature-block">
-              <span class="block-num">02</span>
-              <div class="block-content">
-                <h3>Chuẩn Hóa KaTeX Tự Động</h3>
-                <p>Bảo toàn 100% công thức toán học, tích phân, hóa học và hình học không gian.</p>
-              </div>
-            </div>
-
-            <div class="feature-block">
-              <span class="block-num">03</span>
-              <div class="block-content">
-                <h3>Đảo 24 Mã Đề Tức Thì</h3>
-                <p>Xáo trộn vị trí câu hỏi và đáp án chỉ với 1 click, xuất file PDF đề thi kèm bảng đáp án.</p>
-              </div>
-            </div>
-          </div>
-
         </div>
 
         <!-- BẢNG SO SÁNH HIỆU QUẢ -->
-        <div class="comparison-panel flow-in-left">
+        <div class="chapter-container boc-tach-compare-container">
+          <div class="comparison-panel flow-in-left">
           <h3 class="panel-heading">So Sánh Hiệu Quả Soạn Đề</h3>
           <div class="comparison-table">
             <div class="comp-row comp-header">
