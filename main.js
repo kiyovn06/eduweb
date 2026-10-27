@@ -101,7 +101,7 @@ async function initScrollytelling() {
     }
   }
 
-  // ── 3.1 Stage 02: Bóc tách thu nhỏ ảnh từ 4/5 xuống 2/5 để hiện chữ bên phải ───
+  // ── 3.1 Stage 02: Bóc tách - Ảnh 3/5 web, chữ hiện ra cố định không nhảy dòng ───
   function updateBocTachShrink() {
     if (!bocTachTrack || !bocTachVisualCol || !bocTachTextCol) return;
     if (window.innerWidth <= 768) return;
@@ -114,18 +114,14 @@ async function initScrollytelling() {
     const passed = -rect.top;
     const progress = Math.min(1, Math.max(0, passed / totalDist));
 
-    // 1. Ảnh bên trái: Ban đầu 4/5 (80%), kéo xuống thu nhỏ xuống 3/5 (60%) hoàn tất ở 65% quãng đường
-    const shrinkProgress = Math.min(1, progress / 0.65);
-    const startWidth = 80; // 4/5
-    const endWidth = 60;   // 3/5 theo yêu cầu: "hiện ảnh là 3/5 web"
-    const currentWidth = startWidth - shrinkProgress * (startWidth - endWidth);
-    bocTachVisualCol.style.width = `${currentWidth}%`;
+    // Ảnh giữ cố định 3/5 (60%) theo yêu cầu: "hiện ảnh là 3/5 web"
+    bocTachVisualCol.style.width = '60%';
 
-    // 2. Chữ bên phải: Mờ và trượt nhẹ vào, canh toàn bộ bên phải
-    const textOpacity = Math.min(1, Math.max(0, (shrinkProgress - 0.08) / 0.72));
-    const textTranslateX = (1 - textOpacity) * 36;
-    bocTachTextCol.style.opacity = textOpacity;
-    bocTachTextCol.style.transform = `translateX(${textTranslateX}px)`;
+    // Cột chữ hiện ra mượt mà không co giãn width, các dòng chữ cố định 100% không nhảy dòng
+    const revealProgress = Math.min(1, Math.max(0, progress / 0.35));
+    bocTachTextCol.style.opacity = revealProgress;
+    const textTranslateY = (1 - revealProgress) * 20;
+    bocTachTextCol.style.transform = `translateY(${textTranslateY}px)`;
   }
 
   // ── 4. Timeline Progress Line ─────────────────────────────────────────────

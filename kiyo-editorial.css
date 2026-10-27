@@ -524,10 +524,10 @@ body {
   border: none;
 }
 
-/* STICKY TRACK FOR SECTION 02: BÓC TÁCH (ẢNH CHẠM TRÊN TRÁI 4/5 THU NHỎ XUỐNG 3/5 KHI CUỘN) */
+/* STICKY TRACK FOR SECTION 02: BÓC TÁCH (ẢNH 3/5 WEB · CÁCH ĐỀU TRÊN DƯỚI ĐÚNG GẦN 30PX · CHỮ CỐ ĐỊNH KHÔNG NHẢY DÒNG) */
 .stage-boc-tach-track {
   position: relative;
-  min-height: 210vh;
+  min-height: 200vh;
   padding: 0 !important;
   margin: 0 !important;
 }
@@ -537,10 +537,10 @@ body {
   top: 0;
   height: 100vh;
   display: flex;
-  align-items: center; /* CĂN GIỮA DỌC VIEWPORT: KHOẢNG CÁCH TRÊN VÀ DƯỚI CÁCH ĐỀU BẰNG NHAU (ẢNH 3 & 4) */
+  align-items: center;
   justify-content: flex-start;
   width: 100%;
-  padding: 0 clamp(2rem, 3.5vw, 4rem) 0 0; /* padding-left is 0! Ảnh chạm sát mép trái màn hình */
+  padding: 30px clamp(2rem, 3.5vw, 4rem) 30px 0; /* ĐÚNG GẦN 30PX TRÊN VÀ DƯỚI (ẢNH 1) */
   box-sizing: border-box;
   overflow: hidden;
 }
@@ -550,16 +550,15 @@ body {
   align-items: center;
   gap: clamp(2rem, 3.5vw, 3.5rem);
   width: 100%;
-  height: clamp(480px, 70vh, 580px); /* Khoảng cách trên và dưới bằng nhau */
+  height: calc(100vh - 60px); /* 100vh - 30px top - 30px bottom: CÁCH ĐỀU 30PX */
   position: relative;
 }
 
 .boc-tach-visual-col {
-  width: 80%; /* Ban đầu chiếm 4/5, kéo xuống thu nhỏ xuống 3/5 (60%) theo yêu cầu */
+  width: 60%; /* HIỆN ẢNH LÀ 3/5 WEB (60%) */
   height: 100%;
   flex-shrink: 0;
   position: relative;
-  will-change: width;
 }
 
 .boc-tach-visual-col .chapter-visual-box {
@@ -583,16 +582,19 @@ body {
   display: block;
 }
 
+/* CỘT CHỮ: CHIẾM 40% CỐ ĐỊNH, KHÔNG CO GIÃN THAY ĐỔI DÒNG KHI CUỘN ("KHÔNG ĐƯỢC CÀNG KÉO CHỮ XUỐNG DÒNG") */
 .boc-tach-text-col {
-  flex: 1;
+  width: calc(40% - clamp(2rem, 3.5vw, 3.5rem));
+  flex: 0 0 calc(40% - clamp(2rem, 3.5vw, 3.5rem));
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 1.25rem;
   text-align: left;
   opacity: 0;
-  transform: translateX(40px);
-  min-width: 0;
+  transform: translateY(20px);
+  min-width: 360px;
+  box-sizing: border-box;
   will-change: opacity, transform;
 }
 
@@ -1777,6 +1779,7 @@ body {
 
   .chapter-shrink-split {
     flex-direction: column !important;
+    height: auto !important;
     gap: 2rem !important;
   }
 
