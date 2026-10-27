@@ -10,6 +10,8 @@ scrollcraft/lab/
 
 # Development / testing screenshots & agent logs
 *.png
+!assets/*.png
+!public/assets/*.png
 lab/
 .agents/
 

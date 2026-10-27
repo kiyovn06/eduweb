@@ -254,6 +254,44 @@ async function initScrollytelling() {
     }
   }
 
+  // ── 3.4 Stage 04: Phone & Multi-Colored Card Stacking (Đẩy lên đè lên nhau) ─────────
+  function updateAppStackingScroll() {
+    const track = document.getElementById('app-showcase-track');
+    const phoneBase = document.getElementById('phone-base');
+    const phoneOverlay = document.getElementById('phone-overlay');
+    const cardBase = document.getElementById('card-base');
+    const cardOverlay = document.getElementById('card-overlay');
+    if (!track || !phoneBase || !phoneOverlay || !cardBase || !cardOverlay) return;
+
+    const rect = track.getBoundingClientRect();
+    const windowH = window.innerHeight;
+    const totalDist = rect.height - windowH;
+    if (totalDist <= 0) return;
+
+    const passed = -rect.top;
+    const progress = Math.min(1, Math.max(0, passed / totalDist));
+
+    // Stacking animation: diễn ra mượt mà từ progress 0.10 đến 0.85
+    const p = Math.min(1, Math.max(0, (progress - 0.10) / 0.75));
+
+    // Điện thoại 2 trượt từ dưới lên đè lên Điện thoại 1:
+    const phoneY = (1 - p) * 110; // Từ 110% xuống 0%
+    const phoneScale = 0.96 + 0.04 * p;
+    const p1Scale = 1.0 - 0.05 * p;
+    const p1Y = -18 * p;
+
+    phoneBase.style.transform = `translateY(${p1Y}px) scale(${p1Scale.toFixed(3)})`;
+    phoneOverlay.style.transform = `translateY(${phoneY.toFixed(2)}%) scale(${phoneScale.toFixed(3)})`;
+
+    // Khung nhiều màu 2 trượt từ dưới lên đè lên Khung 1:
+    const cardY = (1 - p) * 110; // Từ 110% xuống 0%
+    const c1Scale = 1.0 - 0.04 * p;
+    const c1Y = -14 * p;
+
+    cardBase.style.transform = `translateY(${c1Y}px) scale(${c1Scale.toFixed(3)})`;
+    cardOverlay.style.transform = `translateY(${cardY.toFixed(2)}%)`;
+  }
+
   // ── 4. Timeline Progress Line ─────────────────────────────────────────────
   function updateTimelineProgress() {
     if (!timelineTrack || !timelineLineFill) return;
@@ -373,6 +411,9 @@ async function initScrollytelling() {
 
     // Stage 04: Grail-style editorial sheet trượt lên đè Section 03
     updateGrailSheetTransition();
+
+    // Stage 04: App Showcase - Phone 2 & Card 2 trượt lên đè lên Phone 1 & Card 1
+    updateAppStackingScroll();
 
     // Timeline progress
     updateTimelineProgress();
