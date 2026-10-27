@@ -503,9 +503,9 @@ body {
 .story-curtain-sheet {
   position: relative;
   z-index: 10;
-  background: var(--bg-sheet-white); /* Nền ở dưới TRẮNG TINH (#ffffff) */
-  border-top-left-radius: clamp(32px, 4.5vw, 48px);
-  border-top-right-radius: clamp(32px, 4.5vw, 48px);
+  background: #0f172a; /* Nền đồng bộ tối màu cho stage full màn hình */
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
   border: none;
   box-shadow: none !important;
   width: 100%;
@@ -590,7 +590,7 @@ body {
   inset: 0;
   width: 100%;
   height: 100%;
-  transform-origin: 49.2% 49.7%;
+  transform-origin: 50.4% 63.7%;
   will-change: transform, opacity;
   z-index: 1;
 }
@@ -607,7 +607,7 @@ body {
   inset: 0;
   width: 100%;
   height: 100%;
-  transform-origin: 49.2% 49.7%;
+  transform-origin: 50.4% 63.7%;
   will-change: transform, opacity;
   z-index: 3;
   pointer-events: none;
@@ -649,40 +649,42 @@ body {
 /* Floating Title Header */
 .boc-tach-floating-header {
   position: absolute;
-  top: 2rem;
-  left: clamp(1.5rem, 4vw, 3.5rem);
-  right: clamp(1.5rem, 4vw, 3.5rem);
+  top: clamp(1.2rem, 3vh, 2rem);
+  left: clamp(1.2rem, 3vw, 2.5rem);
+  right: clamp(1.2rem, 3vw, 2.5rem);
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   z-index: 10;
   pointer-events: none;
-  gap: 1.5rem;
+  gap: 1.25rem;
+  transition: opacity 0.3s ease;
 }
 
 .boc-tach-title-card {
-  background: rgba(15, 23, 42, 0.75);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background: rgba(15, 23, 42, 0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   color: #ffffff;
-  padding: 1.1rem 1.85rem;
-  border-radius: 16px;
+  padding: 0.85rem 1.35rem;
+  border-radius: 14px;
   border: 1px solid rgba(255, 255, 255, 0.12);
-  max-width: 620px;
+  max-width: clamp(280px, 36vw, 460px);
 }
 
 .boc-tach-title-card .section-title {
   margin: 0;
-  font-size: clamp(1.35rem, 2.5vw, 1.85rem);
+  font-size: clamp(1.15rem, 2vw, 1.45rem);
   color: #ffffff;
   font-weight: 800;
+  line-height: 1.25;
 }
 
 .boc-tach-title-card .section-desc {
-  margin: 0.35rem 0 0 0;
-  font-size: 0.9rem;
+  margin: 0.3rem 0 0 0;
+  font-size: 0.82rem;
   color: #94a3b8;
-  line-height: 1.5;
+  line-height: 1.45;
 }
 
 /* Floating Steps HUD at bottom */
@@ -747,8 +749,8 @@ body {
 
 .tap-ripple-effect {
   position: absolute;
-  top: 49.7%;
-  left: 49.2%;
+  top: 63.7%;
+  left: 50.4%;
   width: 52px;
   height: 52px;
   margin: -26px 0 0 -26px;

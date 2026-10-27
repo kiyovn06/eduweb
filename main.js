@@ -148,7 +148,13 @@ async function initScrollytelling() {
       // Vòng tròn gợn sóng phát ra từ đầu ngón tay bấm vô màn hình
       const tapRipple = document.getElementById('tap-ripple');
       if (tapRipple) {
-        tapRipple.style.opacity = (p1 >= 0.15 && p1 <= 0.65) ? '1' : '0.4';
+        tapRipple.style.opacity = (p1 >= 0.15 && p1 <= 0.65) ? '1' : '0';
+      }
+
+      // Làm mờ tiêu đề khi phóng to để trải nghiệm lặn vào màn hình không bị vướng
+      const floatingHeader = document.querySelector('.boc-tach-floating-header');
+      if (floatingHeader) {
+        floatingHeader.style.opacity = p1 > 0.15 ? Math.max(0, 1 - (p1 - 0.15) / 0.25) : 1;
       }
 
       screenDiveLayer.style.opacity = p1 > 0.45 ? (p1 - 0.45) / 0.55 : 0;
@@ -161,6 +167,8 @@ async function initScrollytelling() {
       if (hudPill3) hudPill3.className = 'hud-step-pill';
     } else {
       // Phase 2: ĐI VÀO TRONG MÀN HÌNH VÀ KÉO NỘI DUNG CUỘN TRANG FULL MÀN HÌNH
+      const floatingHeader = document.querySelector('.boc-tach-floating-header');
+      if (floatingHeader) floatingHeader.style.opacity = '0';
       handTapLayer.style.opacity = 0;
       tabletDeviceLayer.style.opacity = 0;
       screenDiveLayer.style.opacity = 1;
