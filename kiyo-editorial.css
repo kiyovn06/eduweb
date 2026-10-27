@@ -1063,12 +1063,12 @@ body {
 
 .managed-app-grid {
   display: grid;
-  grid-template-columns: minmax(260px, 1fr) 390px minmax(340px, 1.25fr);
+  grid-template-columns: minmax(260px, 0.85fr) 390px minmax(460px, 1.8fr);
   gap: clamp(20px, 2.2vw, 36px);
   align-items: center;
   width: 100%;
-  max-width: 1440px;
-  margin: 0 auto;
+  max-width: 100%;
+  margin: 0;
   height: 100%;
   box-sizing: border-box;
 }
@@ -1584,7 +1584,7 @@ body {
   width: 100%;
   height: 100%;
   border-radius: 44px;
-  padding: clamp(28px, 3.5vh, 42px) clamp(28px, 2.5vw, 40px);
+  padding: clamp(30px, 4vh, 46px) clamp(30px, 3vw, 48px);
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -1641,18 +1641,18 @@ body {
 
 /* Tiêu đề & Mô tả */
 .card-title {
-  font-size: clamp(1.85rem, 2.3vw, 2.45rem);
+  font-size: clamp(2.1rem, 2.7vw, 2.9rem);
   font-weight: 800;
-  line-height: 1.18;
+  line-height: 1.16;
   letter-spacing: -0.025em;
-  margin: 0 0 10px;
+  margin: 0 0 12px;
   text-align: left;
 }
 
 .card-desc {
-  font-size: clamp(0.92rem, 1.05vw, 1.02rem);
-  line-height: 1.55;
-  margin: 0 0 18px;
+  font-size: clamp(0.96rem, 1.1vw, 1.1rem);
+  line-height: 1.6;
+  margin: 0 0 20px;
   text-align: left;
 }
 
@@ -1676,15 +1676,15 @@ body {
 .card-feature-pills {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
 .card-feature-pill {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
-  padding: 12px 16px;
-  border-radius: 16px;
+  gap: 14px;
+  padding: 14px 18px;
+  border-radius: 18px;
 }
 
 .pill-glass {
@@ -1700,7 +1700,7 @@ body {
 }
 
 .pill-icon {
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   line-height: 1;
   flex-shrink: 0;
   margin-top: 2px;
@@ -1709,19 +1709,19 @@ body {
 .pill-body {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
   text-align: left;
 }
 
 .pill-body strong {
-  font-size: 0.92rem;
+  font-size: 0.96rem;
   font-weight: 700;
-  line-height: 1.3;
+  line-height: 1.35;
 }
 
 .pill-body span {
-  font-size: 0.82rem;
-  line-height: 1.38;
+  font-size: 0.85rem;
+  line-height: 1.45;
 }
 
 @media (max-width: 992px) {
