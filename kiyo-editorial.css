@@ -497,18 +497,6 @@ body {
   transform: translateY(-2px);
 }
 
-.hero-scroll-cue {
-  position: absolute;
-  bottom: 1.5rem;
-  left: clamp(2rem, 5vw, 5.5rem);
-  z-index: 2;
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  text-align: left;
-}
-
 /* ══════════════════════════════════════════════════════════════════════════
    STORY CURTAIN SHEET (KÉO LÊN LUÔN · BO GÓC 2 BÊN TRÁI & PHẢI · KHÔNG KHUNG VIỀN)
    ══════════════════════════════════════════════════════════════════════════ */

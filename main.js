@@ -49,7 +49,6 @@ async function initScrollytelling() {
   const heroBgImg = document.getElementById('hero-bg-img');
   const heroPoincianaWrap = document.getElementById('hero-poinciana-wrap');
   const heroTarget = document.getElementById('hero-parallax-target');
-  const heroScrollCue = document.getElementById('hero-scroll-cue');
 
   // Timeline Track
   const timelineTrack = document.getElementById('timeline-track');
@@ -94,11 +93,6 @@ async function initScrollytelling() {
     if (heroPoincianaWrap) {
       const poincianaY = -progress * 30;
       heroPoincianaWrap.style.transform = `translate3d(0, ${poincianaY}px, 0)`;
-    }
-
-    // 3. Scroll Cue
-    if (heroScrollCue) {
-      heroScrollCue.style.opacity = progress > 0.08 ? '0' : '1';
     }
   }
 
