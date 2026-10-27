@@ -342,16 +342,13 @@ async function initScrollytelling() {
       const totalDist = rect.height - windowH;
       const galleryProgress = totalDist > 0 ? Math.min(1, Math.max(0, -rect.top / totalDist)) : 0;
 
-      // Chữ và ảnh cùng di chuyển về phía bên trái khi kéo xuống:
-      const textShift = -Math.round(galleryProgress * 60);
-      const visualShift = -Math.round(galleryProgress * 40);
-
+      // Cố định hoàn toàn vị trí chữ và khung ảnh - Không bị trượt lệch hay di chuyển khi kéo cuộn
       if (headerEl) {
-        headerEl.style.transform = `translateX(${textShift}px)`;
+        headerEl.style.transform = 'none';
         headerEl.style.opacity = '1';
       }
       if (visualEl) {
-        visualEl.style.transform = `translateX(${visualShift}px)`;
+        visualEl.style.transform = 'none';
         visualEl.style.opacity = '1';
       }
 
