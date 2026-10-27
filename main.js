@@ -80,11 +80,10 @@ async function initScrollytelling() {
       heroForeground.style.opacity = textOpacity;
     }
 
-    // 2. Ảnh bo góc ban đầu (24px) và khi kéo xuống mới bắt đầu bo góc thêm (lên tới 56px)
+    // 2. Ảnh lúc đầu HIỆN FULL (0px), KHI KÉO XUỐNG MỚI BẮT ĐẦU BO GÓC (lên tới 40px)
     if (heroBackdrop) {
-      const baseRadius = 24;
-      const extraRadius = progress * 32;
-      heroBackdrop.style.borderRadius = `${baseRadius + extraRadius}px`;
+      const currentRadius = progress * 40;
+      heroBackdrop.style.borderRadius = `${currentRadius}px`;
       const imgScale = Math.max(0.94, 1 - progress * 0.06);
       heroBackdrop.style.transform = `scale(${imgScale})`;
     }
