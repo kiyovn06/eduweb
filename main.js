@@ -245,7 +245,9 @@ async function initScrollytelling() {
       galleryStrip.dataset.clickBound = 'true';
       galleryItems.forEach((stripItem, sIdx) => {
         stripItem.addEventListener('click', () => {
-          const stepTargets = [0.02, 0.28, 0.51, 0.74, 0.97];
+          const stepTargets = numItems > 1
+            ? [0.02, ...Array.from({ length: numItems - 1 }, (_, i) => 0.05 + (i + 0.5) * (0.9 / (numItems - 1)))]
+            : [0];
           const targetP = stepTargets[sIdx] || 0;
           const sRect = sheetSection.getBoundingClientRect();
           const curScrollY = window.scrollY;
@@ -362,25 +364,30 @@ async function initScrollytelling() {
         // Mở rộng ảnh to tối đa theo toàn bộ chiều rộng có sẵn của màn hình
         const maxExpanded = Math.max(540, visualW - reservedCollapsed - 20);
 
-        // 4 bước chuyển cảnh cho 5 ảnh:
-        // Bước 0: Ảnh 0 -> Ảnh 1 [0.04 -> 0.27]
-        // Bước 1: Ảnh 1 -> Ảnh 2 [0.27 -> 0.50]
-        // Bước 2: Ảnh 2 -> Ảnh 3 [0.50 -> 0.73]
-        // Bước 3: Ảnh 3 -> Ảnh 4 [0.73 -> 0.96]
-        const steps = [
-          { from: 0, to: 1, start: 0.04, end: 0.27 },
-          { from: 1, to: 2, start: 0.27, end: 0.50 },
-          { from: 2, to: 3, start: 0.50, end: 0.73 },
-          { from: 3, to: 4, start: 0.73, end: 0.96 }
-        ];
+        // Các bước chuyển cảnh tự động tính theo số lượng ảnh:
+        const numTransitions = numItems - 1;
+        const startPad = 0.05;
+        const endPad = 0.05;
+        const availableP = 1 - startPad - endPad;
+        const stepSpan = availableP / Math.max(1, numTransitions);
+
+        const steps = [];
+        for (let i = 0; i < numTransitions; i++) {
+          steps.push({
+            from: i,
+            to: i + 1,
+            start: startPad + i * stepSpan,
+            end: startPad + (i + 1) * stepSpan
+          });
+        }
 
         // Mặc định ban đầu
         const widths = new Array(numItems).fill(0);
 
-        if (galleryProgress < steps[0].start) {
+        if (steps.length === 0 || galleryProgress < steps[0].start) {
           // Chưa chuyển cảnh: Ảnh 0 to nhất, các ảnh sau chưa xuất hiện
           widths[0] = maxExpanded;
-        } else if (galleryProgress >= steps[3].end) {
+        } else if (galleryProgress >= steps[steps.length - 1].end) {
           // Đã kéo xuống hết: Tất cả ảnh trước đó đã thu nhỏ 40px nằm bên trái, ảnh cuối cùng to nhất
           for (let i = 0; i < numItems - 1; i++) {
             widths[i] = collapsedW;

@@ -963,24 +963,27 @@ body {
 
 .grail-content-split {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: clamp(2rem, 3.5vw, 4.5rem);
   width: 100%;
   max-width: 1680px;
   height: 100%;
   box-sizing: border-box;
+  padding-top: clamp(16px, 2.5vh, 32px);
 }
 
-/* ── CỘT TRÁI: TIÊU ĐỀ CHỮ NGẮN GỌN TINH TẾ THEO YÊU CẦU ── */
+/* ── CỘT TRÁI: TIÊU ĐỀ CANH Ở TRÊN BÊN TRÊN CHUẨN YÊU CẦU ── */
 .grail-sheet-header {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
+  align-self: flex-start;
   flex-shrink: 0;
   width: max-content;
   min-width: 220px;
-  max-width: 340px;
+  max-width: 360px;
+  padding-top: 8px;
   will-change: transform, opacity;
   user-select: none;
 }
