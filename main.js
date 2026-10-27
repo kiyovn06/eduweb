@@ -163,13 +163,13 @@ async function initScrollytelling() {
     { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
   );
 
-  document.querySelectorAll('.flow-in-left, .flow-in-right').forEach((el) => {
+  document.querySelectorAll('.flow-in-left, .flow-in-right, .flow-in-up').forEach((el) => {
     flowObserver.observe(el);
   });
 
   // Trigger hero elements immediately on load
   setTimeout(() => {
-    document.querySelectorAll('.stage-hero .flow-in-left, .stage-hero .flow-in-right').forEach((el) => {
+    document.querySelectorAll('.stage-hero .flow-in-left, .stage-hero .flow-in-right, .stage-hero .flow-in-up').forEach((el) => {
       el.classList.add('is-visible');
     });
   }, 80);
