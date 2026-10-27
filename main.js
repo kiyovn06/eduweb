@@ -40,7 +40,6 @@ async function initScrollytelling() {
 
   // ── 2. DOM Elements Cache ─────────────────────────────────────────────────
   const stages = Array.from(document.querySelectorAll('.stage-section'));
-  const headerProgress = document.getElementById('header-progress');
   const navLinks = Array.from(document.querySelectorAll('.nav-link'));
 
   // Hero Elements Cache (Pinned & Scaling)
@@ -205,11 +204,10 @@ async function initScrollytelling() {
   function onScrollUpdate(scrollY) {
     const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
 
-    // Header progress bar
-    if (headerProgress && totalScroll > 0) {
+    // WebGL / Engine story sync (nếu có)
+    if (engine && totalScroll > 0) {
       const progress = Math.max(0, Math.min(1, scrollY / totalScroll));
-      headerProgress.style.transform = `scaleX(${progress})`;
-      if (engine) engine.setStoryPos(progress * 10, progress);
+      engine.setStoryPos(progress * 10, progress);
     }
 
     // Hero parallax
