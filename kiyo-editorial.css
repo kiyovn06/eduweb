@@ -977,6 +977,7 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  will-change: transform, opacity;
 }
 
 .grail-sheet-title {
@@ -1006,6 +1007,7 @@ body {
   align-items: center;
   justify-content: center;
   width: 100%;
+  will-change: transform, opacity;
 }
 
 .grail-visual-frame {

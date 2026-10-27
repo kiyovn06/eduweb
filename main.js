@@ -234,6 +234,15 @@ async function initScrollytelling() {
     const sheetSection = document.getElementById('quan-ly-lop');
     if (!sheetCard || !sheetSection) return;
 
+    const headerEl = sheetSection.querySelector('.grail-sheet-header');
+    const visualEl = sheetSection.querySelector('.grail-sheet-visual');
+
+    if (window.innerWidth <= 768) {
+      if (headerEl) { headerEl.style.transform = 'none'; headerEl.style.opacity = '1'; }
+      if (visualEl) { visualEl.style.transform = 'none'; visualEl.style.opacity = '1'; }
+      return;
+    }
+
     const rect = sheetSection.getBoundingClientRect();
     const windowH = window.innerHeight;
 
@@ -253,6 +262,24 @@ async function initScrollytelling() {
       sheetCard.style.borderRadius = `${radius}px ${radius}px 0 0`;
       sheetCard.style.maxWidth = `${maxW.toFixed(1)}vw`;
       sheetCard.style.boxShadow = `0 -${Math.round(28 * (1 - ease))}px ${Math.round(60 * (1 - ease))}px rgba(15, 23, 42, ${((1 - ease) * 0.16).toFixed(3)})`;
+
+      // Hiệu ứng từ bên trái và bên phải đi vào:
+      // Tiêu đề trượt từ bên trái vào (-140px -> 0px)
+      // Hình ảnh trượt từ bên phải vào (+140px -> 0px)
+      const splitEase = Math.min(1, Math.max(0, (ease - 0.08) / 0.92));
+      const smoothSplit = 1 - Math.pow(1 - splitEase, 2.8);
+      const leftOffset = (-140 * (1 - smoothSplit)).toFixed(1);
+      const rightOffset = (140 * (1 - smoothSplit)).toFixed(1);
+      const splitOpacity = Math.min(1, splitEase * 1.5).toFixed(2);
+
+      if (headerEl) {
+        headerEl.style.transform = `translateX(${leftOffset}px)`;
+        headerEl.style.opacity = splitOpacity;
+      }
+      if (visualEl) {
+        visualEl.style.transform = `translateX(${rightOffset}px)`;
+        visualEl.style.opacity = splitOpacity;
+      }
     } else if (rect.top <= 0) {
       // Đã phủ kín hoàn toàn màn hình: CHẠM HOÀN TOÀN MÉP TRÁI, PHẢI, DƯỚI (Full screen 100%)
       sheetCard.style.transform = 'none';
@@ -260,13 +287,31 @@ async function initScrollytelling() {
       sheetCard.style.maxWidth = '100vw';
       sheetCard.style.width = '100%';
       sheetCard.style.boxShadow = 'none';
+
+      if (headerEl) {
+        headerEl.style.transform = 'none';
+        headerEl.style.opacity = '1';
+      }
+      if (visualEl) {
+        visualEl.style.transform = 'none';
+        visualEl.style.opacity = '1';
+      }
     } else {
-      // Chưa vào màn hình
+      // Chưa vào màn hình (rect.top > windowH)
       sheetCard.style.transform = 'scale(0.88) rotate(4.5deg)';
       sheetCard.style.transformOrigin = 'center 15%';
       sheetCard.style.borderRadius = '36px 36px 0 0';
       sheetCard.style.maxWidth = '90vw';
       sheetCard.style.boxShadow = '0 -28px 60px rgba(15, 23, 42, 0.16)';
+
+      if (headerEl) {
+        headerEl.style.transform = 'translateX(-140px)';
+        headerEl.style.opacity = '0';
+      }
+      if (visualEl) {
+        visualEl.style.transform = 'translateX(140px)';
+        visualEl.style.opacity = '0';
+      }
     }
   }
 
