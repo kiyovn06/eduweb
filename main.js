@@ -101,7 +101,7 @@ async function initScrollytelling() {
     }
   }
 
-  // ── 3.1 Stage 02: Bóc tách - Ảnh 3/5 web, chữ hiện ra cố định không nhảy dòng ───
+  // ── 3.1 Stage 02: Bóc tách - Ảnh 6/7 thu nhỏ về 4/7 · Chữ lần lượt từ phải vào ───
   function updateBocTachShrink() {
     if (!bocTachTrack || !bocTachVisualCol || !bocTachTextCol) return;
     if (window.innerWidth <= 768) return;
@@ -114,14 +114,44 @@ async function initScrollytelling() {
     const passed = -rect.top;
     const progress = Math.min(1, Math.max(0, passed / totalDist));
 
-    // Ảnh giữ cố định 3/5 (60%) theo yêu cầu: "hiện ảnh là 3/5 web"
-    bocTachVisualCol.style.width = '60%';
+    // 1. Ảnh bên trái: Ban đầu chiếm 6/7 (~85.714%), kéo xuống thu nhỏ xuống 4/7 (~57.143%)
+    const shrinkProgress = Math.min(1, Math.max(0, progress / 0.65));
+    const startWidth = (6 / 7) * 100; // 6/7 web (~85.714%)
+    const endWidth = (4 / 7) * 100;   // 4/7 web (~57.143%)
+    const currentWidth = startWidth - shrinkProgress * (startWidth - endWidth);
+    bocTachVisualCol.style.width = `${currentWidth}%`;
 
-    // Cột chữ hiện ra mượt mà không co giãn width, các dòng chữ cố định 100% không nhảy dòng
-    const revealProgress = Math.min(1, Math.max(0, progress / 0.35));
-    bocTachTextCol.style.opacity = revealProgress;
-    const textTranslateY = (1 - revealProgress) * 20;
-    bocTachTextCol.style.transform = `translateY(${textTranslateY}px)`;
+    // 2. Chữ bên phải: Hiệu ứng lần lượt từ bên phải đi vô (Title -> Card 01 -> Card 02 -> Card 03)
+    const titleGroup = bocTachTextCol.querySelector('.boc-tach-header-group');
+    const cards = bocTachTextCol.querySelectorAll('.feature-block');
+
+    // Tiêu đề "Bóc Tách Đề Thi Trong 3 Giây": Hiệu ứng từ bên phải đi vô trước
+    if (titleGroup) {
+      const titleProg = Math.min(1, Math.max(0, (shrinkProgress - 0.05) / 0.28));
+      titleGroup.style.opacity = titleProg;
+      titleGroup.style.transform = `translateX(${(1 - titleProg) * 48}px)`;
+    }
+
+    // Thẻ 01: Đi vào kế tiếp sau tiêu đề
+    if (cards[0]) {
+      const c0Prog = Math.min(1, Math.max(0, (shrinkProgress - 0.18) / 0.28));
+      cards[0].style.opacity = c0Prog;
+      cards[0].style.transform = `translateX(${(1 - c0Prog) * 48}px)`;
+    }
+
+    // Thẻ 02: Đi vào kế tiếp sau thẻ 01
+    if (cards[1]) {
+      const c1Prog = Math.min(1, Math.max(0, (shrinkProgress - 0.32) / 0.28));
+      cards[1].style.opacity = c1Prog;
+      cards[1].style.transform = `translateX(${(1 - c1Prog) * 48}px)`;
+    }
+
+    // Thẻ 03: Đi vào kế tiếp sau thẻ 02
+    if (cards[2]) {
+      const c2Prog = Math.min(1, Math.max(0, (shrinkProgress - 0.46) / 0.28));
+      cards[2].style.opacity = c2Prog;
+      cards[2].style.transform = `translateX(${(1 - c2Prog) * 48}px)`;
+    }
   }
 
   // ── 4. Timeline Progress Line ─────────────────────────────────────────────
