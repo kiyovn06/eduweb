@@ -236,23 +236,50 @@ async function initScrollytelling() {
 
     const headerEl = sheetSection.querySelector('.grail-sheet-header');
     const visualEl = sheetSection.querySelector('.grail-sheet-visual');
+    const galleryItems = sheetSection.querySelectorAll('.grail-gallery-item');
+    const numItems = galleryItems ? galleryItems.length : 0;
+
+    // Click handler for 40px collapsed items to quickly jump
+    const galleryStrip = document.getElementById('grail-gallery-strip');
+    if (galleryStrip && !galleryStrip.dataset.clickBound) {
+      galleryStrip.dataset.clickBound = 'true';
+      galleryItems.forEach((stripItem, sIdx) => {
+        stripItem.addEventListener('click', () => {
+          const stepTargets = [0.02, 0.28, 0.51, 0.74, 0.97];
+          const targetP = stepTargets[sIdx] || 0;
+          const sRect = sheetSection.getBoundingClientRect();
+          const curScrollY = window.scrollY;
+          const sTop = curScrollY + sRect.top;
+          const sTotalDist = sheetSection.offsetHeight - window.innerHeight;
+          const targetScrollY = sTop + targetP * sTotalDist;
+          window.scrollTo({ top: targetScrollY, behavior: 'smooth' });
+        });
+      });
+    }
 
     if (window.innerWidth <= 768) {
       if (headerEl) { headerEl.style.transform = 'none'; headerEl.style.opacity = '1'; }
       if (visualEl) { visualEl.style.transform = 'none'; visualEl.style.opacity = '1'; }
+      if (galleryItems) {
+        galleryItems.forEach((it, idx) => {
+          it.style.width = idx === 0 ? '100%' : '0px';
+          it.style.maxWidth = idx === 0 ? '100%' : '0px';
+          it.style.opacity = idx === 0 ? '1' : '0';
+        });
+      }
       return;
     }
 
     const rect = sheetSection.getBoundingClientRect();
     const windowH = window.innerHeight;
 
-    // Khi cuộn xuống: Thẻ chéo qua bên phải, từ từ thẳng lại thành 100% full screen
+    // ── GIAI ĐOẠN 1: KHI CUỘN TỪ DƯỚI LÊN ĐÈ VÀO VIEWPORT (TILT & SMOOTH ENTRANCE) ──
     if (rect.top > 0 && rect.top <= windowH) {
       const progress = 1 - (rect.top / windowH); // 0 khi mới ló ở đáy, 1 khi chạm đỉnh
       const ease = 1 - Math.pow(1 - progress, 2.5);
 
       // Hiệu ứng chéo qua bên phải và từ từ thẳng lại:
-      const rot = ((1 - ease) * 4.2).toFixed(2); // Nghiêng chéo sang phải, giảm dần về 0deg
+      const rot = ((1 - ease) * 4.2).toFixed(2);
       const scale = (0.91 + 0.09 * ease).toFixed(4);
       const radius = Math.round((1 - ease) * 32);
       const maxW = (92 + 8 * ease).toFixed(1);
@@ -264,7 +291,6 @@ async function initScrollytelling() {
       sheetCard.style.width = '100%';
       sheetCard.style.boxShadow = `0 -${Math.round(24 * (1 - ease))}px ${Math.round(50 * (1 - ease))}px rgba(15, 23, 42, ${((1 - ease) * 0.12).toFixed(3)})`;
 
-      // Hiệu ứng các thành phần ở ảnh 2 bay từ 2 bên vào khi kéo xuống:
       const leftOffset = (-180 * (1 - ease)).toFixed(1);
       const rightOffset = (180 * (1 - ease)).toFixed(1);
       const splitOpacity = Math.min(1, ease * 1.6).toFixed(2);
@@ -277,21 +303,130 @@ async function initScrollytelling() {
         visualEl.style.transform = `translateX(${rightOffset}px)`;
         visualEl.style.opacity = splitOpacity;
       }
+
+      // Trạng thái ảnh lúc vào: Ảnh 1 to 580px, các ảnh sau 0px
+      if (galleryItems && numItems > 0) {
+        galleryItems.forEach((it, idx) => {
+          if (idx === 0) {
+            it.style.width = '560px';
+            it.style.minWidth = '40px';
+            it.style.maxWidth = '580px';
+            it.style.opacity = '1';
+            it.classList.remove('is-collapsed');
+            it.classList.add('is-active');
+          } else {
+            it.style.width = '0px';
+            it.style.minWidth = '0px';
+            it.style.maxWidth = '0px';
+            it.style.opacity = '0';
+            it.classList.remove('is-active', 'is-collapsed');
+          }
+        });
+      }
     } else if (rect.top <= 0) {
-      // Đã vào trọn vẹn màn hình: Hoàn toàn thẳng đứng, 100% full screen phẳng
+      // ── GIAI ĐOẠN 2: THẺ ĐÃ DÍNH TOP (STICKY 100% FULL SCREEN) ──
+      // Kéo xuống: Thêm hết ảnh, ảnh di chuyển về bên trái và thu nhỏ max 40px
       sheetCard.style.transform = 'none';
       sheetCard.style.borderRadius = '0';
       sheetCard.style.maxWidth = '100vw';
       sheetCard.style.width = '100%';
       sheetCard.style.boxShadow = 'none';
 
+      const totalDist = rect.height - windowH;
+      const galleryProgress = totalDist > 0 ? Math.min(1, Math.max(0, -rect.top / totalDist)) : 0;
+
+      // Chữ và ảnh cùng di chuyển về phía bên trái khi kéo xuống:
+      const textShift = -Math.round(galleryProgress * 95);
+      const visualShift = -Math.round(galleryProgress * 65);
+
       if (headerEl) {
-        headerEl.style.transform = 'none';
+        headerEl.style.transform = `translateX(${textShift}px)`;
         headerEl.style.opacity = '1';
       }
       if (visualEl) {
-        visualEl.style.transform = 'none';
+        visualEl.style.transform = `translateX(${visualShift}px)`;
         visualEl.style.opacity = '1';
+      }
+
+      // Tính toán kích thước co dãn & thu nhỏ về bên trái 40px cho từng ảnh:
+      if (galleryItems && numItems > 0) {
+        const visualBox = visualEl.getBoundingClientRect();
+        const visualW = visualBox.width > 0 ? visualBox.width : 780;
+        const collapsedW = 40; // Chiều rộng thu nhỏ tối đa đúng chuẩn 40px
+        const gap = 12;
+        const reservedCollapsed = (numItems - 1) * (collapsedW + gap);
+        const maxExpanded = Math.max(340, Math.min(580, visualW - reservedCollapsed));
+
+        // 4 bước chuyển cảnh cho 5 ảnh:
+        // Bước 0: Ảnh 0 -> Ảnh 1 [0.04 -> 0.27]
+        // Bước 1: Ảnh 1 -> Ảnh 2 [0.27 -> 0.50]
+        // Bước 2: Ảnh 2 -> Ảnh 3 [0.50 -> 0.73]
+        // Bước 3: Ảnh 3 -> Ảnh 4 [0.73 -> 0.96]
+        const steps = [
+          { from: 0, to: 1, start: 0.04, end: 0.27 },
+          { from: 1, to: 2, start: 0.27, end: 0.50 },
+          { from: 2, to: 3, start: 0.50, end: 0.73 },
+          { from: 3, to: 4, start: 0.73, end: 0.96 }
+        ];
+
+        // Mặc định ban đầu
+        const widths = new Array(numItems).fill(0);
+
+        if (galleryProgress < steps[0].start) {
+          // Chưa chuyển cảnh: Ảnh 0 to nhất, các ảnh sau chưa xuất hiện
+          widths[0] = maxExpanded;
+        } else if (galleryProgress >= steps[3].end) {
+          // Đã kéo xuống hết: Tất cả ảnh trước đó đã thu nhỏ 40px nằm bên trái, ảnh cuối cùng to nhất
+          for (let i = 0; i < numItems - 1; i++) {
+            widths[i] = collapsedW;
+          }
+          widths[numItems - 1] = maxExpanded;
+        } else {
+          // Đang trong quá trình kéo cuộn qua các ảnh:
+          let currentStepIdx = 0;
+          for (let s = 0; s < steps.length; s++) {
+            if (galleryProgress >= steps[s].start && galleryProgress < steps[s].end) {
+              currentStepIdx = s;
+              break;
+            }
+          }
+          const curStep = steps[currentStepIdx];
+          const t = Math.max(0, Math.min(1, (galleryProgress - curStep.start) / (curStep.end - curStep.start)));
+          // Smooth ease cubic
+          const easeT = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+          // Các ảnh trước curStep.from đã thu nhỏ 40px xếp bên trái:
+          for (let i = 0; i < curStep.from; i++) {
+            widths[i] = collapsedW;
+          }
+
+          // Ảnh hiện tại (from) đang thu nhỏ từ maxExpanded về 40px:
+          widths[curStep.from] = maxExpanded - (maxExpanded - collapsedW) * easeT;
+
+          // Ảnh tiếp theo (to) đang mở rộng từ 0 lên maxExpanded:
+          widths[curStep.to] = maxExpanded * easeT;
+
+          // Các ảnh sau curStep.to:
+          for (let i = curStep.to + 1; i < numItems; i++) {
+            widths[i] = 0;
+          }
+        }
+
+        // Áp dụng độ rộng và class hiển thị cho từng ảnh:
+        galleryItems.forEach((item, idx) => {
+          const w = widths[idx];
+          const isCollapsed = w <= 45 && w > 0;
+          const isActive = Math.abs(w - maxExpanded) < 30;
+
+          item.style.width = `${Math.round(w)}px`;
+          item.style.minWidth = isCollapsed ? `${collapsedW}px` : (w > 0 ? '40px' : '0px');
+          item.style.maxWidth = isCollapsed ? `${collapsedW}px` : `${Math.round(maxExpanded)}px`;
+          item.style.opacity = w > 8 ? '1' : '0';
+          item.style.pointerEvents = w > 15 ? 'auto' : 'none';
+
+          item.classList.toggle('is-collapsed', isCollapsed);
+          item.classList.toggle('is-active', isActive);
+        });
       }
     } else {
       // Chưa vào màn hình
