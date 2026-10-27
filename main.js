@@ -50,13 +50,16 @@ async function initScrollytelling() {
   const heroPoincianaWrap = document.getElementById('hero-poinciana-wrap');
   const heroTarget = document.getElementById('hero-parallax-target');
 
-  // Stage 02: Interactive Zoom-Dive-Scroll Tablet Viewport
+  // Stage 02: Interactive Zoom-Dive-Scroll Tablet Viewport (FULL MÀN HÌNH)
   const bocTachSection = document.getElementById('boc-tach-ai');
   const tabletDeviceLayer = document.getElementById('layer-tablet-device');
   const handTapLayer = document.getElementById('layer-hand-tap');
   const screenDiveLayer = document.getElementById('layer-screen-dive');
   const screenScrollTrack = document.getElementById('screen-scroll-track');
   const capScanStatus = document.getElementById('cap-scan-status');
+  const hudPill1 = document.getElementById('hud-pill-1');
+  const hudPill2 = document.getElementById('hud-pill-2');
+  const hudPill3 = document.getElementById('hud-pill-3');
 
   // Timeline Track
   const timelineTrack = document.getElementById('timeline-track');
@@ -104,23 +107,26 @@ async function initScrollytelling() {
     }
   }
 
-  // ── 3.1 Interactive Zoom & Screen Dive on Scroll (Cái tay 1 ảnh + Cái màn hình 1 ảnh -> Phóng to -> Vào màn hình -> Kéo) ───
+  // ── 3.1 Interactive Zoom & Screen Dive on Scroll (FULL MÀN HÌNH · Tay riêng + Màn hình riêng -> Zoom -> Cuộn) ───
   function updateBocTachZoomScroll() {
     if (!bocTachSection || !tabletDeviceLayer || !handTapLayer || !screenDiveLayer || !screenScrollTrack) return;
     const rect = bocTachSection.getBoundingClientRect();
     const windowH = window.innerHeight;
-    const totalDist = rect.height + windowH;
-    const currentPos = windowH - rect.top;
-    const progress = Math.min(1, Math.max(0, currentPos / totalDist));
+    const totalDist = rect.height - windowH;
+    if (totalDist <= 0) return;
 
-    if (progress <= 0.42) {
-      // Phase 1: Cái tay di chuyển bấm vô màn hình và PHÓNG TO
-      const p1 = progress / 0.42;
+    // Progress chạy mượt từ 0.0 khi section chạm đỉnh màn hình đến 1.0 khi cuộn hết stage
+    const passed = -rect.top;
+    const progress = Math.min(1, Math.max(0, passed / totalDist));
+
+    if (progress <= 0.40) {
+      // Phase 1: Cái tay di chuyển bấm vô màn hình và PHÓNG TO FULL MÀN HÌNH
+      const p1 = progress / 0.40;
 
       // Tay di chuyển từ ngoài vào bấm màn hình (hover effect)
-      const handHoverY = p1 < 0.25 ? (1 - p1 / 0.25) * 28 : 0;
-      const handHoverX = p1 < 0.25 ? (1 - p1 / 0.25) * 20 : 0;
-      const zoomScale = 1 + p1 * 1.5; // Zoom cả tay lẫn màn hình từ 1.0 lên 2.5
+      const handHoverY = p1 < 0.25 ? (1 - p1 / 0.25) * 35 : 0;
+      const handHoverX = p1 < 0.25 ? (1 - p1 / 0.25) * 25 : 0;
+      const zoomScale = 1 + p1 * 1.6; // Zoom cả tay lẫn màn hình từ 1.0 lên 2.6 full screen
 
       tabletDeviceLayer.style.transform = `scale(${zoomScale})`;
       tabletDeviceLayer.style.opacity = '1';
@@ -133,18 +139,26 @@ async function initScrollytelling() {
       screenDiveLayer.style.transform = `scale(${0.88 + p1 * 0.12})`;
       screenScrollTrack.style.transform = 'translate3d(0, 0, 0)';
       if (capScanStatus) capScanStatus.textContent = p1 < 0.25 ? 'Chạm ngón tay lên tablet...' : '1 Chạm Quét Đề AI';
+
+      if (hudPill1) hudPill1.className = 'hud-step-pill ' + (p1 < 0.5 ? 'is-active' : '');
+      if (hudPill2) hudPill2.className = 'hud-step-pill ' + (p1 >= 0.5 ? 'is-active' : '');
+      if (hudPill3) hudPill3.className = 'hud-step-pill';
     } else {
-      // Phase 2: ĐI VÀO TRONG MÀN HÌNH VÀ KÉO NỘI DUNG CUỘN TRANG
+      // Phase 2: ĐI VÀO TRONG MÀN HÌNH VÀ KÉO NỘI DUNG CUỘN TRANG FULL MÀN HÌNH
       handTapLayer.style.opacity = 0;
       tabletDeviceLayer.style.opacity = 0;
       screenDiveLayer.style.opacity = 1;
       screenDiveLayer.style.transform = 'scale(1)';
 
-      const p2 = (progress - 0.42) / 0.58;
-      const maxScrollPx = screenScrollTrack.scrollHeight - 430;
+      const p2 = (progress - 0.40) / 0.60;
+      const maxScrollPx = screenScrollTrack.scrollHeight - windowH;
       const trackY = p2 * Math.max(0, maxScrollPx);
       screenScrollTrack.style.transform = `translate3d(0, ${-trackY}px, 0)`;
       if (capScanStatus) capScanStatus.textContent = `Bóc tách KaTeX ${Math.min(100, Math.round(p2 * 100))}%`;
+
+      if (hudPill1) hudPill1.className = 'hud-step-pill';
+      if (hudPill2) hudPill2.className = 'hud-step-pill';
+      if (hudPill3) hudPill3.className = 'hud-step-pill is-active';
     }
   }
 

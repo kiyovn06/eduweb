@@ -555,17 +555,37 @@ body {
   top: 100px;
 }
 
-/* INTERACTIVE TABLET VIEWPORT (Cái tay 1 ảnh + Cái màn hình 1 ảnh -> Phóng to -> Vào màn hình -> Kéo cuộn) */
-.interactive-tablet-viewport {
+/* ══════════════════════════════════════════════════════════════════════════
+   STAGE 02: BÓC TÁCH AI (FULL MÀN HÌNH · 100VW x 100VH)
+   ══════════════════════════════════════════════════════════════════════════ */
+.stage-boc-tach-fullscreen {
   position: relative;
   width: 100%;
-  height: 430px;
-  overflow: hidden;
+  height: 240vh; /* Khoảng cách cuộn scrollytelling */
+  padding: 0 !important;
   background: #0f172a;
 }
 
-/* Layer 1: Cái màn hình là 1 ảnh */
-.layer-tablet-device {
+.interactive-tablet-fullsticky {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  z-index: 2;
+}
+
+.stage-boc-tach-fullscreen .interactive-tablet-viewport {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #0f172a;
+  border-radius: 0;
+}
+
+.stage-boc-tach-fullscreen .layer-tablet-device {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -575,15 +595,14 @@ body {
   z-index: 1;
 }
 
-.layer-tablet-device img {
+.stage-boc-tach-fullscreen .layer-tablet-device img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
 
-/* Layer 2: Cái tay là 1 ảnh riêng biệt */
-.layer-hand-tap {
+.stage-boc-tach-fullscreen .layer-hand-tap {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -594,11 +613,136 @@ body {
   pointer-events: none;
 }
 
-.layer-hand-tap img {
+.stage-boc-tach-fullscreen .layer-hand-tap img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+.stage-boc-tach-fullscreen .layer-screen-dive {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  overflow: hidden;
+  background: #f8fafc;
+  will-change: opacity, transform;
+}
+
+.stage-boc-tach-fullscreen .screen-scroll-track {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  will-change: transform;
+}
+
+.stage-boc-tach-fullscreen .screen-scroll-track img {
+  width: 100% !important;
+  height: auto !important;
+  display: block !important;
+}
+
+/* Floating Title Header */
+.boc-tach-floating-header {
+  position: absolute;
+  top: 2rem;
+  left: clamp(1.5rem, 4vw, 3.5rem);
+  right: clamp(1.5rem, 4vw, 3.5rem);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  z-index: 10;
+  pointer-events: none;
+  gap: 1.5rem;
+}
+
+.boc-tach-title-card {
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  color: #ffffff;
+  padding: 1.1rem 1.85rem;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  max-width: 620px;
+}
+
+.boc-tach-title-card .section-title {
+  margin: 0;
+  font-size: clamp(1.35rem, 2.5vw, 1.85rem);
+  color: #ffffff;
+  font-weight: 800;
+}
+
+.boc-tach-title-card .section-desc {
+  margin: 0.35rem 0 0 0;
+  font-size: 0.9rem;
+  color: #94a3b8;
+  line-height: 1.5;
+}
+
+/* Floating Steps HUD at bottom */
+.boc-tach-steps-hud {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.75rem;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.hud-step-pill {
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #94a3b8;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.5rem 1.15rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.25s ease;
+}
+
+.hud-step-pill.is-active {
+  color: #ffffff;
+  background: rgba(37, 99, 235, 0.9);
+  border-color: #38bdf8;
+  box-shadow: 0 0 20px rgba(37, 99, 235, 0.5);
+}
+
+.hud-step-pill .step-num {
+  font-size: 0.75rem;
+  opacity: 0.8;
+}
+
+/* 3-column features row */
+.boc-tach-features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  padding: 5rem 1.5rem 3rem 1.5rem;
+  position: relative;
+  z-index: 5;
+  background: var(--bg-sheet-white);
+}
+
+@media (max-width: 900px) {
+  .boc-tach-features-grid {
+    grid-template-columns: 1fr;
+  }
+  .boc-tach-floating-header {
+    flex-direction: column;
+  }
 }
 
 .tap-ripple-effect {
