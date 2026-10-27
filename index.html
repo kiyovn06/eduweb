@@ -395,37 +395,88 @@
           <div class="managed-right-col">
             <div class="blue-card-outer">
               
-              <!-- TIÊU ĐỀ TRÊN CÙNG CỦA THẺ XANH (CỐ ĐỊNH, KHÔNG BAO GIỜ BỊ CHE KHI KÉO) -->
+              <!-- TIÊU ĐỀ TRÊN CÙNG CỦA THẺ (KHÔNG CANH GIỮA, CỐ ĐỊNH, CHỮ MÔ TẢ Ở DƯỚI) -->
               <div class="card-fixed-header">
-                <h3 class="card-fixed-title">Dữ liệu luôn sẵn sàng</h3>
-                <p class="card-fixed-subtitle">Hệ thống tự động thông báo các mốc học tập và điểm số quan trọng</p>
+                <!-- State 1 Header: Tổng Quan Nhịp Học Hôm Nay -->
+                <div class="card-header-state card-header-state-1" id="card-header-1">
+                  <div class="card-category-badge">📱 MÀN HÌNH CHỦ · TỔNG QUAN HÔM NAY</div>
+                  <h3 class="card-fixed-title">Tổng quan nhịp học hôm nay</h3>
+                  <p class="card-fixed-subtitle">Một chạm nắm bắt toàn bộ nhịp học &amp; thông báo thời gian thực</p>
+                </div>
+
+                <!-- State 2 Header: Sổ Liên Lạc & Sổ Điểm Số -->
+                <div class="card-header-state card-header-state-2" id="card-header-2">
+                  <div class="card-category-badge">📊 SỔ ĐIỂM SỐ · CHUẨN BỘ GD&amp;ĐT</div>
+                  <h3 class="card-fixed-title">Sổ liên lạc &amp; Sổ điểm số</h3>
+                  <p class="card-fixed-subtitle">Minh bạch điểm số &amp; đánh giá năng lực chuẩn Bộ GD&amp;ĐT</p>
+                </div>
               </div>
 
-              <!-- THẺ TRẮNG TRƯỢT BÊN DƯỚI (KHI KÉO THÌ TRƯỢT LÊN THAY THẾ NHƯNG KHÔNG ĐÈ LÊN TIÊU ĐỀ) -->
+              <!-- THẺ TRƯỢT BÊN DƯỚI (KHI KÉO THÌ TRƯỢT LÊN THAY THẾ NHƯNG KHÔNG ĐÈ LÊN TIÊU ĐỀ) -->
               <div class="white-card-deck">
                 <!-- White Card 1 (Trạng thái 1: Tổng quan nhịp học hôm nay - KHÔNG PHẢI SỔ LIÊN LẠC) -->
                 <div class="white-slide-card white-slide-card-1" id="feature-card-1">
-                  <h4 class="white-card-heading">Tổng quan nhịp học hôm nay</h4>
                   <p class="white-card-desc">
-                    Một chạm nắm bắt toàn bộ tình trạng chuyên cần, điểm số mới nhất, lịch thi học kỳ và bảng tin trường học theo thời gian thực. Mọi dữ liệu học tập được quy tụ tức thì trong lòng bàn tay.
+                    Tổng hợp tình trạng chuyên cần, điểm số mới nhất, lịch thi học kỳ và bảng tin trường học theo thời gian thực. Mọi dữ liệu học tập được quy tụ tức thì trong lòng bàn tay.
                   </p>
+                  <div class="card-feature-pills">
+                    <div class="card-feature-pill">
+                      <span class="pill-icon">📅</span>
+                      <div class="pill-body">
+                        <strong>Chuyên Cần &amp; Điểm Danh Tức Thì</strong>
+                        <span>Thông báo ngay khi giáo viên điểm danh: vắng có phép / không phép minh bạch.</span>
+                      </div>
+                    </div>
+                    <div class="card-feature-pill">
+                      <span class="pill-icon">📈</span>
+                      <div class="pill-body">
+                        <strong>Cập Nhật Điểm Mới Nhất</strong>
+                        <span>Hiển thị điểm kiểm tra 15 phút, 1 tiết và học kỳ 2 (Toán HK2: 8.5) kèm phổ so sánh.</span>
+                      </div>
+                    </div>
+                    <div class="card-feature-pill">
+                      <span class="pill-icon">⚡</span>
+                      <div class="pill-body">
+                        <strong>9 Tiện Ích Tác Vụ Nhanh</strong>
+                        <span>Truy cập Bài tập, Lịch học, Khen thưởng, Thư viện số và Liên hệ giáo viên trong 1 chạm.</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 <!-- White Card 2 (Trạng thái 2: Sổ liên lạc & Sổ điểm số - Trượt lên khi Phone 2 trượt lên) -->
                 <div class="white-slide-card white-slide-card-2" id="feature-card-2">
-                  <h4 class="white-card-heading">Sổ liên lạc &amp; Sổ điểm số</h4>
                   <p class="white-card-desc">
                     Minh bạch điểm số chuẩn Bộ GD&amp;ĐT. Tra cứu chi tiết điểm ĐGTX, Giữa kỳ, Cuối kỳ và Trung bình môn (TBM) kèm lời phê sư phạm định lượng, đồng bộ đám mây 100% với SMAS và VnEdu.
                   </p>
+                  <div class="card-feature-pills">
+                    <div class="card-feature-pill">
+                      <span class="pill-icon">🏆</span>
+                      <div class="pill-body">
+                        <strong>Khen Thưởng &amp; Danh Hiệu Học Sinh</strong>
+                        <span>Giấy khen học sinh tiêu biểu, ghi nhận nỗ lực rèn luyện nề nếp trong giờ sinh hoạt.</span>
+                      </div>
+                    </div>
+                    <div class="card-feature-pill">
+                      <span class="pill-icon">📝</span>
+                      <div class="pill-body">
+                        <strong>Nhận Xét Sư Phạm Định Lượng</strong>
+                        <span>Lời phê chi tiết từng môn: nắm chắc đại số, cần cẩn thận hình học; rèn kỹ năng trình bày.</span>
+                      </div>
+                    </div>
+                    <div class="card-feature-pill">
+                      <span class="pill-icon">🔄</span>
+                      <div class="pill-body">
+                        <strong>Đồng Bộ Dữ Liệu Đám Mây 100%</strong>
+                        <span>Tương thích hoàn toàn hệ thống VnEdu và SMAS, xuất sổ điểm chuẩn Bộ GD&amp;ĐT.</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
             </div>
           </div>
-
-        </div>
-      </div>
-    </section>
 
         </div>
       </div>
