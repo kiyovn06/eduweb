@@ -162,7 +162,7 @@ async function initScrollytelling() {
     }
   }
 
-  // ── 3.2 Stage 03: Live Quiz - Fan-out từ giữa sang 2 bên khi cuộn ─────────
+  // ── 3.2 Stage 03: Live Quiz - Fan-out từ giữa sang 2 bên khi cuộn & đứng im ─────────
   function updateLiveQuizFanOut() {
     if (!liveQuizTrack || !fanCenterTablet) return;
     if (window.innerWidth <= 768) return;
@@ -173,7 +173,10 @@ async function initScrollytelling() {
     if (totalDist <= 0) return;
 
     const passed = -rect.top;
-    const progress = Math.min(1, Math.max(0, passed / totalDist));
+
+    // Cards xòe hoàn chỉnh trong khoảng 1.15 * windowH đầu tiên, sau đó ĐỨNG IM TUYỆT ĐỐI
+    const fanDist = windowH * 1.15;
+    const fanProgress = Math.min(1, Math.max(0, passed / fanDist));
 
     // Dynamic width scale based on window width:
     const stageW = Math.min(window.innerWidth, 1440);
@@ -191,7 +194,7 @@ async function initScrollytelling() {
     const targetRot2 = 7.0;
 
     // Phase 1: Left 1 & Right 1 (bắt đầu che nhiều ló ~10px chéo, cuộn xuống xòe rộng ra)
-    const p1 = Math.min(1, Math.max(0, progress / 0.65));
+    const p1 = Math.min(1, Math.max(0, fanProgress / 0.65));
     const dist1 = baseOff1 + (targetOff1 - baseOff1) * p1;
     const rot1 = baseRot1 + (targetRot1 - baseRot1) * p1;
 
@@ -205,7 +208,7 @@ async function initScrollytelling() {
     }
 
     // Phase 2: Left 2 & Right 2 (bắt đầu che nhiều ló ~10px chéo, cuộn xuống xòe xa nhất)
-    const p2 = Math.min(1, Math.max(0, (progress - 0.12) / 0.72));
+    const p2 = Math.min(1, Math.max(0, (fanProgress - 0.12) / 0.72));
     const dist2 = baseOff2 + (targetOff2 - baseOff2) * p2;
     const rot2 = baseRot2 + (targetRot2 - baseRot2) * p2;
 
@@ -219,9 +222,36 @@ async function initScrollytelling() {
     }
 
     // Center card: Giữ chuẩn vị trí tâm chính xác
-    const pCenter = Math.min(1, Math.max(0, progress / 0.6));
+    const pCenter = Math.min(1, Math.max(0, fanProgress / 0.6));
     const tabletScale = 1.0 + 0.02 * pCenter;
     fanCenterTablet.style.transform = `translate(-50%, -50%) scale(${tabletScale})`;
+  }
+
+  // ── 3.3 Stage 04: Grail-Style Editorial Sheet Transition (Ảnh 1 & 2) ─────────
+  function updateGrailSheetTransition() {
+    const sheetCard = document.getElementById('grail-sheet-card');
+    const sheetSection = document.getElementById('quan-ly-lop');
+    if (!sheetCard || !sheetSection) return;
+
+    const rect = sheetSection.getBoundingClientRect();
+    const windowH = window.innerHeight;
+
+    // Khi trang mới trượt từ dưới lên đè lên Section 03 đang đứng im:
+    if (rect.top > 0 && rect.top <= windowH) {
+      const progress = 1 - (rect.top / windowH); // 0 khi mới ló ở đáy, 1 khi chạm đỉnh
+      // Chuẩn Grail-app curve (Ảnh 1 & 2): scale từ 0.86 -> 1.0, nghiêng từ 5.5deg -> 0deg
+      const scale = 0.86 + 0.14 * progress;
+      const rot = (1 - progress) * 5.5;
+      sheetCard.style.transform = `scale(${scale.toFixed(4)}) rotate(${rot.toFixed(3)}deg)`;
+      sheetCard.style.transformOrigin = 'center 15%';
+    } else if (rect.top <= 0) {
+      // Đã phủ kín toàn màn hình: trả về none để các thẻ con sticky hoạt động trơn tru 100%
+      sheetCard.style.transform = 'none';
+    } else {
+      // Chưa vào màn hình
+      sheetCard.style.transform = 'scale(0.86) rotate(5.5deg)';
+      sheetCard.style.transformOrigin = 'center 15%';
+    }
   }
 
   // ── 4. Timeline Progress Line ─────────────────────────────────────────────
@@ -338,8 +368,11 @@ async function initScrollytelling() {
     // Stage 02: Bóc tách thu nhỏ ảnh từ 6/7 xuống 4/7
     updateBocTachShrink();
 
-    // Stage 03: Live Quiz fan-out từ giữa qua 2 bên
+    // Stage 03: Live Quiz fan-out từ giữa qua 2 bên & đứng im
     updateLiveQuizFanOut();
+
+    // Stage 04: Grail-style editorial sheet trượt lên đè Section 03
+    updateGrailSheetTransition();
 
     // Timeline progress
     updateTimelineProgress();
