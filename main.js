@@ -246,20 +246,25 @@ async function initScrollytelling() {
     const rect = sheetSection.getBoundingClientRect();
     const windowH = window.innerHeight;
 
-    // Nền trắng full 100%, không xoay nghiêng, không co góc
-    sheetCard.style.transform = 'none';
-    sheetCard.style.borderRadius = '0';
-    sheetCard.style.maxWidth = '100vw';
-    sheetCard.style.width = '100%';
-    sheetCard.style.boxShadow = 'none';
-
-    // Hiệu ứng các thành phần ở ảnh 2 bay từ 2 bên vào khi kéo xuống:
-    // Tiêu đề bay từ bên trái vào (-180px -> 0px)
-    // Hình ảnh bay từ bên phải vào (+180px -> 0px)
+    // Khi cuộn xuống: Thẻ chéo qua bên phải, từ từ thẳng lại thành 100% full screen
     if (rect.top > 0 && rect.top <= windowH) {
       const progress = 1 - (rect.top / windowH); // 0 khi mới ló ở đáy, 1 khi chạm đỉnh
       const ease = 1 - Math.pow(1 - progress, 2.5);
 
+      // Hiệu ứng chéo qua bên phải và từ từ thẳng lại:
+      const rot = ((1 - ease) * 4.2).toFixed(2); // Nghiêng chéo sang phải, giảm dần về 0deg
+      const scale = (0.91 + 0.09 * ease).toFixed(4);
+      const radius = Math.round((1 - ease) * 32);
+      const maxW = (92 + 8 * ease).toFixed(1);
+
+      sheetCard.style.transform = `scale(${scale}) rotate(${rot}deg)`;
+      sheetCard.style.transformOrigin = 'center 15%';
+      sheetCard.style.borderRadius = `${radius}px ${radius}px 0 0`;
+      sheetCard.style.maxWidth = `${maxW}vw`;
+      sheetCard.style.width = '100%';
+      sheetCard.style.boxShadow = `0 -${Math.round(24 * (1 - ease))}px ${Math.round(50 * (1 - ease))}px rgba(15, 23, 42, ${((1 - ease) * 0.12).toFixed(3)})`;
+
+      // Hiệu ứng các thành phần ở ảnh 2 bay từ 2 bên vào khi kéo xuống:
       const leftOffset = (-180 * (1 - ease)).toFixed(1);
       const rightOffset = (180 * (1 - ease)).toFixed(1);
       const splitOpacity = Math.min(1, ease * 1.6).toFixed(2);
@@ -273,7 +278,13 @@ async function initScrollytelling() {
         visualEl.style.opacity = splitOpacity;
       }
     } else if (rect.top <= 0) {
-      // Đã vào trọn vẹn màn hình
+      // Đã vào trọn vẹn màn hình: Hoàn toàn thẳng đứng, 100% full screen phẳng
+      sheetCard.style.transform = 'none';
+      sheetCard.style.borderRadius = '0';
+      sheetCard.style.maxWidth = '100vw';
+      sheetCard.style.width = '100%';
+      sheetCard.style.boxShadow = 'none';
+
       if (headerEl) {
         headerEl.style.transform = 'none';
         headerEl.style.opacity = '1';
@@ -284,6 +295,12 @@ async function initScrollytelling() {
       }
     } else {
       // Chưa vào màn hình
+      sheetCard.style.transform = 'scale(0.91) rotate(4.2deg)';
+      sheetCard.style.transformOrigin = 'center 15%';
+      sheetCard.style.borderRadius = '32px 32px 0 0';
+      sheetCard.style.maxWidth = '92vw';
+      sheetCard.style.boxShadow = '0 -24px 50px rgba(15, 23, 42, 0.12)';
+
       if (headerEl) {
         headerEl.style.transform = 'translateX(-180px)';
         headerEl.style.opacity = '0';

@@ -942,18 +942,19 @@ body {
 .grail-sheet-card {
   position: sticky;
   top: 0;
-  width: 100% !important;
-  max-width: 100vw !important;
+  width: 100%;
+  max-width: 100vw;
   height: 100vh;
   min-height: 100vh;
   margin: 0 auto;
   background: #ffffff !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
+  border-radius: 0;
+  box-shadow: none;
   border: none !important;
   padding: clamp(2.5rem, 5vw, 5rem) clamp(3rem, 6vw, 7.5rem);
   box-sizing: border-box;
-  will-change: transform;
+  transform-origin: center 15%;
+  will-change: transform, border-radius, max-width, box-shadow;
   display: flex;
   align-items: center;
   justify-content: center;
