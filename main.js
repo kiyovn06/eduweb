@@ -322,8 +322,6 @@ async function initScrollytelling() {
     const p2 = document.getElementById('phone-card-2');
     const c1 = document.getElementById('feature-card-1');
     const c2 = document.getElementById('feature-card-2');
-    const h1 = document.getElementById('card-header-1');
-    const h2 = document.getElementById('card-header-2');
     if (!showcaseTrack || !p2 || !c2) return;
     if (window.innerWidth <= 768) return;
 
@@ -335,7 +333,7 @@ async function initScrollytelling() {
     const passed = -rect.top;
     const progress = Math.min(1, Math.max(0, passed / totalDist));
 
-    // Phase 1 (0 -> 0.18): Phone 1 & Card 1 active (Phone 2 completely hidden & off-screen)
+    // Phase 1 (0 -> 0.18): Phone 1 & Card 1 active (Phone 2 & Card 2 completely hidden below)
     // Phase 2 (0.18 -> 0.82): Phone 2 & Card 2 slide up and stack smoothly over Phone 1 & Card 1
     const stackProgress = Math.min(1, Math.max(0, (progress - 0.18) / 0.64));
     
@@ -343,32 +341,23 @@ async function initScrollytelling() {
       p2.style.transform = 'translate(-50%, 140%)';
       p2.style.opacity = '0';
       p2.style.pointerEvents = 'none';
-      c2.style.transform = 'translateY(105%)';
+      c2.style.transform = 'translateY(140%)';
       c2.style.opacity = '0';
       c2.style.pointerEvents = 'none';
-      if (h1) {
-        h1.style.opacity = '1';
-        h1.style.transform = 'translateY(0)';
-      }
-      if (h2) {
-        h2.style.opacity = '0';
-        h2.style.transform = 'translateY(10px)';
-        h2.style.pointerEvents = 'none';
-      }
       if (p1) {
         p1.style.transform = 'translate(-50%, -50%) scale(1)';
         p1.style.filter = 'brightness(1)';
       }
       if (c1) {
-        c1.style.transform = 'translateY(0)';
-        c1.style.opacity = '1';
+        c1.style.transform = 'translateY(0) scale(1)';
+        c1.style.filter = 'brightness(1)';
       }
       return;
     }
 
     const easeY = 1 - Math.pow(1 - stackProgress, 2.5); // Smooth natural deceleration
     const phoneY = 140 - (190 * easeY); // from 140% to -50%
-    const cardY = (1 - easeY) * 105;    // from 105% to 0%
+    const cardY = 140 - (140 * easeY);   // from 140% to 0%
     const itemOpacity = Math.min(1, stackProgress * 3.5).toFixed(2);
 
     p2.style.transform = `translate(-50%, ${phoneY.toFixed(2)}%)`;
@@ -379,20 +368,6 @@ async function initScrollytelling() {
     c2.style.opacity = itemOpacity;
     c2.style.pointerEvents = 'auto';
 
-    // Header smooth crossfade (Tổng quan nhịp học hôm nay -> Sổ liên lạc & Sổ điểm số)
-    if (h1 && h2) {
-      const h1Opacity = Math.max(0, 1 - stackProgress * 2.2).toFixed(2);
-      const h2Opacity = Math.max(0, Math.min(1, (stackProgress - 0.25) * 2.2)).toFixed(2);
-      const h1Y = (-stackProgress * 10).toFixed(1);
-      const h2Y = ((1 - Math.min(1, stackProgress * 1.5)) * 10).toFixed(1);
-
-      h1.style.opacity = h1Opacity;
-      h1.style.transform = `translateY(${h1Y}px)`;
-      h2.style.opacity = h2Opacity;
-      h2.style.transform = `translateY(${h2Y}px)`;
-      h2.style.pointerEvents = h2Opacity > 0.5 ? 'auto' : 'none';
-    }
-
     // Under-card subtle scale down & brightness reduction
     const underScale = (1 - 0.045 * easeY).toFixed(3);
     const underBright = (1 - 0.15 * easeY).toFixed(2);
@@ -401,8 +376,8 @@ async function initScrollytelling() {
       p1.style.filter = `brightness(${underBright})`;
     }
     if (c1) {
-      c1.style.transform = 'translateY(0)';
-      c1.style.opacity = (1 - easeY * 0.3).toFixed(2);
+      c1.style.transform = `translateY(0) scale(${underScale})`;
+      c1.style.filter = `brightness(${underBright})`;
     }
   }
 

@@ -1569,127 +1569,110 @@ body {
   margin-left: auto;
 }
 
-.blue-card-outer {
+.cards-stack-container {
   position: relative;
   width: 100%;
   height: 100%;
-  background: #2b5cff;
   border-radius: 44px;
   overflow: hidden;
-  box-shadow: 0 24px 60px rgba(43, 92, 255, 0.22);
-  display: flex;
-  flex-direction: column;
 }
 
-/* TIÊU ĐỀ TRÊN CÙNG CỦA THẺ (KHÔNG CANH GIỮA, CỐ ĐỊNH, CHỮ MÔ TẢ Ở DƯỚI) */
-.card-fixed-header {
-  position: relative;
-  z-index: 30;
-  padding: clamp(26px, 3vh, 34px) clamp(26px, 2.4vw, 34px) 14px;
-  color: #ffffff;
-  flex-shrink: 0;
-  min-height: 130px;
-}
-
-.card-header-state {
-  position: absolute;
-  top: clamp(26px, 3vh, 34px);
-  left: clamp(26px, 2.4vw, 34px);
-  right: clamp(26px, 2.4vw, 34px);
-  transition: opacity 0.25s ease, transform 0.25s ease;
-  will-change: opacity, transform;
-}
-
-.card-header-state-1 {
-  z-index: 2;
-  opacity: 1;
-}
-
-.card-header-state-2 {
-  z-index: 3;
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(10px);
-}
-
-.card-category-badge {
-  display: inline-block;
-  font-size: 0.76rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.22);
-  padding: 3px 10px;
-  border-radius: 999px;
-  margin-bottom: 8px;
-  backdrop-filter: blur(8px);
-}
-
-.card-fixed-title {
-  font-size: clamp(1.8rem, 2.2vw, 2.35rem);
-  font-weight: 800;
-  line-height: 1.15;
-  letter-spacing: -0.025em;
-  margin: 0 0 4px;
-  color: #ffffff;
-  text-align: left;
-}
-
-.card-fixed-subtitle {
-  font-size: clamp(0.92rem, 1.05vw, 1.1rem);
-  line-height: 1.4;
-  color: rgba(255, 255, 255, 0.92);
-  font-weight: 500;
-  margin: 0;
-  text-align: left;
-}
-
-/* KHUNG CHỨA CÁC THẺ TRẮNG TRƯỢT (BÊN DƯỚI TIÊU ĐỀ, TRƯỢT KHÔNG CHE TIÊU ĐỀ) */
-.white-card-deck {
-  position: relative;
-  flex: 1;
-  width: 100%;
-  overflow: hidden;
-  border-radius: 34px 34px 0 0;
-  background: #ffffff;
-  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.08);
-}
-
-.white-slide-card {
+.app-feature-card {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: #ffffff;
-  padding: clamp(20px, 2.5vh, 28px) clamp(24px, 2.2vw, 32px);
+  border-radius: 44px;
+  padding: clamp(28px, 3.5vh, 42px) clamp(28px, 2.5vw, 40px);
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
   overflow-y: auto;
   will-change: transform, opacity;
 }
 
-.white-slide-card-1 {
+/* Card 1: Xanh dương chuẩn State 1 (Phone 1) */
+.app-feature-card-1 {
   z-index: 10;
+  background: linear-gradient(150deg, #2563eb 0%, #1d4ed8 100%);
+  box-shadow: 0 24px 60px rgba(37, 99, 235, 0.22);
+  color: #ffffff;
 }
 
-.white-slide-card-2 {
+/* Card 2: Trắng chuẩn State 2 (Phone 2) - Trượt từ dưới lên đè lên Card 1 */
+.app-feature-card-2 {
   z-index: 20;
-  transform: translateY(105%);
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 -16px 48px rgba(15, 23, 42, 0.16);
+  transform: translateY(140%);
   opacity: 0;
   pointer-events: none;
-  box-shadow: 0 -16px 36px rgba(0, 0, 0, 0.12);
-  will-change: transform, opacity;
+  color: #0f172a;
 }
 
-.white-card-desc {
-  font-size: clamp(0.9rem, 1vw, 0.98rem);
-  line-height: 1.5;
-  color: #475569;
-  margin: 0 0 14px;
+/* Badge trên cùng */
+.card-badge {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 999px;
+  margin-bottom: 12px;
+}
+
+.badge-blue {
+  background: rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+  backdrop-filter: blur(8px);
+}
+
+.badge-light {
+  background: #eff6ff;
+  color: #2563eb;
+  border: 1px solid #bfdbfe;
+}
+
+/* Tiêu đề & Mô tả */
+.card-title {
+  font-size: clamp(1.85rem, 2.3vw, 2.45rem);
+  font-weight: 800;
+  line-height: 1.18;
+  letter-spacing: -0.025em;
+  margin: 0 0 10px;
   text-align: left;
 }
 
+.card-desc {
+  font-size: clamp(0.92rem, 1.05vw, 1.02rem);
+  line-height: 1.55;
+  margin: 0 0 18px;
+  text-align: left;
+}
+
+.text-white {
+  color: #ffffff !important;
+}
+
+.text-white-sub {
+  color: rgba(255, 255, 255, 0.92) !important;
+}
+
+.text-dark {
+  color: #0f172a !important;
+}
+
+.text-dark-sub {
+  color: #475569 !important;
+}
+
+/* Pills tính năng */
 .card-feature-pills {
   display: flex;
   flex-direction: column;
@@ -1699,16 +1682,25 @@ body {
 .card-feature-pill {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
-  padding: 10px 14px;
-  border-radius: 14px;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 16px;
+}
+
+.pill-glass {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(8px);
+}
+
+.pill-light {
   background: #f8fafc;
   border: 1px solid #e2e8f0;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
 }
 
 .pill-icon {
-  font-size: 1.25rem;
+  font-size: 1.3rem;
   line-height: 1;
   flex-shrink: 0;
   margin-top: 2px;
@@ -1722,16 +1714,14 @@ body {
 }
 
 .pill-body strong {
-  font-size: 0.9rem;
+  font-size: 0.92rem;
   font-weight: 700;
-  color: #0f172a;
   line-height: 1.3;
 }
 
 .pill-body span {
-  font-size: 0.8rem;
-  color: #64748b;
-  line-height: 1.35;
+  font-size: 0.82rem;
+  line-height: 1.38;
 }
 
 @media (max-width: 992px) {
