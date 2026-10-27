@@ -254,16 +254,17 @@ async function initScrollytelling() {
     }
   }
 
-  // ── 3.4 Stage 04: Phone & Multi-Colored Card Stacking (Đẩy lên đè lên nhau) ─────────
-  function updateAppStackingScroll() {
-    const track = document.getElementById('app-showcase-track');
-    const phoneBase = document.getElementById('phone-base');
-    const phoneOverlay = document.getElementById('phone-overlay');
-    const cardBase = document.getElementById('card-base');
-    const cardOverlay = document.getElementById('card-overlay');
-    if (!track || !phoneBase || !phoneOverlay || !cardBase || !cardOverlay) return;
+  // ── 3.4 Stage 04.1: Showcase Quản Lý Trong 1 Ứng Dụng (Phone & Card Stacking) ──
+  function updateAppPhoneStack() {
+    const showcaseTrack = document.getElementById('app-showcase-track');
+    const p1 = document.getElementById('phone-card-1');
+    const p2 = document.getElementById('phone-card-2');
+    const c1 = document.getElementById('feature-card-1');
+    const c2 = document.getElementById('feature-card-2');
+    if (!showcaseTrack || !p2 || !c2) return;
+    if (window.innerWidth <= 768) return;
 
-    const rect = track.getBoundingClientRect();
+    const rect = showcaseTrack.getBoundingClientRect();
     const windowH = window.innerHeight;
     const totalDist = rect.height - windowH;
     if (totalDist <= 0) return;
@@ -271,25 +272,26 @@ async function initScrollytelling() {
     const passed = -rect.top;
     const progress = Math.min(1, Math.max(0, passed / totalDist));
 
-    // Stacking animation: diễn ra mượt mà từ progress 0.10 đến 0.85
-    const p = Math.min(1, Math.max(0, (progress - 0.10) / 0.75));
+    // Phase 1 (0 -> 0.22): Phone 1 & Card 1 active
+    // Phase 2 (0.22 -> 0.82): Phone 2 & Card 2 slide up and stack over Phone 1 & Card 1
+    const stackProgress = Math.min(1, Math.max(0, (progress - 0.22) / 0.60));
+    const easeY = 1 - Math.pow(1 - stackProgress, 2.5); // Smooth natural deceleration
+    const translateYPct = (1 - easeY) * 105;
 
-    // Điện thoại 2 trượt từ dưới lên đè lên Điện thoại 1:
-    const phoneY = (1 - p) * 110; // Từ 110% xuống 0%
-    const phoneScale = 0.96 + 0.04 * p;
-    const p1Scale = 1.0 - 0.05 * p;
-    const p1Y = -18 * p;
+    p2.style.transform = `translate(-50%, ${translateYPct.toFixed(2)}%)`;
+    c2.style.transform = `translateY(${translateYPct.toFixed(2)}%)`;
 
-    phoneBase.style.transform = `translateY(${p1Y}px) scale(${p1Scale.toFixed(3)})`;
-    phoneOverlay.style.transform = `translateY(${phoneY.toFixed(2)}%) scale(${phoneScale.toFixed(3)})`;
-
-    // Khung nhiều màu 2 trượt từ dưới lên đè lên Khung 1:
-    const cardY = (1 - p) * 110; // Từ 110% xuống 0%
-    const c1Scale = 1.0 - 0.04 * p;
-    const c1Y = -14 * p;
-
-    cardBase.style.transform = `translateY(${c1Y}px) scale(${c1Scale.toFixed(3)})`;
-    cardOverlay.style.transform = `translateY(${cardY.toFixed(2)}%)`;
+    // Under-card subtle scale down & brightness reduction
+    const underScale = (1 - 0.045 * easeY).toFixed(3);
+    const underBright = (1 - 0.15 * easeY).toFixed(2);
+    if (p1) {
+      p1.style.transform = `translate(-50%, 0) scale(${underScale})`;
+      p1.style.filter = `brightness(${underBright})`;
+    }
+    if (c1) {
+      c1.style.transform = `translateY(0) scale(${underScale})`;
+      c1.style.filter = `brightness(${underBright})`;
+    }
   }
 
   // ── 4. Timeline Progress Line ─────────────────────────────────────────────
@@ -412,8 +414,8 @@ async function initScrollytelling() {
     // Stage 04: Grail-style editorial sheet trượt lên đè Section 03
     updateGrailSheetTransition();
 
-    // Stage 04: App Showcase - Phone 2 & Card 2 trượt lên đè lên Phone 1 & Card 1
-    updateAppStackingScroll();
+    // Stage 04.1: Showcase Quản lý trong 1 ứng dụng (Phone & Card stacking)
+    updateAppPhoneStack();
 
     // Timeline progress
     updateTimelineProgress();

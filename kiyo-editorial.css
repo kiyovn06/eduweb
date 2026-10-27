@@ -932,7 +932,7 @@ body {
   position: relative;
   z-index: 30;
   margin-top: -100vh;
-  min-height: 290vh;
+  min-height: 220vh;
   padding: 0 clamp(1rem, 2.5vw, 3rem) clamp(4rem, 6vw, 6rem) clamp(1rem, 2.5vw, 3rem) !important;
   box-sizing: border-box;
   overflow: visible;
@@ -1025,209 +1025,280 @@ body {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   04: APP SHOWCASE - QUẢN LÝ TRONG 1 ỨNG DỤNG (PHONE STACK & MULTI-COLOR CARDS)
+   04.1: SHOWCASE QUẢN LÝ TRONG 1 ỨNG DỤNG (ĐIỆN THOẠI & THẺ MÀU XẾP ĐÈ)
    ══════════════════════════════════════════════════════════════════════════ */
 .app-showcase-track {
   position: relative;
-  min-height: 220vh;
+  min-height: 250vh;
+  margin-top: clamp(2rem, 3.5vw, 3.5rem);
   width: 100%;
-  margin-top: clamp(2rem, 3.5vw, 4rem);
-  box-sizing: border-box;
 }
 
-.app-sticky-wrapper {
+.app-showcase-sticky {
   position: sticky;
   top: 30px;
   height: calc(100vh - 60px);
+  padding: 0;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  width: 100%;
-  box-sizing: border-box;
   overflow: hidden;
+  background: transparent;
 }
 
-/* HEADER: GÓC TRÊN BÊN TRÁI, KHÔNG CANH GIỮA, KHÔNG BỊ ĐÈ */
-.app-header-block {
+/* TIÊU ĐỀ Ở GÓC TRÊN BÊN TRÁI, KHÔNG CANH GIỮA, KHÔNG BỊ ĐÈ */
+.app-showcase-header {
+  flex-shrink: 0;
   text-align: left;
   margin-bottom: clamp(1rem, 2vh, 1.75rem);
-  max-width: 900px;
-  flex-shrink: 0;
+  position: relative;
   z-index: 50;
 }
 
-.app-main-title {
-  font-family: var(--font-sans), sans-serif;
-  font-size: clamp(1.8rem, 3vw, 2.9rem);
+.app-header-eyebrow {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--accent-blue, #2563eb);
+  text-transform: uppercase;
+  margin-bottom: 0.35rem;
+}
+
+.app-showcase-title {
+  font-family: var(--font-artistic), 'Playfair Display', Georgia, serif;
+  font-size: clamp(2rem, 3.2vw, 3.1rem);
   font-weight: 800;
   color: #0f172a;
   line-height: 1.15;
-  margin-bottom: 0.4rem;
-  letter-spacing: -0.03em;
+  margin: 0 0 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+  text-align: left;
 }
 
-/* SỐ 1 HIỆN TO ĐẸP NỔI BẬT */
-.app-num-one {
-  display: inline-block;
+/* SỐ 1 TO ĐẸP NỔI BẬT */
+.app-num-one-glow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(48px, 4vw, 62px);
+  height: clamp(48px, 4vw, 62px);
+  background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 50%, #3b82f6 100%);
+  color: #ffffff;
+  border-radius: 16px;
   font-family: var(--font-artistic), 'Playfair Display', Georgia, serif;
-  font-size: 1.45em;
+  font-size: clamp(2.2rem, 3vw, 2.9rem);
   font-weight: 900;
-  color: #2563eb;
-  line-height: 0.7;
-  vertical-align: -0.06em;
-  padding: 0 0.08em;
-  background: linear-gradient(135deg, #2563eb 0%, #06b6d4 50%, #3b82f6 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 4px 12px rgba(37, 99, 235, 0.25));
+  line-height: 1;
+  margin: 0 0.15em;
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.35), inset 0 1px 2px rgba(255, 255, 255, 0.4);
+  vertical-align: middle;
+  transform: translateY(-0.04em);
 }
 
-.app-main-desc {
+.app-showcase-desc {
   font-size: clamp(0.92rem, 1.05vw, 1.1rem);
   color: #64748b;
-  max-width: 680px;
   line-height: 1.45;
   margin: 0;
+  max-width: 720px;
+  text-align: left;
 }
 
-/* 2-COLUMN SHOWCASE STAGE */
-.app-showcase-stage {
+/* 2-COLUMN BODY GRID */
+.app-showcase-body {
+  flex: 1;
   display: grid;
-  grid-template-columns: 330px 1fr;
-  gap: clamp(2rem, 4vw, 4.5rem);
+  grid-template-columns: clamp(310px, 25vw, 350px) 1fr;
+  gap: clamp(2rem, 3.5vw, 4.5rem);
   align-items: center;
   position: relative;
-  flex: 1;
   min-height: 0;
-  height: calc(100% - 110px);
+  width: 100%;
 }
 
-/* ── CỘT TRÁI: IPHONE 15/16 PRO MOCKUP (TỰ CODE 100% NHƯ ẢNH 1) ── */
+/* ══════════════════════════════════════════════════════════════════════════
+   IPHONE 15/16 PRO MOCKUP (TỰ CODE TỪ ĐẦU GIỐNG 100% ẢNH 1)
+   ══════════════════════════════════════════════════════════════════════════ */
 .phone-stack-container {
   position: relative;
-  width: 320px;
-  height: 520px;
-  perspective: 1200px;
+  width: 100%;
+  height: clamp(490px, 63vh, 600px);
+  margin: 0 auto;
 }
 
-.iphone-mockup {
+.iphone-frame {
   position: absolute;
   top: 0;
-  left: 0;
-  width: 315px;
-  height: 510px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 320px;
+  height: 100%;
+  border-radius: 48px;
   background: #000000;
-  border-radius: 44px;
-  padding: 8px;
+  padding: 7px;
   box-sizing: border-box;
-  box-shadow:
-    0 0 0 2px #27272a,
-    0 0 0 3.5px #52525b,
-    0 0 0 4.5px #18181b,
-    0 24px 60px -10px rgba(15, 23, 42, 0.45);
-  user-select: none;
-  transform-origin: center center;
-  will-change: transform;
+  border: 3.5px solid #d4d4d8;
+  box-shadow: 0 0 0 1px #a1a1aa, 0 30px 70px -16px rgba(15, 23, 42, 0.4), 0 10px 25px -5px rgba(15, 23, 42, 0.2);
+  overflow: hidden;
+  will-change: transform, filter;
+  transition: transform 0.08s ease-out;
 }
 
-.iphone-mockup::before {
-  content: "";
-  position: absolute;
-  right: -6.5px;
-  top: 130px;
-  width: 3px;
-  height: 56px;
-  background: #3f3f46;
-  border-radius: 2px 3px 3px 2px;
-}
-
-.iphone-mockup::after {
-  content: "";
+/* Side Buttons on Chassis */
+.iphone-frame::before {
+  content: '';
   position: absolute;
   left: -6.5px;
   top: 95px;
-  width: 3px;
-  height: 28px;
-  background: #3f3f46;
-  border-radius: 3px 2px 2px 3px;
-  box-shadow:
-    0 38px 0 #3f3f46,
-    0 80px 0 #3f3f46;
+  width: 3.5px;
+  height: 22px;
+  background: #94a3b8;
+  border-radius: 2px 0 0 2px;
+  box-shadow: 0 36px 0 #94a3b8, 0 88px 0 #94a3b8;
 }
 
-.phone-base {
+.iphone-frame::after {
+  content: '';
+  position: absolute;
+  right: -6.5px;
+  top: 120px;
+  width: 3.5px;
+  height: 60px;
+  background: #94a3b8;
+  border-radius: 0 2px 2px 0;
+}
+
+.phone-frame-1 {
   z-index: 10;
 }
 
-.phone-overlay {
+.phone-frame-2 {
   z-index: 20;
-  transform: translateY(110%);
+  transform: translate(-50%, 105%);
+  box-shadow: 0 -24px 60px rgba(0, 0, 0, 0.4), 0 30px 70px -16px rgba(15, 23, 42, 0.4);
 }
 
+/* Screen Surface */
 .iphone-screen {
   position: relative;
   width: 100%;
   height: 100%;
-  border-radius: 36px;
+  border-radius: 40px;
   overflow: hidden;
   background: #ffffff;
 }
 
+/* Top Status Bar */
+.iphone-status-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  box-sizing: border-box;
+  z-index: 30;
+  pointer-events: none;
+}
+
+.status-time {
+  font-size: 13px;
+  font-weight: 700;
+  color: #000000;
+  letter-spacing: -0.01em;
+}
+
 /* Dynamic Island */
-.iphone-island {
+.dynamic-island {
   position: absolute;
   top: 8px;
   left: 50%;
   transform: translateX(-50%);
-  width: 90px;
-  height: 24px;
+  width: 96px;
+  height: 26px;
   background: #000000;
-  border-radius: 18px;
-  z-index: 30;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  padding-right: 9px;
-  box-sizing: border-box;
-}
-
-.island-lens {
-  width: 8.5px;
-  height: 8.5px;
-  border-radius: 50%;
-  background: #0c0f1d;
-  box-shadow: inset 0 0 2px #334155, 0 0 1px rgba(255,255,255,0.2);
-}
-
-/* Status Bar */
-.iphone-status {
-  position: absolute;
-  top: 9px;
-  left: 0;
-  right: 0;
-  padding: 0 18px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  z-index: 25;
-  font-size: 11px;
-  font-weight: 600;
-  color: #000000;
-  pointer-events: none;
+  padding: 0 9px;
+  box-sizing: border-box;
+  z-index: 35;
 }
 
+.island-lens {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #0b0f19;
+  box-shadow: inset 0 0 2px #1e3a8a;
+}
+
+.island-sensor {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #04060b;
+}
+
+/* Status Icons */
 .status-icons {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
 }
 
-.status-icons svg {
-  display: block;
-  fill: currentColor;
+.icon-signal {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 1.5px;
+  height: 10px;
+}
+.icon-signal span {
+  width: 2.5px;
+  background: #000000;
+  border-radius: 0.5px;
+}
+.icon-signal span:nth-child(1) { height: 3px; }
+.icon-signal span:nth-child(2) { height: 5px; }
+.icon-signal span:nth-child(3) { height: 7.5px; }
+.icon-signal span:nth-child(4) { height: 10px; }
+
+.icon-battery {
+  width: 19px;
+  height: 10px;
+  border: 1.5px solid #000000;
+  border-radius: 3px;
+  position: relative;
+  padding: 1px;
+  box-sizing: border-box;
+}
+.icon-battery::after {
+  content: '';
+  position: absolute;
+  right: -3px;
+  top: 2px;
+  width: 1.5px;
+  height: 4px;
+  background: #000000;
+  border-radius: 0 1px 1px 0;
+}
+.battery-fill {
+  width: 80%;
+  height: 100%;
+  background: #000000;
+  border-radius: 1px;
 }
 
-.app-screen-img {
+/* Screenshot in iPhone */
+.iphone-screenshot {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -1235,177 +1306,130 @@ body {
   display: block;
 }
 
+/* Home Indicator Bar */
 .iphone-home-bar {
   position: absolute;
-  bottom: 5px;
+  bottom: 7px;
   left: 50%;
   transform: translateX(-50%);
-  width: 105px;
-  height: 4px;
-  background: rgba(0, 0, 0, 0.85);
-  border-radius: 2px;
+  width: 120px;
+  height: 4.5px;
+  background: #000000;
+  border-radius: 8px;
   z-index: 30;
-  pointer-events: none;
 }
 
-/* ── CỘT PHẢI: KHUNG NHIỀU MÀU KÉO DÀI TỪ TRÊN XUỐNG DƯỚI BO GÓC ── */
+/* ══════════════════════════════════════════════════════════════════════════
+   RIGHT COLUMN: KHUNG NHIỀU MÀU KÉO DÀI TỪ TRÊN XUỐNG DƯỚI BO GÓC
+   ══════════════════════════════════════════════════════════════════════════ */
 .cards-stack-container {
   position: relative;
-  height: 520px;
   width: 100%;
-  perspective: 1200px;
+  height: clamp(490px, 63vh, 600px);
 }
 
-.multi-color-card {
+.colorful-feature-card {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  border-radius: 28px;
-  padding: clamp(1.75rem, 2.5vw, 2.5rem);
+  border-radius: 36px;
+  padding: clamp(2rem, 3.2vw, 3.2rem);
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  overflow: hidden;
-  will-change: transform;
+  will-change: transform, filter;
+  transition: transform 0.08s ease-out;
 }
 
-/* Khung 1: Gradient cầu vồng ấm (Trang Chủ & Điểm Danh) */
-.card-base {
+/* CARD 1: SẮC XANH COBALT SANG TRỌNG */
+.card-feature-1 {
+  background: linear-gradient(155deg, #0f172a 0%, #1e3a8a 50%, #2563eb 100%);
+  color: #ffffff;
   z-index: 10;
-  background: linear-gradient(145deg, #ffffff 0%, #f0fdf4 25%, #fef3c7 65%, #fdf2f8 100%);
-  border: 1.5px solid rgba(16, 185, 129, 0.25);
-  box-shadow: 0 20px 50px rgba(16, 185, 129, 0.12), 0 4px 14px rgba(15, 23, 42, 0.04);
+  box-shadow: 0 24px 60px rgba(30, 58, 138, 0.28);
 }
 
-/* Khung 2: Gradient xanh điện quang & tím (Sổ Điểm & Học Bạ Số) */
-.card-overlay {
+/* CARD 2: SẮC XANH EMERALD & NGỌC BÍCH NỔI BẬT */
+.card-feature-2 {
+  background: linear-gradient(155deg, #022c22 0%, #065f46 50%, #059669 100%);
+  color: #ffffff;
   z-index: 20;
-  background: linear-gradient(145deg, #ffffff 0%, #eff6ff 25%, #ede9fe 65%, #fae8ff 100%);
-  border: 1.5px solid rgba(37, 99, 235, 0.25);
-  box-shadow: 0 24px 60px rgba(37, 99, 235, 0.16), 0 4px 16px rgba(15, 23, 42, 0.05);
-  transform: translateY(110%);
+  transform: translateY(105%);
+  box-shadow: 0 -24px 60px rgba(0, 0, 0, 0.35), 0 24px 60px rgba(6, 95, 70, 0.3);
 }
 
-.card-badge-row {
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-  margin-bottom: 0.85rem;
-}
-
-.card-tag {
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  padding: 5px 12px;
-  border-radius: 16px;
-}
-
-.tag-green {
-  background: #dcfce7;
-  color: #15803d;
-}
-
-.tag-blue {
-  background: #dbeafe;
-  color: #1d4ed8;
-}
-
-.card-subtag {
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: #64748b;
-}
-
-.card-main-title {
-  font-size: clamp(1.4rem, 2vw, 1.95rem);
-  font-weight: 800;
-  color: #0f172a;
-  line-height: 1.2;
-  margin-bottom: 0.65rem;
-  letter-spacing: -0.02em;
-}
-
-.card-main-desc {
-  font-size: 0.95rem;
-  color: #475569;
-  line-height: 1.5;
-  margin-bottom: 1.25rem;
-  max-width: 580px;
-}
-
-.card-features-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.85rem;
-}
-
-.feature-item {
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  border-radius: 14px;
-  padding: 0.85rem 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-}
-
-.feature-item .f-icon {
-  font-size: 1.25rem;
-  margin-bottom: 0.1rem;
-}
-
-.feature-item h4 {
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: #0f172a;
-  margin: 0;
-}
-
-.feature-item p {
-  font-size: 0.78rem;
-  color: #64748b;
-  line-height: 1.35;
-  margin: 0;
-}
-
-.card-bottom-strip {
-  padding-top: 0.85rem;
-  border-top: 1px solid rgba(0, 0, 0, 0.07);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: #1e293b;
-}
-
-.card-bottom-strip .live-pulse {
+.card-pill-tag {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: #16a34a;
+  padding: 6px 14px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  border-radius: 20px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  width: fit-content;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.card-bottom-strip .pulse-blue {
-  color: #2563eb;
+.card-heading {
+  font-size: clamp(1.45rem, 2.1vw, 2rem);
+  font-weight: 800;
+  line-height: 1.25;
+  margin: 0 0 0.75rem;
+  letter-spacing: -0.02em;
 }
 
-.pulse-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #16a34a;
-  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.2);
+.card-description {
+  font-size: clamp(0.9rem, 1.05vw, 1.05rem);
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0 0 1.25rem;
 }
 
-.dot-blue {
-  background: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+/* 3 BENTO SUB-BOXES KÉO DÀI BÊN TRONG */
+.card-subfeatures {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.subfeature-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 12px 16px;
+  box-sizing: border-box;
+}
+
+.subfeature-icon {
+  font-size: 1.2rem;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.subfeature-text h5 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin: 0 0 2px;
+  color: #ffffff;
+}
+
+.subfeature-text p {
+  font-size: 0.82rem;
+  line-height: 1.35;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.75);
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
@@ -2317,36 +2341,6 @@ body {
   .grail-sheet-title {
     font-size: clamp(1.75rem, 6vw, 2.25rem) !important;
     line-height: 1.15 !important;
-  }
-
-  /* App Showcase Mobile Responsive */
-  .app-showcase-stage {
-    grid-template-columns: 1fr !important;
-    gap: 2.5rem !important;
-    min-height: auto !important;
-  }
-
-  .phone-stack-container {
-    width: 100% !important;
-    max-width: 320px !important;
-    height: 580px !important;
-    margin: 0 auto !important;
-  }
-
-  .iphone-mockup {
-    width: 100% !important;
-    max-width: 315px !important;
-    height: 570px !important;
-    border-radius: 42px !important;
-  }
-
-  .cards-stack-container {
-    height: auto !important;
-    min-height: 540px !important;
-  }
-
-  .card-features-grid {
-    grid-template-columns: 1fr !important;
   }
 
   .cq-form {
