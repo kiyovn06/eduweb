@@ -102,16 +102,31 @@
         <div class="chapter-grid-split">
           
           <div class="chapter-visual-box ocr-scanner-visual flow-in-left">
-            <img src="assets/kiyoedu-teacher-scan.jpg" alt="Trợ lý SI bóc tách đề" width="800" height="520" loading="lazy">
-            <div class="laser-scanner-line" aria-hidden="true"></div>
-            <div class="scanner-data-overlay">
-              <span class="chip-data">OCR: 99.8% CHÍNH XÁC</span>
-              <span class="chip-data">40 CÂU TRẮC NGHIỆM</span>
-              <span class="chip-data">CHUẨN KATEX</span>
-            </div>
-            <div class="visual-caption-bar">
-              <span class="cap-title">Trợ Lý SI KiyoEdu Studio</span>
-              <span class="cap-badge">40 câu / 2.8 giây</span>
+            <div class="interactive-tablet-viewport" id="tablet-viewport">
+              <!-- Layer 1: Bàn tay chạm màn hình (Phóng to khi cuộn) -->
+              <div class="layer-hand-tap" id="layer-hand-tap">
+                <img src="assets/kiyoedu-hand-tap-tablet.jpg" alt="Bàn tay học sinh bấm màn hình KiyoEdu" width="1376" height="768" loading="lazy">
+                <div class="tap-ripple-effect"></div>
+              </div>
+
+              <!-- Layer 2: Vào trong màn hình và cuộn nội dung đề thi -->
+              <div class="layer-screen-dive" id="layer-screen-dive">
+                <div class="screen-scroll-track" id="screen-scroll-track">
+                  <img src="assets/kiyoedu-tablet-screen-ui.jpg" alt="Giao diện bóc tách đề thi KiyoEdu" width="1376" height="768" loading="lazy">
+                  <img src="assets/kiyoedu-exam-questions-scrolled.jpg" alt="Nội dung đề thi và công thức toán KaTeX cuộn trang" width="1376" height="768" loading="lazy">
+                </div>
+                <div class="laser-scanner-line" aria-hidden="true"></div>
+                <div class="scanner-data-overlay">
+                  <span class="chip-data">OCR: 99.8% CHÍNH XÁC</span>
+                  <span class="chip-data">40 CÂU TRẮC NGHIỆM</span>
+                  <span class="chip-data">CHUẨN KATEX</span>
+                </div>
+              </div>
+
+              <div class="visual-caption-bar">
+                <span class="cap-title">Trợ Lý SI KiyoEdu Studio</span>
+                <span class="cap-badge" id="cap-scan-status">1 Chạm Quét Đề AI</span>
+              </div>
             </div>
           </div>
 

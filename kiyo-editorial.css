@@ -550,7 +550,82 @@ body {
   box-shadow: none !important;
 }
 
-.chapter-visual-box img {
+.chapter-visual-box.ocr-scanner-visual {
+  position: sticky;
+  top: 100px;
+}
+
+/* INTERACTIVE TABLET VIEWPORT (Bàn tay bấm -> Phóng to -> Vào màn hình -> Kéo cuộn) */
+.interactive-tablet-viewport {
+  position: relative;
+  width: 100%;
+  height: 430px;
+  overflow: hidden;
+  background: #0f172a;
+}
+
+.layer-hand-tap {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform-origin: 52% 48%;
+  will-change: transform, opacity;
+  z-index: 2;
+}
+
+.layer-hand-tap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.tap-ripple-effect {
+  position: absolute;
+  top: 48%;
+  left: 52%;
+  width: 48px;
+  height: 48px;
+  margin: -24px 0 0 -24px;
+  border-radius: 50%;
+  border: 2px solid #38bdf8;
+  box-shadow: 0 0 24px rgba(56, 189, 248, 0.7);
+  animation: ripplePulse 1.8s ease-out infinite;
+  pointer-events: none;
+}
+
+@keyframes ripplePulse {
+  0% { transform: scale(0.6); opacity: 1; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+.layer-screen-dive {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  overflow: hidden;
+  background: #f8fafc;
+  will-change: opacity, transform;
+}
+
+.screen-scroll-track {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  will-change: transform;
+}
+
+.screen-scroll-track img {
+  width: 100% !important;
+  height: auto !important;
+  display: block !important;
+  object-fit: contain !important;
+}
+
+.chapter-visual-box:not(.ocr-scanner-visual) img {
   width: 100%;
   height: 380px;
   object-fit: cover;

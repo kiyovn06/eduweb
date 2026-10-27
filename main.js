@@ -50,6 +50,13 @@ async function initScrollytelling() {
   const heroPoincianaWrap = document.getElementById('hero-poinciana-wrap');
   const heroTarget = document.getElementById('hero-parallax-target');
 
+  // Stage 02: Interactive Zoom-Dive-Scroll Tablet Viewport
+  const bocTachSection = document.getElementById('boc-tach-ai');
+  const handTapLayer = document.getElementById('layer-hand-tap');
+  const screenDiveLayer = document.getElementById('layer-screen-dive');
+  const screenScrollTrack = document.getElementById('screen-scroll-track');
+  const capScanStatus = document.getElementById('cap-scan-status');
+
   // Timeline Track
   const timelineTrack = document.getElementById('timeline-track');
   const timelineLineFill = document.getElementById('timeline-line-fill');
@@ -93,6 +100,41 @@ async function initScrollytelling() {
     if (heroPoincianaWrap) {
       const poincianaY = -progress * 30;
       heroPoincianaWrap.style.transform = `translate3d(0, ${poincianaY}px, 0)`;
+    }
+  }
+
+  // ── 3.1 Interactive Zoom & Screen Dive on Scroll (Bàn tay bấm -> Phóng to -> Vào màn hình -> Kéo) ───
+  function updateBocTachZoomScroll() {
+    if (!bocTachSection || !handTapLayer || !screenDiveLayer || !screenScrollTrack) return;
+    const rect = bocTachSection.getBoundingClientRect();
+    const windowH = window.innerHeight;
+    const totalDist = rect.height + windowH;
+    const currentPos = windowH - rect.top;
+    const progress = Math.min(1, Math.max(0, currentPos / totalDist));
+
+    if (progress <= 0.42) {
+      // Phase 1: Bàn tay chạm màn hình và PHÓNG TO
+      const p1 = progress / 0.42;
+      const scale = 1 + p1 * 1.5; // Zoom từ 1 lên 2.5
+      const opacity = p1 > 0.65 ? Math.max(0, 1 - (p1 - 0.65) / 0.35) : 1;
+      handTapLayer.style.transform = `scale(${scale})`;
+      handTapLayer.style.opacity = opacity;
+
+      screenDiveLayer.style.opacity = p1 > 0.5 ? (p1 - 0.5) / 0.5 : 0;
+      screenDiveLayer.style.transform = `scale(${0.88 + p1 * 0.12})`;
+      screenScrollTrack.style.transform = 'translate3d(0, 0, 0)';
+      if (capScanStatus) capScanStatus.textContent = '1 Chạm Quét Đề AI';
+    } else {
+      // Phase 2: ĐI VÀO TRONG MÀN HÌNH VÀ KÉO NỘI DUNG CUỘN TRANG
+      handTapLayer.style.opacity = 0;
+      screenDiveLayer.style.opacity = 1;
+      screenDiveLayer.style.transform = 'scale(1)';
+
+      const p2 = (progress - 0.42) / 0.58;
+      const maxScrollPx = screenScrollTrack.scrollHeight - 430;
+      const trackY = p2 * Math.max(0, maxScrollPx);
+      screenScrollTrack.style.transform = `translate3d(0, ${-trackY}px, 0)`;
+      if (capScanStatus) capScanStatus.textContent = `Bóc tách KaTeX ${Math.min(100, Math.round(p2 * 100))}%`;
     }
   }
 
@@ -206,6 +248,9 @@ async function initScrollytelling() {
 
     // Hero parallax
     updateHeroParallax(scrollY);
+
+    // Stage 02: Bóc tách zoom & screen dive scroll
+    updateBocTachZoomScroll();
 
     // Timeline progress
     updateTimelineProgress();
