@@ -418,18 +418,31 @@ async function initScrollytelling() {
 
     const easeY = 1 - Math.pow(1 - stackProgress, 2.5); // Smooth natural deceleration
     const phoneY = 140 - (190 * easeY); // from 140% to -50%
-    const cardY = 140 - (140 * easeY);   // from 140% to 0%
+
+    // Điểm dừng của Card 2: chạm ngay dưới tiêu đề của Card 1 là dừng lại
+    let stopOffsetY = 165;
+    const c1Title = c1 ? c1.querySelector('.card-title') : null;
+    if (c1 && c1Title) {
+      const titleBottom = c1Title.offsetTop + c1Title.offsetHeight;
+      if (titleBottom > 0) {
+        stopOffsetY = titleBottom + 16;
+      }
+    }
+
+    const cardHeight = c1 ? c1.offsetHeight : windowH;
+    const startCardY = cardHeight * 1.25;
+    const currentCardY = Math.round(startCardY - (startCardY - stopOffsetY) * easeY);
     const itemOpacity = Math.min(1, stackProgress * 3.5).toFixed(2);
 
     p2.style.transform = `translate(-50%, ${phoneY.toFixed(2)}%)`;
     p2.style.opacity = itemOpacity;
     p2.style.pointerEvents = 'auto';
 
-    c2.style.transform = `translateY(${cardY.toFixed(2)}%)`;
+    c2.style.transform = `translateY(${currentCardY}px)`;
     c2.style.opacity = itemOpacity;
     c2.style.pointerEvents = 'auto';
 
-    // Under-card subtle scale down & brightness reduction
+    // Under-card: Giữ tiêu đề Card 1 nguyên vẹn, sắc nét
     const underScale = (1 - 0.045 * easeY).toFixed(3);
     const underBright = (1 - 0.15 * easeY).toFixed(2);
     if (p1) {
@@ -438,8 +451,8 @@ async function initScrollytelling() {
       p1.style.filter = `brightness(${underBright})`;
     }
     if (c1) {
-      c1.style.transform = `translateY(0) scale(${underScale})`;
-      c1.style.filter = `brightness(${underBright})`;
+      c1.style.transform = 'translateY(0) scale(1)';
+      c1.style.filter = 'brightness(1)';
     }
   }
 
