@@ -701,18 +701,19 @@ body {
 
 .live-quiz-inner-container {
   width: 100%;
-  max-width: 1320px;
+  max-width: 1440px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   height: calc(100vh - 48px);
   position: relative;
+  gap: clamp(1rem, 2vh, 2rem);
 }
 
 .live-quiz-header {
   text-align: center;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0;
   flex-shrink: 0;
 }
 
@@ -724,33 +725,34 @@ body {
   margin-bottom: 0;
 }
 
-/* FAN-OUT STAGE CONTAINER: Phối cảnh 3D với điểm tựa ở giữa */
+/* FAN-OUT STAGE CONTAINER: Ảnh to hơn, phối cảnh 3D với điểm tựa ở giữa */
 .live-quiz-fan-stage {
   position: relative;
   width: 100%;
-  height: clamp(380px, 46vh, 470px);
+  height: clamp(480px, 66vh, 660px);
   display: flex;
   align-items: center;
   justify-content: center;
-  perspective: 1200px;
+  perspective: 1400px;
   transform-style: preserve-3d;
-  margin: auto 0;
+  margin: 0;
 }
 
-/* BASE CARD STYLING */
+/* BASE CARD STYLING: Khung ảnh bo tròn tinh tế, không viền đen */
 .fan-card {
   position: absolute;
-  border-radius: 24px;
+  border-radius: 28px;
   overflow: hidden;
   background: #ffffff;
-  box-shadow: 0 20px 48px rgba(15, 23, 42, 0.14), 0 2px 10px rgba(15, 23, 42, 0.06);
+  border: none !important;
+  box-shadow: 0 24px 56px rgba(15, 23, 42, 0.16), 0 2px 12px rgba(15, 23, 42, 0.06);
   transform-origin: center center;
   will-change: transform, opacity;
-  transition: box-shadow 0.3s ease;
+  transition: box-shadow 0.35s ease;
 }
 
 .fan-card:hover {
-  box-shadow: 0 28px 60px rgba(15, 23, 42, 0.22);
+  box-shadow: 0 32px 70px rgba(15, 23, 42, 0.24);
 }
 
 .fan-card img {
@@ -758,44 +760,32 @@ body {
   height: 100%;
   object-fit: cover;
   display: block;
+  border: none !important;
+  border-radius: inherit;
 }
 
-/* MÀN HÌNH TABLET TRUNG TÂM (Đứng giữa, nổi bật nhất) */
-.fan-center-tablet {
-  width: clamp(260px, 24vw, 320px);
-  height: clamp(380px, 45vh, 460px);
-  border-radius: 38px;
-  background: #0f172a;
-  padding: 10px;
+/* ẢNH TRUNG TÂM: To hơn hẳn, thuần hình ảnh KHÔNG CÓ VIỀN ĐEN */
+.fan-center-card {
+  width: clamp(330px, 28vw, 420px);
+  height: clamp(480px, 64vh, 620px);
+  border-radius: 30px;
+  background: #ffffff;
+  padding: 0 !important;
+  border: none !important;
   box-sizing: border-box;
   z-index: 10;
-  box-shadow: 0 32px 72px rgba(15, 23, 42, 0.28), 0 0 0 2px rgba(255, 255, 255, 0.15) inset;
+  box-shadow: 0 32px 72px rgba(15, 23, 42, 0.24), 0 4px 16px rgba(15, 23, 42, 0.08);
   position: relative;
   flex-shrink: 0;
   transform-origin: center center;
   will-change: transform;
 }
 
-.fan-center-screen {
-  width: 100%;
-  height: 100%;
-  border-radius: 28px;
-  overflow: hidden;
-  position: relative;
-  background: #000000;
-}
-
-.fan-center-screen img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-/* CÁC THẺ 2 BÊN (Kích thước đồng đều, bo tròn mềm mại) */
+/* CÁC THẺ 2 BÊN (Kích thước to hơn, đồng đều) */
 .fan-card-side {
-  width: clamp(210px, 20vw, 265px);
-  height: clamp(300px, 38vh, 380px);
+  width: clamp(280px, 24vw, 360px);
+  height: clamp(420px, 56vh, 540px);
+  border-radius: 26px;
 }
 
 .fan-card-l2 { z-index: 4; }
@@ -808,98 +798,9 @@ body {
     opacity: 0;
     transform: translateX(0) scale(0.85);
   }
-  .feature-deck-grid {
-    opacity: 0;
-    transform: translateY(28px);
-  }
 }
 
-/* MINI BADGE TRÊN THẺ PHỤ (KHÔNG CHỮ ĐÈ LÊN ẢNH, DÙNG THẺ KÍNH NHỎ DƯỚI GÓC) */
-.card-tag-badge {
-  position: absolute;
-  bottom: 0.85rem;
-  left: 0.85rem;
-  right: 0.85rem;
-  background: rgba(255, 255, 255, 0.94);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  padding: 0.55rem 0.85rem;
-  border-radius: 14px;
-  text-align: left;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  pointer-events: none;
-}
 
-.card-tag-badge .tag-num {
-  font-family: var(--font-mono, monospace);
-  font-size: 0.75rem;
-  font-weight: 800;
-  color: #2563eb;
-  display: block;
-  margin-bottom: 0.15rem;
-}
-
-.card-tag-badge .tag-title {
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: #0f172a;
-  display: block;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* 3 CỘT THÔNG TIN TÍNH NĂNG Ở DƯỚI (HIỆN TOÀN BỘ CHỮ, ĐẦY ĐỦ 01 - 02 - 03) */
-.feature-deck-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: clamp(1rem, 2vw, 1.75rem);
-  width: 100%;
-  flex-shrink: 0;
-  margin-top: 0.5rem;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  will-change: opacity, transform;
-}
-
-.feature-deck-grid .deck-card {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 18px;
-  padding: clamp(1rem, 1.6vw, 1.5rem);
-  text-align: left;
-  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.03);
-}
-
-.feature-deck-grid .deck-num {
-  font-family: var(--font-mono, monospace);
-  font-size: 1rem;
-  font-weight: 800;
-  color: #2563eb;
-  background: #eff6ff;
-  border: 1px solid #bfdbfe;
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 0.65rem;
-}
-
-.feature-deck-grid .deck-card h3 {
-  margin: 0 0 0.35rem 0;
-  font-size: clamp(1.05rem, 1.25vw, 1.22rem);
-  font-weight: 700;
-  color: #0f172a;
-}
-
-.feature-deck-grid .deck-card p {
-  margin: 0;
-  font-size: clamp(0.85rem, 0.95vw, 0.92rem);
-  color: #64748b;
-  line-height: 1.55;
-}
 
 .cap-title {
   font-size: 0.9rem;
@@ -1974,30 +1875,19 @@ body {
     -webkit-overflow-scrolling: touch;
   }
 
-  .fan-center-tablet,
+  .fan-center-card,
   .fan-card-side {
     position: static !important;
-    flex: 0 0 260px !important;
-    height: 360px !important;
+    flex: 0 0 280px !important;
+    height: 400px !important;
     scroll-snap-align: center !important;
     transform: none !important;
     opacity: 1 !important;
+    border-radius: 24px !important;
   }
 
-  .fan-center-tablet {
+  .fan-center-card {
     order: -1;
-    border-radius: 28px !important;
-  }
-
-  .fan-center-screen {
-    border-radius: 20px !important;
-  }
-
-  .feature-deck-grid {
-    grid-template-columns: 1fr !important;
-    gap: 1rem !important;
-    opacity: 1 !important;
-    transform: none !important;
   }
 
   .cq-form {
