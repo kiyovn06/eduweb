@@ -17,6 +17,7 @@ async function initScrollytelling() {
     wheelMultiplier: 1.0,
     touchMultiplier: 1.5,
   });
+  window.lenis = lenis;
 
   function raf(time) {
     lenis.raf(time);
@@ -120,28 +121,43 @@ async function initScrollytelling() {
     const progress = Math.min(1, Math.max(0, passed / totalDist));
 
     if (progress <= 0.40) {
-      // Phase 1: Cái tay di chuyển bấm vô màn hình và PHÓNG TO FULL MÀN HÌNH
+      // Phase 1: Bàn tay đưa từ ngoài vào trong bấm vô màn hình và PHÓNG TO FULL MÀN HÌNH
       const p1 = progress / 0.40;
 
-      // Tay di chuyển từ ngoài vào bấm màn hình (hover effect)
-      const handHoverY = p1 < 0.25 ? (1 - p1 / 0.25) * 35 : 0;
-      const handHoverX = p1 < 0.25 ? (1 - p1 / 0.25) * 25 : 0;
-      const zoomScale = 1 + p1 * 1.6; // Zoom cả tay lẫn màn hình từ 1.0 lên 2.6 full screen
+      // Tay đưa vào trong bấm vô màn hình:
+      // Khi vừa cuộn vào (p1 < 0.22): tay từ dưới góc phải tiến sâu vào trong và hạ ngón tay chạm màn hình
+      const enterPhase = Math.min(1, p1 / 0.22);
+      const handOffsetX = (1 - enterPhase) * 36;
+      const handOffsetY = (1 - enterPhase) * 28;
+
+      // Hiệu ứng ấn ngón tay chạm xuống mặt kính màn hình (tap press)
+      const tapPress = (p1 >= 0.18 && p1 <= 0.30)
+        ? Math.sin((p1 - 0.18) / 0.12 * Math.PI) * 4
+        : 0;
+
+      const zoomScale = 1 + p1 * 1.55; // Zoom cả tay lẫn màn hình tablet từ 1.0 lên ~2.55 phóng to vào màn hình
 
       tabletDeviceLayer.style.transform = `scale(${zoomScale})`;
       tabletDeviceLayer.style.opacity = '1';
 
-      const handOpacity = p1 > 0.65 ? Math.max(0, 1 - (p1 - 0.65) / 0.35) : 1;
-      handTapLayer.style.transform = `translate3d(${handHoverX}px, ${handHoverY}px, 0) scale(${zoomScale})`;
+      // Hand opacity: Giữ rõ nét khi bấm và phóng to, rồi mờ dần hòa vào màn hình
+      const handOpacity = p1 > 0.60 ? Math.max(0, 1 - (p1 - 0.60) / 0.35) : 1;
+      handTapLayer.style.transform = `translate3d(${handOffsetX}px, ${handOffsetY + tapPress}px, 0) scale(${zoomScale})`;
       handTapLayer.style.opacity = handOpacity;
 
-      screenDiveLayer.style.opacity = p1 > 0.5 ? (p1 - 0.5) / 0.5 : 0;
-      screenDiveLayer.style.transform = `scale(${0.88 + p1 * 0.12})`;
-      screenScrollTrack.style.transform = 'translate3d(0, 0, 0)';
-      if (capScanStatus) capScanStatus.textContent = p1 < 0.25 ? 'Chạm ngón tay lên tablet...' : '1 Chạm Quét Đề AI';
+      // Vòng tròn gợn sóng phát ra từ đầu ngón tay bấm vô màn hình
+      const tapRipple = document.getElementById('tap-ripple');
+      if (tapRipple) {
+        tapRipple.style.opacity = (p1 >= 0.15 && p1 <= 0.65) ? '1' : '0.4';
+      }
 
-      if (hudPill1) hudPill1.className = 'hud-step-pill ' + (p1 < 0.5 ? 'is-active' : '');
-      if (hudPill2) hudPill2.className = 'hud-step-pill ' + (p1 >= 0.5 ? 'is-active' : '');
+      screenDiveLayer.style.opacity = p1 > 0.45 ? (p1 - 0.45) / 0.55 : 0;
+      screenDiveLayer.style.transform = `scale(${0.90 + p1 * 0.10})`;
+      screenScrollTrack.style.transform = 'translate3d(0, 0, 0)';
+      if (capScanStatus) capScanStatus.textContent = p1 < 0.22 ? 'Tay đưa vào chạm màn hình...' : '1 Chạm Quét Đề AI';
+
+      if (hudPill1) hudPill1.className = 'hud-step-pill ' + (p1 < 0.45 ? 'is-active' : '');
+      if (hudPill2) hudPill2.className = 'hud-step-pill ' + (p1 >= 0.45 ? 'is-active' : '');
       if (hudPill3) hudPill3.className = 'hud-step-pill';
     } else {
       // Phase 2: ĐI VÀO TRONG MÀN HÌNH VÀ KÉO NỘI DUNG CUỘN TRANG FULL MÀN HÌNH
