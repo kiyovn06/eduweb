@@ -403,9 +403,21 @@ async function initScrollytelling() {
             }
           }
           const curStep = steps[currentStepIdx];
-          const t = Math.max(0, Math.min(1, (galleryProgress - curStep.start) / (curStep.end - curStep.start)));
-          // Smooth ease cubic
-          const easeT = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+          const rawP = Math.max(0, Math.min(1, (galleryProgress - curStep.start) / (curStep.end - curStep.start)));
+
+          // Tạo khoảng dừng êm ái (plateau hold) để ảnh đứng yên ổn định, không bị di chuyển giật cục:
+          // 0.00 - 0.15: Giữ nguyên ảnh hiện tại to 100%
+          // 0.15 - 0.85: Chuyển cảnh mượt mà bằng cosine ease nhẹ nhàng
+          // 0.85 - 1.00: Đã chuyển xong, giữ nguyên ảnh mới to 100%
+          let easeT = 0;
+          if (rawP <= 0.15) {
+            easeT = 0;
+          } else if (rawP >= 0.85) {
+            easeT = 1;
+          } else {
+            const normT = (rawP - 0.15) / 0.70;
+            easeT = 0.5 - 0.5 * Math.cos(normT * Math.PI);
+          }
 
           // Các ảnh trước curStep.from đã thu nhỏ 40px xếp bên trái:
           for (let i = 0; i < curStep.from; i++) {
