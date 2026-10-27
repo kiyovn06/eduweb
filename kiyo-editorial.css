@@ -677,117 +677,228 @@ body {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   03: ĐẤU TRƯỜNG LIVE QUIZ (ZIGZAG STREAM · SO LE TRÁI PHẢI · KHÔNG CHỮ TRONG ẢNH)
+   03: ĐẤU TRƯỜNG LIVE QUIZ (FAN-OUT SHOWCASE: HIỆN RA TỪ GIỮA QUA 2 BÊN)
    ══════════════════════════════════════════════════════════════════════════ */
-.live-arena-hero-showcase {
-  margin-top: 2rem;
-  margin-bottom: 5rem;
+.stage-live-quiz-track {
+  position: relative;
+  min-height: 240vh;
+  padding: 0 !important;
+  margin: 0 !important;
 }
 
-.live-arena-hero-box {
-  width: 100%;
-  height: clamp(380px, 50vh, 520px);
-  border-radius: 28px;
+.live-quiz-sticky-wrapper {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px clamp(1.5rem, 3.5vw, 4rem);
+  box-sizing: border-box;
   overflow: hidden;
-  box-shadow: 0 20px 48px rgba(15, 23, 42, 0.08);
-  background: var(--bg-surface);
+  background: var(--bg-sheet-white, #ffffff);
 }
 
-.live-arena-hero-box img {
+.live-quiz-inner-container {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center 25%;
-  display: block;
-}
-
-.live-quiz-zigzag-stream {
+  max-width: 1320px;
   display: flex;
   flex-direction: column;
-  gap: clamp(4rem, 7vw, 6.5rem); /* KHOẢNG CÁCH RỘNG ĐỂ NHÌN ĐƯỢC ẢNH CŨ KHI CUỘN */
-  margin-bottom: 3rem;
-}
-
-.zigzag-row {
-  display: grid;
-  grid-template-columns: 1.15fr 0.85fr;
   align-items: center;
-  gap: clamp(2.5rem, 5vw, 4.5rem);
+  justify-content: space-between;
+  height: calc(100vh - 48px);
+  position: relative;
 }
 
-.zigzag-row.zigzag-reverse {
-  grid-template-columns: 0.85fr 1.15fr;
+.live-quiz-header {
+  text-align: center;
+  margin-bottom: 0.5rem;
+  flex-shrink: 0;
 }
 
-.zigzag-visual {
+.live-quiz-header .section-title {
+  margin-bottom: 0.35rem;
+}
+
+.live-quiz-header .section-desc {
+  margin-bottom: 0;
+}
+
+/* FAN-OUT STAGE CONTAINER: Phối cảnh 3D với điểm tựa ở giữa */
+.live-quiz-fan-stage {
+  position: relative;
   width: 100%;
-  height: clamp(340px, 44vh, 440px);
+  height: clamp(380px, 46vh, 470px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1200px;
+  transform-style: preserve-3d;
+  margin: auto 0;
+}
+
+/* BASE CARD STYLING */
+.fan-card {
+  position: absolute;
   border-radius: 24px;
   overflow: hidden;
-  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
-  background: var(--bg-surface);
+  background: #ffffff;
+  box-shadow: 0 20px 48px rgba(15, 23, 42, 0.14), 0 2px 10px rgba(15, 23, 42, 0.06);
+  transform-origin: center center;
+  will-change: transform, opacity;
+  transition: box-shadow 0.3s ease;
 }
 
-.zigzag-visual img {
+.fan-card:hover {
+  box-shadow: 0 28px 60px rgba(15, 23, 42, 0.22);
+}
+
+.fan-card img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center;
   display: block;
-  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.zigzag-visual:hover img {
-  transform: scale(1.03);
+/* MÀN HÌNH TABLET TRUNG TÂM (Đứng giữa, nổi bật nhất) */
+.fan-center-tablet {
+  width: clamp(260px, 24vw, 320px);
+  height: clamp(380px, 45vh, 460px);
+  border-radius: 38px;
+  background: #0f172a;
+  padding: 10px;
+  box-sizing: border-box;
+  z-index: 10;
+  box-shadow: 0 32px 72px rgba(15, 23, 42, 0.28), 0 0 0 2px rgba(255, 255, 255, 0.15) inset;
+  position: relative;
+  flex-shrink: 0;
+  transform-origin: center center;
+  will-change: transform;
 }
 
-.zigzag-content {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+.fan-center-screen {
+  width: 100%;
+  height: 100%;
+  border-radius: 28px;
+  overflow: hidden;
+  position: relative;
+  background: #000000;
 }
 
-.zigzag-content .feature-block {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 1.25rem;
+.fan-center-screen img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* CÁC THẺ 2 BÊN (Kích thước đồng đều, bo tròn mềm mại) */
+.fan-card-side {
+  width: clamp(210px, 20vw, 265px);
+  height: clamp(300px, 38vh, 380px);
+}
+
+.fan-card-l2 { z-index: 4; }
+.fan-card-l1 { z-index: 6; }
+.fan-card-r1 { z-index: 6; }
+.fan-card-r2 { z-index: 4; }
+
+@media (min-width: 769px) {
+  .fan-card-side {
+    opacity: 0;
+    transform: translateX(0) scale(0.85);
+  }
+  .feature-deck-grid {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+}
+
+/* MINI BADGE TRÊN THẺ PHỤ (KHÔNG CHỮ ĐÈ LÊN ẢNH, DÙNG THẺ KÍNH NHỎ DƯỚI GÓC) */
+.card-tag-badge {
+  position: absolute;
+  bottom: 0.85rem;
+  left: 0.85rem;
+  right: 0.85rem;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 0.55rem 0.85rem;
+  border-radius: 14px;
+  text-align: left;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  pointer-events: none;
+}
+
+.card-tag-badge .tag-num {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #2563eb;
+  display: block;
+  margin-bottom: 0.15rem;
+}
+
+.card-tag-badge .tag-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #0f172a;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 3 CỘT THÔNG TIN TÍNH NĂNG Ở DƯỚI (HIỆN TOÀN BỘ CHỮ, ĐẦY ĐỦ 01 - 02 - 03) */
+.feature-deck-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(1rem, 2vw, 1.75rem);
+  width: 100%;
+  flex-shrink: 0;
+  margin-top: 0.5rem;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  will-change: opacity, transform;
+}
+
+.feature-deck-grid .deck-card {
   background: #f8fafc;
   border: 1px solid #e2e8f0;
-  border-radius: 20px;
-  padding: clamp(1.75rem, 3vw, 2.5rem);
-  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.03);
+  border-radius: 18px;
+  padding: clamp(1rem, 1.6vw, 1.5rem);
+  text-align: left;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.03);
 }
 
-.zigzag-content .block-num {
+.feature-deck-grid .deck-num {
   font-family: var(--font-mono, monospace);
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 800;
   color: #2563eb;
   background: #eff6ff;
   border: 1px solid #bfdbfe;
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
+  margin-bottom: 0.65rem;
 }
 
-.zigzag-content .block-content h3 {
-  margin: 0 0 0.5rem 0;
-  font-size: clamp(1.35rem, 1.8vw, 1.65rem);
+.feature-deck-grid .deck-card h3 {
+  margin: 0 0 0.35rem 0;
+  font-size: clamp(1.05rem, 1.25vw, 1.22rem);
   font-weight: 700;
   color: #0f172a;
-  letter-spacing: -0.01em;
 }
 
-.zigzag-content .block-content p {
+.feature-deck-grid .deck-card p {
   margin: 0;
-  font-size: clamp(0.95rem, 1.1vw, 1.05rem);
+  font-size: clamp(0.85rem, 0.95vw, 0.92rem);
   color: #64748b;
-  line-height: 1.65;
+  line-height: 1.55;
 }
 
 .cap-title {
@@ -1833,18 +1944,60 @@ body {
     transform: none !important;
   }
 
-  .zigzag-row,
-  .zigzag-row.zigzag-reverse {
-    grid-template-columns: 1fr !important;
-    gap: 1.75rem !important;
+  /* Section 03 Mobile Responsive */
+  .stage-live-quiz-track {
+    min-height: auto !important;
+    padding: 3rem 1.25rem !important;
   }
 
-  .zigzag-visual {
-    height: 280px !important;
+  .live-quiz-sticky-wrapper {
+    position: static !important;
+    height: auto !important;
+    padding: 0 !important;
+    overflow: visible !important;
   }
 
-  .zigzag-row.zigzag-reverse .zigzag-visual {
+  .live-quiz-inner-container {
+    height: auto !important;
+  }
+
+  .live-quiz-fan-stage {
+    display: flex !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    scroll-snap-type: x mandatory !important;
+    gap: 1rem !important;
+    height: auto !important;
+    padding: 1.5rem 0.5rem 2rem !important;
+    perspective: none !important;
+    justify-content: flex-start !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .fan-center-tablet,
+  .fan-card-side {
+    position: static !important;
+    flex: 0 0 260px !important;
+    height: 360px !important;
+    scroll-snap-align: center !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+
+  .fan-center-tablet {
     order: -1;
+    border-radius: 28px !important;
+  }
+
+  .fan-center-screen {
+    border-radius: 20px !important;
+  }
+
+  .feature-deck-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+    opacity: 1 !important;
+    transform: none !important;
   }
 
   .cq-form {

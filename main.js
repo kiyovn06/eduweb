@@ -55,6 +55,15 @@ async function initScrollytelling() {
   const bocTachVisualCol = document.getElementById('boc-tach-visual-col');
   const bocTachTextCol = document.getElementById('boc-tach-text-col');
 
+  // Stage 03: Live Quiz Fan-out từ giữa qua 2 bên
+  const liveQuizTrack = document.getElementById('live-quiz');
+  const fanCenterTablet = document.getElementById('fan-center-tablet');
+  const fanCardL1 = document.getElementById('fan-card-l1');
+  const fanCardL2 = document.getElementById('fan-card-l2');
+  const fanCardR1 = document.getElementById('fan-card-r1');
+  const fanCardR2 = document.getElementById('fan-card-r2');
+  const liveQuizDeck = document.getElementById('live-quiz-feature-deck');
+
   // Timeline Track
   const timelineTrack = document.getElementById('timeline-track');
   const timelineLineFill = document.getElementById('timeline-line-fill');
@@ -151,6 +160,74 @@ async function initScrollytelling() {
       const c2Prog = Math.min(1, Math.max(0, (shrinkProgress - 0.46) / 0.28));
       cards[2].style.opacity = c2Prog;
       cards[2].style.transform = `translateX(${(1 - c2Prog) * 48}px)`;
+    }
+  }
+
+  // ── 3.2 Stage 03: Live Quiz - Fan-out từ giữa sang 2 bên khi cuộn ─────────
+  function updateLiveQuizFanOut() {
+    if (!liveQuizTrack || !fanCenterTablet) return;
+    if (window.innerWidth <= 768) return;
+
+    const rect = liveQuizTrack.getBoundingClientRect();
+    const windowH = window.innerHeight;
+    const totalDist = rect.height - windowH;
+    if (totalDist <= 0) return;
+
+    const passed = -rect.top;
+    const progress = Math.min(1, Math.max(0, passed / totalDist));
+
+    // Dynamic width scale based on window width:
+    const stageW = Math.min(window.innerWidth, 1320);
+    const scaleFactor = Math.max(0.72, Math.min(1.0, stageW / 1200));
+
+    // Phase 1: Left 1 & Right 1 emerge (0.04 -> 0.48)
+    const pL1 = Math.min(1, Math.max(0, (progress - 0.04) / 0.44));
+    const distL1 = -230 * scaleFactor * pL1;
+    const rotL1 = -2.5 * pL1;
+    const scaleL1 = 0.88 + 0.1 * pL1;
+    if (fanCardL1) {
+      fanCardL1.style.transform = `translateX(${distL1}px) scale(${scaleL1}) rotate(${rotL1}deg)`;
+      fanCardL1.style.opacity = pL1;
+    }
+
+    const pR1 = Math.min(1, Math.max(0, (progress - 0.04) / 0.44));
+    const distR1 = 230 * scaleFactor * pR1;
+    const rotR1 = 2.5 * pR1;
+    const scaleR1 = 0.88 + 0.1 * pR1;
+    if (fanCardR1) {
+      fanCardR1.style.transform = `translateX(${distR1}px) scale(${scaleR1}) rotate(${rotR1}deg)`;
+      fanCardR1.style.opacity = pR1;
+    }
+
+    // Phase 2: Left 2 & Right 2 emerge further (0.22 -> 0.72)
+    const pL2 = Math.min(1, Math.max(0, (progress - 0.22) / 0.50));
+    const distL2 = -435 * scaleFactor * pL2;
+    const rotL2 = -5.0 * pL2;
+    const scaleL2 = 0.82 + 0.12 * pL2;
+    if (fanCardL2) {
+      fanCardL2.style.transform = `translateX(${distL2}px) scale(${scaleL2}) rotate(${rotL2}deg)`;
+      fanCardL2.style.opacity = pL2;
+    }
+
+    const pR2 = Math.min(1, Math.max(0, (progress - 0.22) / 0.50));
+    const distR2 = 435 * scaleFactor * pR2;
+    const rotR2 = 5.0 * pR2;
+    const scaleR2 = 0.82 + 0.12 * pR2;
+    if (fanCardR2) {
+      fanCardR2.style.transform = `translateX(${distR2}px) scale(${scaleR2}) rotate(${rotR2}deg)`;
+      fanCardR2.style.opacity = pR2;
+    }
+
+    // Center tablet: Subtle scale as cards emerge
+    const pCenter = Math.min(1, Math.max(0, progress / 0.6));
+    const tabletScale = 1.0 + 0.02 * pCenter;
+    fanCenterTablet.style.transform = `scale(${tabletScale})`;
+
+    // Phase 3: Bottom deck fades & glides up (0.50 -> 0.88)
+    if (liveQuizDeck) {
+      const pDeck = Math.min(1, Math.max(0, (progress - 0.50) / 0.38));
+      liveQuizDeck.style.opacity = pDeck;
+      liveQuizDeck.style.transform = `translateY(${(1 - pDeck) * 28}px)`;
     }
   }
 
@@ -265,8 +342,11 @@ async function initScrollytelling() {
     // Hero parallax
     updateHeroParallax(scrollY);
 
-    // Stage 02: Bóc tách thu nhỏ ảnh từ 4/5 xuống 2/5
+    // Stage 02: Bóc tách thu nhỏ ảnh từ 6/7 xuống 4/7
     updateBocTachShrink();
+
+    // Stage 03: Live Quiz fan-out từ giữa qua 2 bên
+    updateLiveQuizFanOut();
 
     // Timeline progress
     updateTimelineProgress();

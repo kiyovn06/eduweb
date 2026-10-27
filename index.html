@@ -146,76 +146,83 @@
       </section>
 
     <!-- ══════════════════════════════════════════════════════════════════════
-         03: ĐẤU TRƯỜNG LIVE QUIZ (ZIGZAG STREAM · SO LE TRÁI PHẢI · KHÔNG CHỮ TRONG ẢNH)
+         03: ĐẤU TRƯỜNG LIVE QUIZ (FAN-OUT SHOWCASE: HIỆN RA TỪ GIỮA QUA 2 BÊN)
          ══════════════════════════════════════════════════════════════════════ -->
-    <section class="stage-section stage-chapter" id="live-quiz" data-stage="2">
-      <div class="chapter-container">
+    <section class="stage-section stage-chapter stage-live-quiz-track" id="live-quiz" data-stage="2">
+      <div class="live-quiz-sticky-wrapper" id="live-quiz-pinned">
+        <div class="live-quiz-inner-container">
 
-        <div class="section-intro">
-          <h2 class="section-title">Đấu Trường Trắc Nghiệm Trực Tiếp</h2>
-          <p class="section-desc">Kích thích phản xạ học tập và biến mỗi tiết học thành đấu trường sôi nổi.</p>
-        </div>
-
-        <!-- 1 ẢNH SHOWCASE LỚN Ở DƯỚI TIÊU ĐỀ: KHÔNG CHỨA CHỮ ĐÈ LÊN ẢNH -->
-        <div class="live-arena-hero-showcase flow-in-up">
-          <div class="chapter-visual-box live-arena-hero-box">
-            <img src="assets/kiyoedu-quiz-arena.jpg" alt="Đấu trường Live Quiz trực tiếp trong lớp học" width="1376" height="768" loading="lazy">
+          <div class="section-intro live-quiz-header" id="live-quiz-header">
+            <h2 class="section-title">Đấu Trường Trắc Nghiệm Trực Tiếp</h2>
+            <p class="section-desc">Kích thích phản xạ học tập và biến mỗi tiết học thành đấu trường sôi nổi.</p>
           </div>
-        </div>
 
-        <!-- CÁC TÍNH NĂNG TIẾP NỐI: SO LE TRÁI - PHẢI - TRÁI - PHẢI, CÓ KHOẢNG CÁCH NHÌN ĐƯỢC ẢNH CŨ -->
-        <div class="live-quiz-zigzag-stream">
-
-          <!-- BƯỚC 01: ẢNH TRÁI · CHỮ PHẢI -->
-          <div class="zigzag-row">
-            <div class="chapter-visual-box zigzag-visual flow-in-left">
-              <img src="assets/kiyoedu-pin-entry.jpg" alt="Học sinh nhập mã PIN 6 ký tự tham gia thi" width="1376" height="768" loading="lazy">
+          <!-- FAN-OUT STAGE: ẢNH HIỆN RA TỪ ẢNH GIỮA QUA 2 BÊN (KIỂU APPLE SHOWCASE) -->
+          <div class="live-quiz-fan-stage" id="live-quiz-fan-stage">
+            
+            <!-- Left 2: Viền xa bên trái (Lớp học trực tiếp) -->
+            <div class="fan-card fan-card-side fan-card-l2" id="fan-card-l2">
+              <img src="assets/kiyoedu-student-tablet.jpg" alt="Học sinh tương tác trực tiếp trong giờ học" width="520" height="760" loading="lazy">
             </div>
-            <div class="zigzag-content flow-in-right">
-              <div class="feature-block">
-                <span class="block-num">01</span>
-                <div class="block-content">
-                  <h3>Tham Gia Bằng Mã PIN</h3>
-                  <p>Học sinh nhập mã 6 ký tự để vào thi ngay. Không bắt buộc đăng ký tài khoản phức tạp.</p>
-                </div>
+
+            <!-- Left 1: 01 Tham Gia Bằng Mã PIN -->
+            <div class="fan-card fan-card-side fan-card-l1" id="fan-card-l1">
+              <img src="assets/kiyoedu-pin-entry.jpg" alt="Tham gia thi bằng mã PIN 6 ký tự" width="520" height="760" loading="lazy">
+              <div class="card-tag-badge">
+                <span class="tag-num">01</span>
+                <span class="tag-title">Tham Gia Bằng Mã PIN</span>
               </div>
             </div>
-          </div>
 
-          <!-- BƯỚC 02: CHỮ TRÁI · ẢNH PHẢI -->
-          <div class="zigzag-row zigzag-reverse">
-            <div class="zigzag-content flow-in-left">
-              <div class="feature-block">
-                <span class="block-num">02</span>
-                <div class="block-content">
-                  <h3>Xếp Hạng Thời Gian Thực</h3>
-                  <p>Cập nhật điểm số tức thì khi chốt đáp án qua hạ tầng WebSocket độ trễ 0ms.</p>
-                </div>
+            <!-- Center: Thiết bị Tablet trung tâm (Đấu trường Live Quiz) -->
+            <div class="fan-center-tablet" id="fan-center-tablet">
+              <div class="fan-center-screen">
+                <img src="assets/kiyoedu-quiz-arena.jpg" alt="Màn hình đấu trường Live Quiz KiyoEdu" width="640" height="960" loading="lazy">
               </div>
             </div>
-            <div class="chapter-visual-box zigzag-visual flow-in-right">
-              <img src="assets/webedu-practice.jpg" alt="Xếp hạng trực tiếp và điểm số thời gian thực" width="1376" height="768" loading="lazy">
+
+            <!-- Right 1: 02 Xếp Hạng Thời Gian Thực -->
+            <div class="fan-card fan-card-side fan-card-r1" id="fan-card-r1">
+              <img src="assets/webedu-practice.jpg" alt="Xếp hạng thời gian thực WebSocket 0ms" width="520" height="760" loading="lazy">
+              <div class="card-tag-badge">
+                <span class="tag-num">02</span>
+                <span class="tag-title">Xếp Hạng Thời Gian Thực</span>
+              </div>
             </div>
+
+            <!-- Right 2: 03 Khóa Chống Gian Lận -->
+            <div class="fan-card fan-card-side fan-card-r2" id="fan-card-r2">
+              <img src="assets/kiyoedu-anticheat-lock.jpg" alt="Khóa chống gian lận chế độ toàn màn hình" width="520" height="760" loading="lazy">
+              <div class="card-tag-badge">
+                <span class="tag-num">03</span>
+                <span class="tag-title">Khóa Chống Gian Lận</span>
+              </div>
+            </div>
+
           </div>
 
-          <!-- BƯỚC 03: ẢNH TRÁI · CHỮ PHẢI -->
-          <div class="zigzag-row">
-            <div class="chapter-visual-box zigzag-visual flow-in-left">
-              <img src="assets/kiyoedu-anticheat-lock.jpg" alt="Khóa chống gian lận chế độ toàn màn hình trên máy tính bảng" width="1376" height="768" loading="lazy">
+          <!-- 3 CỘT THÔNG TIN TÍNH NĂNG Ở DƯỚI (KHÔNG CÓ CHỮ ĐÈ TRONG ẢNH) -->
+          <div class="feature-deck-grid" id="live-quiz-feature-deck">
+            <div class="deck-card">
+              <div class="deck-num">01</div>
+              <h3>Tham Gia Bằng Mã PIN</h3>
+              <p>Học sinh nhập mã 6 ký tự để vào thi ngay. Không bắt buộc đăng ký tài khoản phức tạp.</p>
             </div>
-            <div class="zigzag-content flow-in-right">
-              <div class="feature-block">
-                <span class="block-num">03</span>
-                <div class="block-content">
-                  <h3>Khóa Chống Gian Lận</h3>
-                  <p>Tự động đảo câu hỏi ngẫu nhiên và cảnh báo tức thời khi học sinh rời khỏi màn hình thi.</p>
-                </div>
-              </div>
+
+            <div class="deck-card">
+              <div class="deck-num">02</div>
+              <h3>Xếp Hạng Thời Gian Thực</h3>
+              <p>Cập nhật điểm số tức thì khi chốt đáp án qua hạ tầng WebSocket độ trễ 0ms.</p>
+            </div>
+
+            <div class="deck-card">
+              <div class="deck-num">03</div>
+              <h3>Khóa Chống Gian Lận</h3>
+              <p>Tự động đảo câu hỏi ngẫu nhiên và cảnh báo tức thời khi học sinh rời khỏi màn hình thi.</p>
             </div>
           </div>
 
         </div>
-
       </div>
     </section>
 
