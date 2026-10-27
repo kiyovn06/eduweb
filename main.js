@@ -79,14 +79,16 @@ async function initScrollytelling() {
       heroForeground.style.opacity = textOpacity;
     }
 
-    // 2. Ảnh to nhỏ lại nhưng KHÔNG bo góc để không làm lộ viền mép màn hình
-    if (heroBgImg) {
-      const imgScale = Math.max(0.92, 1 - progress * 0.08);
-      heroBgImg.style.transform = `scale(${imgScale})`;
-    }
+    // 2. Ảnh bo góc ban đầu (24px) và khi kéo xuống mới bắt đầu bo góc thêm (lên tới 56px)
     if (heroBackdrop) {
-      heroBackdrop.style.transform = 'none';
-      heroBackdrop.style.borderRadius = '0px';
+      const baseRadius = 24;
+      const extraRadius = progress * 32;
+      heroBackdrop.style.borderRadius = `${baseRadius + extraRadius}px`;
+      const imgScale = Math.max(0.94, 1 - progress * 0.06);
+      heroBackdrop.style.transform = `scale(${imgScale})`;
+    }
+    if (heroBgImg) {
+      heroBgImg.style.transform = 'none';
     }
 
     // 3. Scroll Cue
