@@ -498,14 +498,14 @@ body {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   STORY CURTAIN SHEET (KÉO LÊN LUÔN · BO GÓC 2 BÊN TRÁI & PHẢI · KHÔNG KHUNG VIỀN)
+   STORY CURTAIN SHEET (KÉO LÊN LUÔN · THẲNG PHẲNG KHÔNG BO GÓC TRÊN · KHÔNG KHUNG VIỀN)
    ══════════════════════════════════════════════════════════════════════════ */
 .story-curtain-sheet {
   position: relative;
   z-index: 10;
   background: var(--bg-sheet-white); /* Nền ở dưới TRẮNG TINH (#ffffff) */
-  border-top-left-radius: clamp(32px, 4.5vw, 48px);
-  border-top-right-radius: clamp(32px, 4.5vw, 48px);
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
   border: none;
   box-shadow: none !important;
   width: 100%;
@@ -524,7 +524,7 @@ body {
   border: none;
 }
 
-/* STICKY TRACK FOR SECTION 02: BÓC TÁCH (ẢNH 6/7 THU NHỎ XUỐNG 4/7 · CÁCH ĐỀU TRÊN DƯỚI ĐÚNG GẦN 30PX · CHỮ LẦN LƯỢT TỪ PHẢI VÀO) */
+/* STICKY TRACK FOR SECTION 02: BÓC TÁCH (ẢNH 6/7 THU NHỎ XUỐNG 4/7 · HIỆN XUỐNG BÊN DƯỚI HƠN NỮA · CHỮ LẦN LƯỢT TỪ PHẢI VÀO) */
 .stage-boc-tach-track {
   position: relative;
   min-height: 220vh;
@@ -540,7 +540,7 @@ body {
   align-items: center;
   justify-content: flex-start;
   width: 100%;
-  padding: 30px clamp(2rem, 3.5vw, 4rem) 30px 0; /* ĐÚNG GẦN 30PX TRÊN VÀ DƯỚI */
+  padding: 70px clamp(2rem, 3.5vw, 4rem) 40px 0; /* HIỆN ẢNH XUỐNG BÊN DƯỚI HƠN NỮA */
   box-sizing: border-box;
   overflow: hidden;
 }
@@ -550,7 +550,7 @@ body {
   align-items: center;
   gap: clamp(2rem, 3.5vw, 3.5rem);
   width: 100%;
-  height: calc(100vh - 60px); /* 100vh - 30px top - 30px bottom: CÁCH ĐỀU 30PX */
+  height: calc(100vh - 110px); /* 100vh - 70px top - 40px bottom: KHỚP VỚI PADDING MỚI */
   position: relative;
 }
 
@@ -572,7 +572,7 @@ body {
   overflow: hidden;
   position: relative;
   box-shadow: 0 20px 48px rgba(15, 23, 42, 0.12);
-  background: #0f172a;
+  background: transparent;
 }
 
 .boc-tach-visual-col .chapter-visual-box img {
