@@ -1082,21 +1082,40 @@ body {
 
 .managed-title {
   font-family: var(--font-sans), 'Plus Jakarta Sans', -apple-system, sans-serif;
-  font-size: clamp(3.4rem, 4.6vw, 5.6rem);
+  font-size: clamp(3.2rem, 4.4vw, 5.2rem);
   font-weight: 800;
   color: #2b5cff;
   line-height: 1.05;
   letter-spacing: -0.04em;
   margin: 0;
   text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.title-line-text {
+  color: #2b5cff;
+  display: block;
+}
+
+.title-line-num {
+  font-size: 1.45em;
+  font-weight: 900;
+  color: #ff5500;
+  line-height: 0.92;
+  display: block;
+  margin: 6px 0;
+  text-shadow: 0 4px 20px rgba(255, 85, 0, 0.22);
 }
 
 .managed-title-num {
-  font-size: 1.25em;
+  font-size: 1.45em;
   font-weight: 900;
-  color: #2b5cff;
-  display: inline-block;
-  line-height: 0.95;
+  color: #ff5500;
+  display: block;
+  line-height: 0.92;
+  margin: 6px 0;
 }
 
 .managed-platform-badges {
@@ -1185,8 +1204,11 @@ body {
 
 .phone-frame-2 {
   z-index: 20;
-  transform: translate(-50%, 46%);
+  transform: translate(-50%, 140%);
+  opacity: 0;
+  pointer-events: none;
   box-shadow: 0 -24px 60px rgba(0, 0, 0, 0.35), 0 32px 80px -16px rgba(15, 23, 42, 0.35);
+  will-change: transform, opacity;
 }
 
 .iphone-screen {
@@ -1610,7 +1632,10 @@ body {
 .white-slide-card-2 {
   z-index: 20;
   transform: translateY(105%);
+  opacity: 0;
+  pointer-events: none;
   box-shadow: 0 -16px 36px rgba(0, 0, 0, 0.1);
+  will-change: transform, opacity;
 }
 
 .white-card-heading {

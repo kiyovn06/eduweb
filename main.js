@@ -288,15 +288,40 @@ async function initScrollytelling() {
     const passed = -rect.top;
     const progress = Math.min(1, Math.max(0, passed / totalDist));
 
-    // Phase 1 (0 -> 0.22): Phone 1 & Card 1 active
-    // Phase 2 (0.22 -> 0.82): Phone 2 & Card 2 slide up and stack over Phone 1 & Card 1
-    const stackProgress = Math.min(1, Math.max(0, (progress - 0.22) / 0.60));
+    // Phase 1 (0 -> 0.18): Phone 1 & Card 1 active (Phone 2 completely hidden & off-screen)
+    // Phase 2 (0.18 -> 0.82): Phone 2 & Card 2 slide up and stack smoothly over Phone 1 & Card 1
+    const stackProgress = Math.min(1, Math.max(0, (progress - 0.18) / 0.64));
+    
+    if (stackProgress <= 0) {
+      p2.style.transform = 'translate(-50%, 140%)';
+      p2.style.opacity = '0';
+      p2.style.pointerEvents = 'none';
+      c2.style.transform = 'translateY(105%)';
+      c2.style.opacity = '0';
+      c2.style.pointerEvents = 'none';
+      if (p1) {
+        p1.style.transform = 'translate(-50%, -50%) scale(1)';
+        p1.style.filter = 'brightness(1)';
+      }
+      if (c1) {
+        c1.style.transform = 'translateY(0) scale(1)';
+        c1.style.filter = 'brightness(1)';
+      }
+      return;
+    }
+
     const easeY = 1 - Math.pow(1 - stackProgress, 2.5); // Smooth natural deceleration
-    const phoneY = 46 - (96 * easeY);
-    const cardY = (1 - easeY) * 105;
+    const phoneY = 140 - (190 * easeY); // from 140% to -50%
+    const cardY = (1 - easeY) * 105;    // from 105% to 0%
+    const itemOpacity = Math.min(1, stackProgress * 3.5).toFixed(2);
 
     p2.style.transform = `translate(-50%, ${phoneY.toFixed(2)}%)`;
+    p2.style.opacity = itemOpacity;
+    p2.style.pointerEvents = 'auto';
+
     c2.style.transform = `translateY(${cardY.toFixed(2)}%)`;
+    c2.style.opacity = itemOpacity;
+    c2.style.pointerEvents = 'auto';
 
     // Under-card subtle scale down & brightness reduction
     const underScale = (1 - 0.045 * easeY).toFixed(3);
