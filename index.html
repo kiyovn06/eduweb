@@ -89,66 +89,33 @@
     <div class="story-curtain-sheet" id="story-sheet">
 
       <!-- ══════════════════════════════════════════════════════════════════════
-           02: CÔNG NGHỆ BÓC TÁCH ĐỀ THI AI (FULL MÀN HÌNH SCROLLYTELLING STAGE)
+           02: CÔNG NGHỆ BÓC TÁCH ĐỀ THI AI (LASER SCAN STAGE)
            ══════════════════════════════════════════════════════════════════════ -->
-      <section class="stage-section stage-chapter stage-boc-tach-fullscreen" id="boc-tach-ai" data-stage="1">
-        
-        <!-- FULL SCREEN STAGE (100vw, 100vh) -->
-        <div class="interactive-tablet-fullsticky" id="tablet-fullsticky">
-          <div class="interactive-tablet-viewport" id="tablet-viewport">
-            
-            <!-- LAYER 1: MÀN HÌNH MÁY TÍNH BẢNG (Ảnh riêng 1: Cái màn hình full màn hình) -->
-            <div class="layer-tablet-device" id="layer-tablet-device">
-              <img src="assets/kiyoedu-tablet-device-screen.jpg" alt="Màn hình tablet KiyoEdu trên bàn học" width="1920" height="1080" fetchpriority="high">
-            </div>
+      <section class="stage-section stage-chapter" id="boc-tach-ai" data-stage="1">
+      <div class="chapter-container">
 
-            <!-- LAYER 2: BÀN TAY BẤM VÔ MÀN HÌNH (Ảnh riêng 2: Cái tay) -->
-            <div class="layer-hand-tap" id="layer-hand-tap">
-              <img src="assets/kiyoedu-isolated-hand.webp" alt="Bàn tay học sinh bấm vô màn hình" width="1920" height="1080" fetchpriority="high">
-              <div class="tap-ripple-effect" id="tap-ripple"></div>
-            </div>
-
-            <!-- LAYER 3: ĐI VÀO TRONG MÀN HÌNH VÀ KÉO NỘI DUNG CUỘN TRANG -->
-            <div class="layer-screen-dive" id="layer-screen-dive">
-              <div class="screen-scroll-track" id="screen-scroll-track">
-                <img src="assets/kiyoedu-tablet-screen-ui.jpg" alt="Giao diện bóc tách đề thi KiyoEdu" width="1920" height="1080" loading="lazy">
-                <img src="assets/kiyoedu-exam-questions-scrolled.jpg" alt="Nội dung đề thi và công thức toán KaTeX cuộn trang" width="1920" height="1080" loading="lazy">
-              </div>
-              <div class="laser-scanner-line" aria-hidden="true"></div>
-            </div>
-
-            <!-- TIÊU ĐỀ NỔI TRÊN NỀN FULL MÀN HÌNH -->
-            <div class="boc-tach-floating-header">
-              <div class="boc-tach-title-card">
-                <h2 class="section-title">Bóc Tách Đề Thi Trong 3 Giây</h2>
-                <p class="section-desc">Tự động nhận diện câu hỏi, đáp án và công thức toán học từ Word, PDF và ảnh chụp.</p>
-              </div>
-              <div class="scanner-data-overlay">
-                <span class="chip-data">OCR: 99.8% CHÍNH XÁC</span>
-                <span class="chip-data">40 CÂU TRẮC NGHIỆM</span>
-                <span class="chip-data">CHUẨN KATEX</span>
-              </div>
-            </div>
-
-            <!-- THANH ĐIỀU HƯỚNG BƯỚC NỔI Ở DƯỚI ĐÁY -->
-            <div class="boc-tach-steps-hud">
-              <div class="hud-step-pill is-active" id="hud-pill-1">
-                <span class="step-num">01</span><span>Chạm Quét Đề</span>
-              </div>
-              <div class="hud-step-pill" id="hud-pill-2">
-                <span class="step-num">02</span><span>Phóng To Giao Diện</span>
-              </div>
-              <div class="hud-step-pill" id="hud-pill-3">
-                <span class="step-num">03</span><span>Bóc Tách KaTeX</span>
-              </div>
-            </div>
-
-          </div>
+        <div class="section-intro">
+          <h2 class="section-title">Bóc Tách Đề Thi Trong 3 Giây</h2>
+          <p class="section-desc">Tự động nhận diện câu hỏi, đáp án và công thức toán học từ Word, PDF và ảnh chụp.</p>
         </div>
 
-        <div class="chapter-container">
-          <!-- 3 KHỐI TÍNH NĂNG CHI TIẾT (01, 02, 03) -->
-          <div class="boc-tach-features-grid">
+        <div class="chapter-grid-split">
+          
+          <div class="chapter-visual-box ocr-scanner-visual flow-in-left">
+            <img src="assets/kiyoedu-hand-tap-tablet.jpg" alt="Bàn tay học sinh chạm màn hình KiyoEdu" width="800" height="520" loading="lazy">
+            <div class="laser-scanner-line" aria-hidden="true"></div>
+            <div class="scanner-data-overlay">
+              <span class="chip-data">OCR: 99.8% CHÍNH XÁC</span>
+              <span class="chip-data">40 CÂU TRẮC NGHIỆM</span>
+              <span class="chip-data">CHUẨN KATEX</span>
+            </div>
+            <div class="visual-caption-bar">
+              <span class="cap-title">Trợ Lý SI KiyoEdu Studio</span>
+              <span class="cap-badge">40 câu / 2.8 giây</span>
+            </div>
+          </div>
+
+          <div class="chapter-details-col flow-in-right">
             <div class="feature-block">
               <span class="block-num">01</span>
               <div class="block-content">
@@ -173,6 +140,8 @@
               </div>
             </div>
           </div>
+
+        </div>
 
         <!-- BẢNG SO SÁNH HIỆU QUẢ -->
         <div class="comparison-panel flow-in-left">

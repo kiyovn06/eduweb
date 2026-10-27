@@ -17,7 +17,6 @@ async function initScrollytelling() {
     wheelMultiplier: 1.0,
     touchMultiplier: 1.5,
   });
-  window.lenis = lenis;
 
   function raf(time) {
     lenis.raf(time);
@@ -50,17 +49,6 @@ async function initScrollytelling() {
   const heroBgImg = document.getElementById('hero-bg-img');
   const heroPoincianaWrap = document.getElementById('hero-poinciana-wrap');
   const heroTarget = document.getElementById('hero-parallax-target');
-
-  // Stage 02: Interactive Zoom-Dive-Scroll Tablet Viewport (FULL MÀN HÌNH)
-  const bocTachSection = document.getElementById('boc-tach-ai');
-  const tabletDeviceLayer = document.getElementById('layer-tablet-device');
-  const handTapLayer = document.getElementById('layer-hand-tap');
-  const screenDiveLayer = document.getElementById('layer-screen-dive');
-  const screenScrollTrack = document.getElementById('screen-scroll-track');
-  const capScanStatus = document.getElementById('cap-scan-status');
-  const hudPill1 = document.getElementById('hud-pill-1');
-  const hudPill2 = document.getElementById('hud-pill-2');
-  const hudPill3 = document.getElementById('hud-pill-3');
 
   // Timeline Track
   const timelineTrack = document.getElementById('timeline-track');
@@ -105,84 +93,6 @@ async function initScrollytelling() {
     if (heroPoincianaWrap) {
       const poincianaY = -progress * 30;
       heroPoincianaWrap.style.transform = `translate3d(0, ${poincianaY}px, 0)`;
-    }
-  }
-
-  // ── 3.1 Interactive Zoom & Screen Dive on Scroll (FULL MÀN HÌNH · Tay riêng + Màn hình riêng -> Zoom -> Cuộn) ───
-  function updateBocTachZoomScroll() {
-    if (!bocTachSection || !tabletDeviceLayer || !handTapLayer || !screenDiveLayer || !screenScrollTrack) return;
-    const rect = bocTachSection.getBoundingClientRect();
-    const windowH = window.innerHeight;
-    const totalDist = rect.height - windowH;
-    if (totalDist <= 0) return;
-
-    // Progress chạy mượt từ 0.0 khi section chạm đỉnh màn hình đến 1.0 khi cuộn hết stage
-    const passed = -rect.top;
-    const progress = Math.min(1, Math.max(0, passed / totalDist));
-
-    if (progress <= 0.40) {
-      // Phase 1: Bàn tay đưa từ ngoài vào trong bấm vô màn hình và PHÓNG TO FULL MÀN HÌNH
-      const p1 = progress / 0.40;
-
-      // Tay đưa vào trong bấm vô màn hình:
-      // Khi vừa cuộn vào (p1 < 0.22): tay từ dưới góc phải tiến sâu vào trong và hạ ngón tay chạm màn hình
-      const enterPhase = Math.min(1, p1 / 0.22);
-      const handOffsetX = (1 - enterPhase) * 36;
-      const handOffsetY = (1 - enterPhase) * 28;
-
-      // Hiệu ứng ấn ngón tay chạm xuống mặt kính màn hình (tap press)
-      const tapPress = (p1 >= 0.18 && p1 <= 0.30)
-        ? Math.sin((p1 - 0.18) / 0.12 * Math.PI) * 4
-        : 0;
-
-      const zoomScale = 1 + p1 * 1.55; // Zoom cả tay lẫn màn hình tablet từ 1.0 lên ~2.55 phóng to vào màn hình
-
-      tabletDeviceLayer.style.transform = `scale(${zoomScale})`;
-      tabletDeviceLayer.style.opacity = '1';
-
-      // Hand opacity: Giữ rõ nét khi bấm và phóng to, rồi mờ dần hòa vào màn hình
-      const handOpacity = p1 > 0.60 ? Math.max(0, 1 - (p1 - 0.60) / 0.35) : 1;
-      handTapLayer.style.transform = `translate3d(${handOffsetX}px, ${handOffsetY + tapPress}px, 0) scale(${zoomScale})`;
-      handTapLayer.style.opacity = handOpacity;
-
-      // Vòng tròn gợn sóng phát ra từ đầu ngón tay bấm vô màn hình
-      const tapRipple = document.getElementById('tap-ripple');
-      if (tapRipple) {
-        tapRipple.style.opacity = (p1 >= 0.15 && p1 <= 0.65) ? '1' : '0';
-      }
-
-      // Làm mờ tiêu đề khi phóng to để trải nghiệm lặn vào màn hình không bị vướng
-      const floatingHeader = document.querySelector('.boc-tach-floating-header');
-      if (floatingHeader) {
-        floatingHeader.style.opacity = p1 > 0.15 ? Math.max(0, 1 - (p1 - 0.15) / 0.25) : 1;
-      }
-
-      screenDiveLayer.style.opacity = p1 > 0.45 ? (p1 - 0.45) / 0.55 : 0;
-      screenDiveLayer.style.transform = `scale(${0.90 + p1 * 0.10})`;
-      screenScrollTrack.style.transform = 'translate3d(0, 0, 0)';
-      if (capScanStatus) capScanStatus.textContent = p1 < 0.22 ? 'Tay đưa vào chạm màn hình...' : '1 Chạm Quét Đề AI';
-
-      if (hudPill1) hudPill1.className = 'hud-step-pill ' + (p1 < 0.45 ? 'is-active' : '');
-      if (hudPill2) hudPill2.className = 'hud-step-pill ' + (p1 >= 0.45 ? 'is-active' : '');
-      if (hudPill3) hudPill3.className = 'hud-step-pill';
-    } else {
-      // Phase 2: ĐI VÀO TRONG MÀN HÌNH VÀ KÉO NỘI DUNG CUỘN TRANG FULL MÀN HÌNH
-      const floatingHeader = document.querySelector('.boc-tach-floating-header');
-      if (floatingHeader) floatingHeader.style.opacity = '0';
-      handTapLayer.style.opacity = 0;
-      tabletDeviceLayer.style.opacity = 0;
-      screenDiveLayer.style.opacity = 1;
-      screenDiveLayer.style.transform = 'scale(1)';
-
-      const p2 = (progress - 0.40) / 0.60;
-      const maxScrollPx = screenScrollTrack.scrollHeight - windowH;
-      const trackY = p2 * Math.max(0, maxScrollPx);
-      screenScrollTrack.style.transform = `translate3d(0, ${-trackY}px, 0)`;
-      if (capScanStatus) capScanStatus.textContent = `Bóc tách KaTeX ${Math.min(100, Math.round(p2 * 100))}%`;
-
-      if (hudPill1) hudPill1.className = 'hud-step-pill';
-      if (hudPill2) hudPill2.className = 'hud-step-pill';
-      if (hudPill3) hudPill3.className = 'hud-step-pill is-active';
     }
   }
 
@@ -296,9 +206,6 @@ async function initScrollytelling() {
 
     // Hero parallax
     updateHeroParallax(scrollY);
-
-    // Stage 02: Bóc tách zoom & screen dive scroll
-    updateBocTachZoomScroll();
 
     // Timeline progress
     updateTimelineProgress();
