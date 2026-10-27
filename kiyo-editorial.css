@@ -1025,25 +1025,109 @@ body {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   04.1: SHOWCASE QUẢN LÝ TRONG 1 ỨNG DỤNG (ĐIỆN THOẠI & THẺ MÀU XẾP ĐÈ)
+   04: AWWWARDS STACKED CARDS DECK (CHƯƠNG 03 · QUẢN LÝ LỚP HỌC)
    ══════════════════════════════════════════════════════════════════════════ */
-.app-showcase-track {
+.stacked-workflow-deck {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 960px;
+  margin: 0 auto;
   position: relative;
-  min-height: 250vh;
-  margin-top: clamp(2rem, 3.5vw, 3.5rem);
-  width: 100%;
 }
 
-.app-showcase-sticky {
+.stacked-card {
   position: sticky;
-  top: 30px;
-  height: calc(100vh - 60px);
-  padding: 0;
+  top: calc(90px + var(--card-index, 0) * 24px);
+  background: var(--bg-surface);
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 2.25rem 2.5rem;
+  transition: transform 0.2s ease;
+  z-index: calc(10 + var(--card-index, 0));
+}
+
+.stacked-card:hover {
+  border-color: transparent;
+}
+
+.stacked-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.stacked-step {
+  font-size: 0.75rem;
+  font-weight: 800;
+  font-family: var(--font-mono);
+  color: var(--accent-blue);
+  letter-spacing: 0.06em;
+}
+
+.stacked-chip {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: var(--bg-subtle);
+  padding: 0.25rem 0.65rem;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+}
+
+.stacked-card h3 {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 0.65rem;
+  letter-spacing: -0.02em;
+}
+
+.stacked-card p {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 1.25rem;
+}
+
+.stacked-footer-spec {
+  font-size: 0.82rem;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--accent-blue);
+  background: var(--accent-blue-soft);
+  padding: 0.4rem 0.85rem;
+  border-radius: var(--radius-sm);
+  display: inline-block;
+  border: none;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   05: SHOWCASE QUẢN LÝ TRONG 1 ỨNG DỤNG (TOÀN MÀN HÌNH SAU KHI KÉO XONG CHƯƠNG 03)
+   ══════════════════════════════════════════════════════════════════════════ */
+.stage-app-showcase-track {
+  position: relative;
+  min-height: 250vh;
+  width: 100%;
+  background: #ffffff;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.app-showcase-fullscreen-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+  padding: clamp(2rem, 3.5vw, 3.5rem) clamp(2.5rem, 5vw, 6rem);
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   overflow: hidden;
-  background: transparent;
+  background: #ffffff;
+  z-index: 20;
 }
 
 /* TIÊU ĐỀ Ở GÓC TRÊN BÊN TRÁI, KHÔNG CANH GIỮA, KHÔNG BỊ ĐÈ */

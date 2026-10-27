@@ -256,7 +256,7 @@ async function initScrollytelling() {
 
   // ── 3.4 Stage 04.1: Showcase Quản Lý Trong 1 Ứng Dụng (Phone & Card Stacking) ──
   function updateAppPhoneStack() {
-    const showcaseTrack = document.getElementById('app-showcase-track');
+    const showcaseTrack = document.getElementById('quan-ly-app') || document.getElementById('app-showcase-track');
     const p1 = document.getElementById('phone-card-1');
     const p2 = document.getElementById('phone-card-2');
     const c1 = document.getElementById('feature-card-1');
