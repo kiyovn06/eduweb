@@ -179,42 +179,42 @@ async function initScrollytelling() {
     const stageW = Math.min(window.innerWidth, 1440);
     const scaleFactor = Math.max(0.72, Math.min(1.0, stageW / 1366));
 
-    // Phase 1: Left 1 & Right 1 emerge (0.04 -> 0.48)
-    const pL1 = Math.min(1, Math.max(0, (progress - 0.04) / 0.44));
-    const distL1 = -250 * scaleFactor * pL1;
-    const rotL1 = -2.5 * pL1;
-    const scaleL1 = 0.88 + 0.1 * pL1;
+    // Phase 1: Left 1 & Right 1 (bắt đầu ló sẵn một tí, cuộn xuống xòe rộng ra)
+    const pL1 = Math.min(1, Math.max(0, progress / 0.65));
+    const distL1 = (-55 - 205 * pL1) * scaleFactor;
+    const rotL1 = -2.0 - 0.5 * pL1;
+    const scaleL1 = 0.95 + 0.03 * pL1;
     if (fanCardL1) {
       fanCardL1.style.transform = `translateX(${distL1}px) scale(${scaleL1}) rotate(${rotL1}deg)`;
-      fanCardL1.style.opacity = pL1;
+      fanCardL1.style.opacity = '1';
     }
 
-    const pR1 = Math.min(1, Math.max(0, (progress - 0.04) / 0.44));
-    const distR1 = 250 * scaleFactor * pR1;
-    const rotR1 = 2.5 * pR1;
-    const scaleR1 = 0.88 + 0.1 * pR1;
+    const pR1 = Math.min(1, Math.max(0, progress / 0.65));
+    const distR1 = (55 + 205 * pR1) * scaleFactor;
+    const rotR1 = 2.0 + 0.5 * pR1;
+    const scaleR1 = 0.95 + 0.03 * pR1;
     if (fanCardR1) {
       fanCardR1.style.transform = `translateX(${distR1}px) scale(${scaleR1}) rotate(${rotR1}deg)`;
-      fanCardR1.style.opacity = pR1;
+      fanCardR1.style.opacity = '1';
     }
 
-    // Phase 2: Left 2 & Right 2 emerge further (0.22 -> 0.72)
-    const pL2 = Math.min(1, Math.max(0, (progress - 0.22) / 0.50));
-    const distL2 = -480 * scaleFactor * pL2;
-    const rotL2 = -5.0 * pL2;
-    const scaleL2 = 0.82 + 0.12 * pL2;
+    // Phase 2: Left 2 & Right 2 (ló sẵn ở tầng ngoài, cuộn xuống xòe xa nhất)
+    const pL2 = Math.min(1, Math.max(0, (progress - 0.12) / 0.72));
+    const distL2 = (-110 - 370 * pL2) * scaleFactor;
+    const rotL2 = -4.0 - 1.0 * pL2;
+    const scaleL2 = 0.90 + 0.04 * pL2;
     if (fanCardL2) {
       fanCardL2.style.transform = `translateX(${distL2}px) scale(${scaleL2}) rotate(${rotL2}deg)`;
-      fanCardL2.style.opacity = pL2;
+      fanCardL2.style.opacity = '1';
     }
 
-    const pR2 = Math.min(1, Math.max(0, (progress - 0.22) / 0.50));
-    const distR2 = 480 * scaleFactor * pR2;
-    const rotR2 = 5.0 * pR2;
-    const scaleR2 = 0.82 + 0.12 * pR2;
+    const pR2 = Math.min(1, Math.max(0, (progress - 0.12) / 0.72));
+    const distR2 = (110 + 370 * pR2) * scaleFactor;
+    const rotR2 = 4.0 + 1.0 * pR2;
+    const scaleR2 = 0.90 + 0.04 * pR2;
     if (fanCardR2) {
       fanCardR2.style.transform = `translateX(${distR2}px) scale(${scaleR2}) rotate(${rotR2}deg)`;
-      fanCardR2.style.opacity = pR2;
+      fanCardR2.style.opacity = '1';
     }
 
     // Center card: Subtle elevation / scale as cards emerge
