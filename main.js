@@ -43,7 +43,10 @@ async function initScrollytelling() {
   const headerProgress = document.getElementById('header-progress');
   const navLinks = Array.from(document.querySelectorAll('.nav-link'));
 
-  // Hero Parallax Target
+  // Hero Elements Cache (Pinned & Scaling)
+  const heroTrack = document.getElementById('tong-quan');
+  const heroForeground = document.getElementById('hero-foreground');
+  const heroBackdrop = document.getElementById('hero-backdrop');
   const heroTarget = document.getElementById('hero-parallax-target');
   const heroScrollCue = document.getElementById('hero-scroll-cue');
 
@@ -57,22 +60,37 @@ async function initScrollytelling() {
   const statValues = Array.from(document.querySelectorAll('.stat-value'));
   let statsCounted = false;
 
-  // ── 3. Smooth Hero Parallax ───────────────────────────────────────────────
+  // ── 3. Smooth Hero Pinned Scroll & Scaling (Chữ to nhỏ lại, ảnh to nhỏ lại) ───
   function updateHeroParallax(scrollY) {
-    if (!heroTarget) return;
-    const heroH = window.innerHeight;
-    if (scrollY <= heroH) {
-      const progress = scrollY / heroH;
-      const translateY = -(progress * 24);
-      heroTarget.style.transform = `translate3d(0, ${translateY}px, 0)`;
-      heroTarget.style.opacity = '1';
+    if (!heroTrack) return;
+    const rect = heroTrack.getBoundingClientRect();
+    const trackH = heroTrack.offsetHeight - window.innerHeight;
+    if (trackH <= 0) return;
 
-      if (heroScrollCue) {
-        heroScrollCue.style.opacity = progress > 0.05 ? '0' : '1';
-      }
-    } else {
-      heroTarget.style.transform = 'none';
-      heroTarget.style.opacity = '1';
+    // Progress chạy mượt từ 0.0 đến 1.0 khi hero đang đứng im (pinned)
+    const scrolled = -rect.top;
+    const progress = Math.min(1, Math.max(0, scrolled / trackH));
+
+    // 1. Chữ to nhỏ lại (Scale down text as user scrolls down)
+    if (heroForeground) {
+      const textScale = Math.max(0.68, 1 - progress * 0.32);
+      const textOpacity = Math.max(0, 1 - progress * 1.35);
+      const textY = -progress * 60;
+      heroForeground.style.transform = `translate3d(0, ${textY}px, 0) scale(${textScale})`;
+      heroForeground.style.opacity = textOpacity;
+    }
+
+    // 2. Ảnh to nhỏ lại (Scale down image as user scrolls down)
+    if (heroBackdrop) {
+      const imgScale = Math.max(0.86, 1 - progress * 0.14);
+      const imgRadius = progress * 24;
+      heroBackdrop.style.transform = `scale(${imgScale})`;
+      heroBackdrop.style.borderRadius = `${imgRadius}px`;
+    }
+
+    // 3. Scroll Cue
+    if (heroScrollCue) {
+      heroScrollCue.style.opacity = progress > 0.08 ? '0' : '1';
     }
   }
 

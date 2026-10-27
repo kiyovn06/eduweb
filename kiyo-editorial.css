@@ -296,19 +296,27 @@ body {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   01: HERO NỀN TẢNG (CẠNH BÊN TRÁI · PHÔNG CHỮ NGHỆ THUẬT · KHÔNG MỜ TRẮNG)
+   01: HERO NỀN TẢNG (PINNED STICKY · CO GIÃN CHỮ & ẢNH KHI CUỘN)
    ══════════════════════════════════════════════════════════════════════════ */
-.stage-hero {
+.hero-scroll-track {
   position: relative;
-  min-height: calc(100vh - var(--header-height));
+  height: 220vh; /* Độ dài cuộn để hero đứng im và co giãn chữ + ảnh */
+  width: 100%;
+}
+
+.stage-hero {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: flex-start;
   padding: 3rem clamp(2rem, 5vw, 5.5rem);
-  border-bottom: 1px solid var(--border-light);
   width: 100%;
   overflow: hidden;
   box-sizing: border-box;
+  z-index: 1; /* Nằm dưới để các thành phần ở dưới chạy lên đè lên */
 }
 
 .hero-backdrop {
@@ -319,6 +327,9 @@ body {
   z-index: 1;
   pointer-events: none;
   overflow: hidden;
+  transform-origin: center center;
+  will-change: transform, border-radius;
+  transition: border-radius 0.1s linear;
 }
 
 .hero-backdrop-img {
@@ -327,6 +338,8 @@ body {
   object-fit: cover;
   object-position: 80% 30%;
   display: block;
+  transform-origin: center center;
+  will-change: transform;
 }
 
 /* KHÔNG MỜ TRẮNG: Gradient chuyển mượt từ trái qua phải, không dùng backdrop-filter blur */
@@ -353,6 +366,8 @@ body {
   width: 100%;
   max-width: 680px;
   text-align: left;
+  transform-origin: left center;
+  will-change: transform, opacity;
 }
 
 .hero-header-block {
@@ -465,9 +480,13 @@ body {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   CHAPTER GENERAL STYLES
+   CHAPTER GENERAL STYLES (CHẠY LÊN ĐÈ LÊN HERO KHI CUỘN)
    ══════════════════════════════════════════════════════════════════════════ */
+.stage-section:not(.stage-hero),
 .stage-chapter {
+  position: relative;
+  z-index: 5;
+  background: var(--bg-page);
   padding: 6rem 1.5rem;
   border-bottom: 1px solid var(--border-light);
 }
