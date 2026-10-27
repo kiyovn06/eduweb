@@ -44,7 +44,7 @@ async function initScrollytelling() {
   const navLinks = Array.from(document.querySelectorAll('.nav-link'));
 
   // Hero Elements Cache (Pinned & Scaling)
-  const heroTrack = document.getElementById('tong-quan');
+  const heroStage = document.getElementById('tong-quan');
   const heroForeground = document.getElementById('hero-foreground');
   const heroBackdrop = document.getElementById('hero-backdrop');
   const heroTarget = document.getElementById('hero-parallax-target');
@@ -60,16 +60,14 @@ async function initScrollytelling() {
   const statValues = Array.from(document.querySelectorAll('.stat-value'));
   let statsCounted = false;
 
-  // ── 3. Smooth Hero Pinned Scroll & Scaling (Chữ to nhỏ lại, ảnh to nhỏ lại) ───
+  // ── 3. Smooth Hero Pinned Scroll & Scaling (Kéo lên luôn · Chữ & Ảnh co giãn) ───
   function updateHeroParallax(scrollY) {
-    if (!heroTrack) return;
-    const rect = heroTrack.getBoundingClientRect();
-    const trackH = heroTrack.offsetHeight - window.innerHeight;
-    if (trackH <= 0) return;
+    if (!heroStage) return;
+    const windowH = window.innerHeight;
+    if (windowH <= 0) return;
 
-    // Progress chạy mượt từ 0.0 đến 1.0 khi hero đang đứng im (pinned)
-    const scrolled = -rect.top;
-    const progress = Math.min(1, Math.max(0, scrolled / trackH));
+    // Progress chạy mượt từ 0.0 đến 1.0 ngay khi cuộn (kéo lên luôn cùng curtain sheet)
+    const progress = Math.min(1, Math.max(0, scrollY / windowH));
 
     // 1. Chữ to nhỏ lại (Scale down text as user scrolls down)
     if (heroForeground) {

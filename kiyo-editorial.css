@@ -298,12 +298,6 @@ body {
 /* ══════════════════════════════════════════════════════════════════════════
    01: HERO NỀN TẢNG (PINNED STICKY · CO GIÃN CHỮ & ẢNH KHI CUỘN)
    ══════════════════════════════════════════════════════════════════════════ */
-.hero-scroll-track {
-  position: relative;
-  height: 220vh; /* Độ dài cuộn để hero đứng im và co giãn chữ + ảnh */
-  width: 100%;
-}
-
 .stage-hero {
   position: sticky;
   top: 0;
@@ -316,7 +310,7 @@ body {
   width: 100%;
   overflow: hidden;
   box-sizing: border-box;
-  z-index: 1; /* Nằm dưới để các thành phần ở dưới chạy lên đè lên */
+  z-index: 1; /* Nằm dưới để curtain sheet ở dưới kéo lên đè lên */
 }
 
 .hero-backdrop {
@@ -480,13 +474,28 @@ body {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   CHAPTER GENERAL STYLES (CHẠY LÊN ĐÈ LÊN HERO KHI CUỘN)
+   STORY CURTAIN SHEET (KÉO LÊN LUÔN · BO GÓC 2 BÊN TRÁI & PHẢI)
+   ══════════════════════════════════════════════════════════════════════════ */
+.story-curtain-sheet {
+  position: relative;
+  z-index: 10;
+  background: var(--bg-page);
+  border-top-left-radius: clamp(32px, 4.5vw, 48px);
+  border-top-right-radius: clamp(32px, 4.5vw, 48px);
+  border-top: 1px solid var(--border-light);
+  box-shadow: 0 -20px 50px rgba(15, 23, 42, 0.08);
+  width: 100%;
+  margin-top: 0;
+  overflow: hidden;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   CHAPTER GENERAL STYLES (TRONG TẤM MÀN CURTAIN SHEET)
    ══════════════════════════════════════════════════════════════════════════ */
 .stage-section:not(.stage-hero),
 .stage-chapter {
   position: relative;
-  z-index: 5;
-  background: var(--bg-page);
+  background: transparent;
   padding: 6rem 1.5rem;
   border-bottom: 1px solid var(--border-light);
 }
