@@ -951,7 +951,7 @@ body {
   border-radius: 0;
   box-shadow: none;
   border: none !important;
-  padding: clamp(2rem, 3.5vw, 4.5rem) clamp(2.5rem, 5vw, 6.5rem);
+  padding: clamp(1.5rem, 2.5vw, 3rem) clamp(2rem, 3.5vw, 4.5rem);
   box-sizing: border-box;
   transform-origin: center 15%;
   will-change: transform, border-radius, max-width, box-shadow;
@@ -965,44 +965,44 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: clamp(2.5rem, 4.5vw, 6rem);
+  gap: clamp(2rem, 3.5vw, 4.5rem);
   width: 100%;
-  max-width: 1440px;
+  max-width: 1680px;
   height: 100%;
   box-sizing: border-box;
 }
 
-/* ── CỘT TRÁI: TIÊU ĐỀ MỖI CHỮ 1 DÒNG CHUẨN YÊU CẦU ── */
+/* ── CỘT TRÁI: TIÊU ĐỀ CHỮ NGẮN GỌN TINH TẾ THEO YÊU CẦU ── */
 .grail-sheet-header {
   display: flex;
   flex-direction: column;
   justify-content: center;
   flex-shrink: 0;
   width: max-content;
-  min-width: 160px;
-  max-width: 280px;
+  min-width: 220px;
+  max-width: 340px;
   will-change: transform, opacity;
   user-select: none;
 }
 
 .grail-sheet-title {
   font-family: 'Plus Jakarta Sans', var(--font-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
-  font-size: clamp(1.45rem, 2.2vw, 2.25rem);
+  font-size: clamp(2.1rem, 3.2vw, 3.6rem);
   font-weight: 800;
-  line-height: 1.1;
+  line-height: 1.14;
   letter-spacing: -0.035em;
   text-transform: none;
   color: #0f172a;
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1.5rem;
 }
 
 .grail-title-group {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 4px;
 }
 
 .grail-word {
@@ -1014,7 +1014,7 @@ body {
   color: #2563eb;
 }
 
-/* ── CỘT PHẢI: GALLERY STRIP NHIỀU ẢNH THU NHỎ MAX 40PX VỀ BÊN TRÁI ── */
+/* ── CỘT PHẢI: GALLERY STRIP NHIỀU ẢNH TO HƠN NỮA, THU NHỎ MAX 40PX VỀ BÊN TRÁI ── */
 .grail-sheet-visual {
   display: flex;
   align-items: center;
@@ -1029,9 +1029,9 @@ body {
 .grail-gallery-strip {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   width: 100%;
-  height: clamp(380px, 58vh, 540px);
+  height: clamp(500px, 75vh, 720px); /* TO HƠN RẤT NHIỀU THEO ĐÚNG YÊU CẦU */
   position: relative;
   will-change: transform;
 }
@@ -1041,9 +1041,9 @@ body {
   height: 100%;
   width: 0;
   min-width: 0;
-  border-radius: 28px;
+  border-radius: 32px;
   overflow: hidden;
-  box-shadow: 0 20px 48px -10px rgba(15, 23, 42, 0.12);
+  box-shadow: 0 24px 60px -12px rgba(15, 23, 42, 0.16);
   border: 1px solid rgba(15, 23, 42, 0.06);
   background: #f1f5f9;
   flex-shrink: 0;
@@ -1054,21 +1054,22 @@ body {
 }
 
 .grail-gallery-item:first-child {
-  width: 580px;
+  width: clamp(560px, 58vw, 980px);
   min-width: 40px;
 }
 
 .grail-gallery-item:hover {
-  box-shadow: 0 24px 60px -8px rgba(15, 23, 42, 0.22);
+  box-shadow: 0 32px 70px -8px rgba(15, 23, 42, 0.24);
 }
 
 .grail-gallery-item.is-collapsed {
   border-radius: 20px;
+  border-color: rgba(15, 23, 42, 0.08);
 }
 
 .grail-gallery-item.is-collapsed:hover {
   border-color: #2563eb;
-  transform: translateY(-2px);
+  transform: translateY(-3px);
 }
 
 .gallery-item-inner {
@@ -1083,10 +1084,11 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: auto;
-  min-width: 580px;
+  width: 100%;
+  min-width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
   pointer-events: none;
   user-select: none;
   display: block;

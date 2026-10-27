@@ -304,13 +304,20 @@ async function initScrollytelling() {
         visualEl.style.opacity = splitOpacity;
       }
 
-      // Trạng thái ảnh lúc vào: Ảnh 1 to 580px, các ảnh sau 0px
+      // Trạng thái ảnh lúc vào: Ảnh 1 to tối đa, các ảnh sau 0px
       if (galleryItems && numItems > 0) {
+        const visualBox = visualEl.getBoundingClientRect();
+        const visualW = visualBox.width > 0 ? visualBox.width : (window.innerWidth - 360);
+        const collapsedW = 40;
+        const gap = 14;
+        const reservedCollapsed = (numItems - 1) * (collapsedW + gap);
+        const initialMaxExpanded = Math.max(540, visualW - reservedCollapsed - 20);
+
         galleryItems.forEach((it, idx) => {
           if (idx === 0) {
-            it.style.width = '560px';
+            it.style.width = `${Math.round(initialMaxExpanded)}px`;
             it.style.minWidth = '40px';
-            it.style.maxWidth = '580px';
+            it.style.maxWidth = `${Math.round(initialMaxExpanded)}px`;
             it.style.opacity = '1';
             it.classList.remove('is-collapsed');
             it.classList.add('is-active');
@@ -336,8 +343,8 @@ async function initScrollytelling() {
       const galleryProgress = totalDist > 0 ? Math.min(1, Math.max(0, -rect.top / totalDist)) : 0;
 
       // Chữ và ảnh cùng di chuyển về phía bên trái khi kéo xuống:
-      const textShift = -Math.round(galleryProgress * 95);
-      const visualShift = -Math.round(galleryProgress * 65);
+      const textShift = -Math.round(galleryProgress * 60);
+      const visualShift = -Math.round(galleryProgress * 40);
 
       if (headerEl) {
         headerEl.style.transform = `translateX(${textShift}px)`;
@@ -351,11 +358,12 @@ async function initScrollytelling() {
       // Tính toán kích thước co dãn & thu nhỏ về bên trái 40px cho từng ảnh:
       if (galleryItems && numItems > 0) {
         const visualBox = visualEl.getBoundingClientRect();
-        const visualW = visualBox.width > 0 ? visualBox.width : 780;
+        const visualW = visualBox.width > 0 ? visualBox.width : (window.innerWidth - 360);
         const collapsedW = 40; // Chiều rộng thu nhỏ tối đa đúng chuẩn 40px
-        const gap = 12;
+        const gap = 14;
         const reservedCollapsed = (numItems - 1) * (collapsedW + gap);
-        const maxExpanded = Math.max(340, Math.min(580, visualW - reservedCollapsed));
+        // Mở rộng ảnh to tối đa theo toàn bộ chiều rộng có sẵn của màn hình
+        const maxExpanded = Math.max(540, visualW - reservedCollapsed - 20);
 
         // 4 bước chuyển cảnh cho 5 ảnh:
         // Bước 0: Ảnh 0 -> Ảnh 1 [0.04 -> 0.27]
