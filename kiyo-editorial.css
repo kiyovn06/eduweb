@@ -527,7 +527,7 @@ body {
 /* STICKY TRACK FOR SECTION 02: BÓC TÁCH (ẢNH CHẠM TRÊN TRÁI 4/5 THU NHỎ XUỐNG 2/5 KHI CUỘN) */
 .stage-boc-tach-track {
   position: relative;
-  min-height: 230vh;
+  min-height: 210vh;
   padding: 0 !important;
   margin: 0 !important;
 }
@@ -542,11 +542,6 @@ body {
   padding: 1.25rem clamp(2rem, 4vw, 4.5rem) 1.5rem 0; /* padding-left is 0! Ảnh chạm mép trái màn hình */
   box-sizing: border-box;
   overflow: hidden;
-}
-
-.boc-tach-compare-container {
-  padding-top: 4rem;
-  padding-bottom: 6rem;
 }
 
 .chapter-shrink-split {
@@ -690,47 +685,6 @@ body {
 .ocr-scanner-visual {
   position: relative;
   overflow: hidden;
-}
-
-.laser-scanner-line {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background: var(--accent-blue);
-  pointer-events: none;
-  animation: laserScanMotion 3.5s ease-in-out infinite alternate;
-  z-index: 3;
-}
-
-@keyframes laserScanMotion {
-  0% { top: 6%; opacity: 0.3; }
-  50% { opacity: 1; }
-  100% { top: 82%; opacity: 0.3; }
-}
-
-.scanner-data-overlay {
-  position: absolute;
-  top: 1rem;
-  left: 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  z-index: 4;
-}
-
-.chip-data {
-  font-size: 0.68rem;
-  font-family: var(--font-mono);
-  font-weight: 700;
-  color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.95);
-  padding: 0.25rem 0.6rem;
-  border-radius: var(--radius-sm);
-  border: none;
-  display: inline-block;
-  align-self: flex-start;
 }
 
 /* Live Arena Board HUD */
