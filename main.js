@@ -246,31 +246,23 @@ async function initScrollytelling() {
     const rect = sheetSection.getBoundingClientRect();
     const windowH = window.innerHeight;
 
-    // Khi trang mới trượt từ dưới lên đè lên Section 03 đang đứng im:
+    // Nền trắng full 100%, không xoay nghiêng, không co góc
+    sheetCard.style.transform = 'none';
+    sheetCard.style.borderRadius = '0';
+    sheetCard.style.maxWidth = '100vw';
+    sheetCard.style.width = '100%';
+    sheetCard.style.boxShadow = 'none';
+
+    // Hiệu ứng các thành phần ở ảnh 2 bay từ 2 bên vào khi kéo xuống:
+    // Tiêu đề bay từ bên trái vào (-180px -> 0px)
+    // Hình ảnh bay từ bên phải vào (+180px -> 0px)
     if (rect.top > 0 && rect.top <= windowH) {
       const progress = 1 - (rect.top / windowH); // 0 khi mới ló ở đáy, 1 khi chạm đỉnh
-      const ease = Math.min(1, Math.max(0, progress));
+      const ease = 1 - Math.pow(1 - progress, 2.5);
 
-      // Chuẩn Grail-app curve: scale từ 0.88 -> 1.0, nghiêng từ 4.5deg -> 0deg
-      const scale = 0.88 + 0.12 * ease;
-      const rot = (1 - ease) * 4.5;
-      const radius = Math.round((1 - ease) * 36);
-      const maxW = 90 + 10 * ease; // từ 90vw mở rộng dần ra 100vw chạm 2 bên mép
-
-      sheetCard.style.transform = `scale(${scale.toFixed(4)}) rotate(${rot.toFixed(3)}deg)`;
-      sheetCard.style.transformOrigin = 'center 15%';
-      sheetCard.style.borderRadius = `${radius}px ${radius}px 0 0`;
-      sheetCard.style.maxWidth = `${maxW.toFixed(1)}vw`;
-      sheetCard.style.boxShadow = `0 -${Math.round(28 * (1 - ease))}px ${Math.round(60 * (1 - ease))}px rgba(15, 23, 42, ${((1 - ease) * 0.16).toFixed(3)})`;
-
-      // Hiệu ứng từ bên trái và bên phải đi vào:
-      // Tiêu đề trượt từ bên trái vào (-140px -> 0px)
-      // Hình ảnh trượt từ bên phải vào (+140px -> 0px)
-      const splitEase = Math.min(1, Math.max(0, (ease - 0.08) / 0.92));
-      const smoothSplit = 1 - Math.pow(1 - splitEase, 2.8);
-      const leftOffset = (-140 * (1 - smoothSplit)).toFixed(1);
-      const rightOffset = (140 * (1 - smoothSplit)).toFixed(1);
-      const splitOpacity = Math.min(1, splitEase * 1.5).toFixed(2);
+      const leftOffset = (-180 * (1 - ease)).toFixed(1);
+      const rightOffset = (180 * (1 - ease)).toFixed(1);
+      const splitOpacity = Math.min(1, ease * 1.6).toFixed(2);
 
       if (headerEl) {
         headerEl.style.transform = `translateX(${leftOffset}px)`;
@@ -281,13 +273,7 @@ async function initScrollytelling() {
         visualEl.style.opacity = splitOpacity;
       }
     } else if (rect.top <= 0) {
-      // Đã phủ kín hoàn toàn màn hình: CHẠM HOÀN TOÀN MÉP TRÁI, PHẢI, DƯỚI (Full screen 100%)
-      sheetCard.style.transform = 'none';
-      sheetCard.style.borderRadius = '0';
-      sheetCard.style.maxWidth = '100vw';
-      sheetCard.style.width = '100%';
-      sheetCard.style.boxShadow = 'none';
-
+      // Đã vào trọn vẹn màn hình
       if (headerEl) {
         headerEl.style.transform = 'none';
         headerEl.style.opacity = '1';
@@ -297,19 +283,13 @@ async function initScrollytelling() {
         visualEl.style.opacity = '1';
       }
     } else {
-      // Chưa vào màn hình (rect.top > windowH)
-      sheetCard.style.transform = 'scale(0.88) rotate(4.5deg)';
-      sheetCard.style.transformOrigin = 'center 15%';
-      sheetCard.style.borderRadius = '36px 36px 0 0';
-      sheetCard.style.maxWidth = '90vw';
-      sheetCard.style.boxShadow = '0 -28px 60px rgba(15, 23, 42, 0.16)';
-
+      // Chưa vào màn hình
       if (headerEl) {
-        headerEl.style.transform = 'translateX(-140px)';
+        headerEl.style.transform = 'translateX(-180px)';
         headerEl.style.opacity = '0';
       }
       if (visualEl) {
-        visualEl.style.transform = 'translateX(140px)';
+        visualEl.style.transform = 'translateX(180px)';
         visualEl.style.opacity = '0';
       }
     }
@@ -323,19 +303,99 @@ async function initScrollytelling() {
     const c1 = document.getElementById('feature-card-1');
     const c2 = document.getElementById('feature-card-2');
     if (!showcaseTrack || !p2 || !c2) return;
-    if (window.innerWidth <= 768) return;
+
+    const leftCol = showcaseTrack.querySelector('.managed-left-col');
+    const rightCol = showcaseTrack.querySelector('.managed-right-col');
+
+    if (window.innerWidth <= 768) {
+      if (leftCol) { leftCol.style.transform = 'none'; leftCol.style.opacity = '1'; }
+      if (rightCol) { rightCol.style.transform = 'none'; rightCol.style.opacity = '1'; }
+      return;
+    }
 
     const rect = showcaseTrack.getBoundingClientRect();
     const windowH = window.innerHeight;
     const totalDist = rect.height - windowH;
     if (totalDist <= 0) return;
 
+    // ── GIAI ĐOẠN 1: HIỆU ỨNG CÁC THÀNH PHẦN BAY TỪ 2 BÊN VÀO KHI KÉO XUỐNG ──
+    // Cột trái ("Quản lý trong 1 ứng dụng") bay từ bên trái vào (-180px -> 0px)
+    // Cột phải (Thẻ tính năng) bay từ bên phải vào (+180px -> 0px)
+    // Cột giữa (Điện thoại 1) zoom mượt mà vào giữa
+    if (rect.top > 0 && rect.top <= windowH) {
+      const enterProgress = 1 - (rect.top / windowH);
+      const enterEase = 1 - Math.pow(1 - enterProgress, 2.5);
+
+      const leftOffset = (-180 * (1 - enterEase)).toFixed(1);
+      const rightOffset = (180 * (1 - enterEase)).toFixed(1);
+      const enterOpacity = Math.min(1, enterEase * 1.6).toFixed(2);
+      const centerScale = (0.9 + 0.1 * enterEase).toFixed(3);
+      const centerOffsetY = Math.round(50 * (1 - enterEase));
+
+      if (leftCol) {
+        leftCol.style.transform = `translateX(${leftOffset}px)`;
+        leftCol.style.opacity = enterOpacity;
+      }
+      if (rightCol) {
+        rightCol.style.transform = `translateX(${rightOffset}px)`;
+        rightCol.style.opacity = enterOpacity;
+      }
+      if (p1) {
+        p1.style.transform = `translate(-50%, calc(-50% + ${centerOffsetY}px)) scale(${centerScale})`;
+        p1.style.opacity = enterOpacity;
+        p1.style.filter = 'brightness(1)';
+      }
+      if (c1) {
+        c1.style.transform = 'translateY(0) scale(1)';
+        c1.style.filter = 'brightness(1)';
+      }
+
+      // Ẩn Phone 2 và Card 2 khi mới bước vào
+      p2.style.transform = 'translate(-50%, 140%)';
+      p2.style.opacity = '0';
+      p2.style.pointerEvents = 'none';
+      c2.style.transform = 'translateY(140%)';
+      c2.style.opacity = '0';
+      c2.style.pointerEvents = 'none';
+      return;
+    } else if (rect.top > windowH) {
+      // Chưa vào màn hình
+      if (leftCol) {
+        leftCol.style.transform = 'translateX(-180px)';
+        leftCol.style.opacity = '0';
+      }
+      if (rightCol) {
+        rightCol.style.transform = 'translateX(180px)';
+        rightCol.style.opacity = '0';
+      }
+      if (p1) {
+        p1.style.transform = 'translate(-50%, calc(-50% + 50px)) scale(0.9)';
+        p1.style.opacity = '0';
+      }
+      p2.style.transform = 'translate(-50%, 140%)';
+      p2.style.opacity = '0';
+      p2.style.pointerEvents = 'none';
+      c2.style.transform = 'translateY(140%)';
+      c2.style.opacity = '0';
+      c2.style.pointerEvents = 'none';
+      return;
+    }
+
+    // Khi đã vào trọn màn hình (rect.top <= 0): Cột trái và Cột phải cố định vững chắc
+    if (leftCol) {
+      leftCol.style.transform = 'none';
+      leftCol.style.opacity = '1';
+    }
+    if (rightCol) {
+      rightCol.style.transform = 'none';
+      rightCol.style.opacity = '1';
+    }
+
+    // ── GIAI ĐOẠN 2: STACKING PHONE 2 VÀ CARD 2 TRƯỢT LÊN ĐÈ LÊN PHONE 1 VÀ CARD 1 ──
     const passed = -rect.top;
     const progress = Math.min(1, Math.max(0, passed / totalDist));
 
-    // Phase 1 (0 -> 0.18): Phone 1 & Card 1 active (Phone 2 & Card 2 completely hidden below)
-    // Phase 2 (0.18 -> 0.82): Phone 2 & Card 2 slide up and stack smoothly over Phone 1 & Card 1
-    const stackProgress = Math.min(1, Math.max(0, (progress - 0.18) / 0.64));
+    const stackProgress = Math.min(1, Math.max(0, (progress - 0.15) / 0.70));
     
     if (stackProgress <= 0) {
       p2.style.transform = 'translate(-50%, 140%)';
@@ -346,6 +406,7 @@ async function initScrollytelling() {
       c2.style.pointerEvents = 'none';
       if (p1) {
         p1.style.transform = 'translate(-50%, -50%) scale(1)';
+        p1.style.opacity = '1';
         p1.style.filter = 'brightness(1)';
       }
       if (c1) {
@@ -373,6 +434,7 @@ async function initScrollytelling() {
     const underBright = (1 - 0.15 * easeY).toFixed(2);
     if (p1) {
       p1.style.transform = `translate(-50%, -50%) scale(${underScale})`;
+      p1.style.opacity = '1';
       p1.style.filter = `brightness(${underBright})`;
     }
     if (c1) {
