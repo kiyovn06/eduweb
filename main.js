@@ -277,8 +277,8 @@ async function initScrollytelling() {
     // Phase 2 (0.22 -> 0.82): Phone 2 & Card 2 slide up and stack over Phone 1 & Card 1
     const stackProgress = Math.min(1, Math.max(0, (progress - 0.22) / 0.60));
     const easeY = 1 - Math.pow(1 - stackProgress, 2.5); // Smooth natural deceleration
-    const phoneY = 48 - (98 * easeY);
-    const cardY = (1 - easeY) * 115;
+    const phoneY = 46 - (96 * easeY);
+    const cardY = (1 - easeY) * 105;
 
     p2.style.transform = `translate(-50%, ${phoneY.toFixed(2)}%)`;
     c2.style.transform = `translateY(${cardY.toFixed(2)}%)`;

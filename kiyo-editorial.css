@@ -1132,31 +1132,31 @@ body {
 
 .managed-app-grid {
   display: grid;
-  grid-template-columns: 1fr 340px 1.15fr;
+  grid-template-columns: 1fr 375px 1.15fr;
   gap: clamp(2rem, 3.5vw, 4.5rem);
   align-items: center;
   width: 100%;
-  max-width: 1360px;
+  max-width: 1420px;
   height: 100%;
 }
 
-/* ── CỘT TRÁI: TIÊU ĐỀ 2 DÒNG + LOGO APPLE & ANDROID ── */
+/* ── CỘT TRÁI: TIÊU ĐỀ TO 2 DÒNG + LOGO APPLE & ANDROID ── */
 .managed-left-col {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: clamp(520px, 66vh, 640px);
-  padding: 20px 0;
+  height: clamp(660px, 81vh, 760px);
+  padding: 10px 0;
   box-sizing: border-box;
 }
 
 .managed-title {
   font-family: var(--font-sans), 'Plus Jakarta Sans', -apple-system, sans-serif;
-  font-size: clamp(2.8rem, 4.2vw, 4.5rem);
+  font-size: clamp(3.6rem, 5.2vw, 5.6rem);
   font-weight: 800;
   color: #2b5cff;
-  line-height: 1.08;
-  letter-spacing: -0.035em;
+  line-height: 1.04;
+  letter-spacing: -0.04em;
   margin: 0;
   text-align: left;
 }
@@ -1164,15 +1164,15 @@ body {
 .managed-platform-badges {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
 }
 
 .platform-badge-circle {
-  width: 52px;
-  height: 52px;
+  width: 58px;
+  height: 58px;
   border-radius: 50%;
   background: #ffffff;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1184,20 +1184,20 @@ body {
 
 .platform-badge-circle:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
 .platform-badge-circle svg {
-  width: 24px;
-  height: 24px;
+  width: 26px;
+  height: 26px;
   fill: currentColor;
 }
 
-/* ── CỘT GIỮA: IPHONE MOCKUP ── */
+/* ── CỘT GIỮA: IPHONE MOCKUP TO 100% NHƯ ẢNH 2 ── */
 .managed-center-col {
   position: relative;
-  width: 330px;
-  height: clamp(560px, 70vh, 670px);
+  width: 375px;
+  height: clamp(660px, 81vh, 760px);
   margin: 0 auto;
 }
 
@@ -1206,14 +1206,14 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 320px;
-  height: 640px;
-  border-radius: 50px;
+  width: 370px;
+  height: clamp(656px, 80.5vh, 750px);
+  border-radius: 54px;
   background: #000000;
-  padding: 7px;
+  padding: 8px;
   box-sizing: border-box;
-  border: 3.5px solid #d4d4d8;
-  box-shadow: 0 0 0 1px #a1a1aa, 0 32px 75px -16px rgba(15, 23, 42, 0.35);
+  border: 4px solid #d4d4d8;
+  box-shadow: 0 0 0 1px #a1a1aa, 0 32px 80px -16px rgba(15, 23, 42, 0.35);
   overflow: hidden;
   will-change: transform;
 }
@@ -1221,22 +1221,22 @@ body {
 .iphone-frame::before {
   content: '';
   position: absolute;
-  left: -6.5px;
-  top: 100px;
-  width: 3.5px;
-  height: 22px;
+  left: -7px;
+  top: 115px;
+  width: 4px;
+  height: 24px;
   background: #94a3b8;
   border-radius: 2px 0 0 2px;
-  box-shadow: 0 36px 0 #94a3b8, 0 88px 0 #94a3b8;
+  box-shadow: 0 40px 0 #94a3b8, 0 95px 0 #94a3b8;
 }
 
 .iphone-frame::after {
   content: '';
   position: absolute;
-  right: -6.5px;
-  top: 125px;
-  width: 3.5px;
-  height: 60px;
+  right: -7px;
+  top: 140px;
+  width: 4px;
+  height: 65px;
   background: #94a3b8;
   border-radius: 0 2px 2px 0;
 }
@@ -1247,17 +1247,19 @@ body {
 
 .phone-frame-2 {
   z-index: 20;
-  transform: translate(-50%, 48%);
-  box-shadow: 0 -24px 60px rgba(0, 0, 0, 0.35), 0 32px 75px -16px rgba(15, 23, 42, 0.35);
+  transform: translate(-50%, 46%);
+  box-shadow: 0 -24px 60px rgba(0, 0, 0, 0.35), 0 32px 80px -16px rgba(15, 23, 42, 0.35);
 }
 
 .iphone-screen {
   position: relative;
   width: 100%;
   height: 100%;
-  border-radius: 42px;
+  border-radius: 46px;
   overflow: hidden;
-  background: #ffffff;
+  background: #f8fafc;
+  display: flex;
+  flex-direction: column;
 }
 
 .iphone-status-bar {
@@ -1265,51 +1267,51 @@ body {
   top: 0;
   left: 0;
   right: 0;
-  height: 40px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 20px;
+  padding: 0 24px;
   box-sizing: border-box;
   z-index: 30;
   pointer-events: none;
 }
 
 .status-time {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
-  color: #000000;
+  color: #ffffff;
   letter-spacing: -0.01em;
 }
 
 .dynamic-island {
   position: absolute;
-  top: 8px;
+  top: 10px;
   left: 50%;
   transform: translateX(-50%);
-  width: 96px;
-  height: 26px;
+  width: 105px;
+  height: 28px;
   background: #000000;
-  border-radius: 14px;
+  border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 9px;
+  padding: 0 10px;
   box-sizing: border-box;
   z-index: 35;
 }
 
 .island-lens {
-  width: 9px;
-  height: 9px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   background: #0b0f19;
   box-shadow: inset 0 0 2px #1e3a8a;
 }
 
 .island-sensor {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   background: #04060b;
 }
@@ -1324,22 +1326,22 @@ body {
   display: inline-flex;
   align-items: flex-end;
   gap: 1.5px;
-  height: 10px;
+  height: 11px;
 }
 .icon-signal span {
   width: 2.5px;
-  background: #000000;
+  background: #ffffff;
   border-radius: 0.5px;
 }
 .icon-signal span:nth-child(1) { height: 3px; }
-.icon-signal span:nth-child(2) { height: 5px; }
-.icon-signal span:nth-child(3) { height: 7.5px; }
-.icon-signal span:nth-child(4) { height: 10px; }
+.icon-signal span:nth-child(2) { height: 5.5px; }
+.icon-signal span:nth-child(3) { height: 8px; }
+.icon-signal span:nth-child(4) { height: 11px; }
 
 .icon-battery {
-  width: 19px;
-  height: 10px;
-  border: 1.5px solid #000000;
+  width: 20px;
+  height: 11px;
+  border: 1.5px solid #ffffff;
   border-radius: 3px;
   position: relative;
   padding: 1px;
@@ -1349,25 +1351,237 @@ body {
   content: '';
   position: absolute;
   right: -3px;
-  top: 2px;
+  top: 2.5px;
   width: 1.5px;
   height: 4px;
-  background: #000000;
+  background: #ffffff;
   border-radius: 0 1px 1px 0;
 }
 .battery-fill {
-  width: 80%;
+  width: 85%;
   height: 100%;
-  background: #000000;
+  background: #ffffff;
   border-radius: 1px;
 }
 
-.iphone-screenshot {
-  width: 100%;
+/* UI màn hình Doctor's Support chuẩn 100% Ảnh 2 */
+.mockup-screen-body {
+  display: flex;
+  flex-direction: column;
   height: 100%;
-  object-fit: cover;
-  object-position: top center;
-  display: block;
+  background: #f8fafc;
+}
+
+.mockup-screen-header {
+  background: #2b5cff;
+  padding: 48px 20px 20px 20px;
+  color: #ffffff;
+  flex-shrink: 0;
+}
+
+.mockup-screen-header.header-emerald {
+  background: #059669;
+}
+
+.mockup-screen-header h3 {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0 0 4px;
+}
+
+.mockup-screen-header p {
+  font-size: 13px;
+  line-height: 1.35;
+  margin: 0;
+  opacity: 0.9;
+}
+
+.mockup-screen-content {
+  flex: 1;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+}
+
+.mockup-toggle-card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 11px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.mockup-toggle-label {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.mockup-toggle-btn {
+  width: 44px;
+  height: 26px;
+  border-radius: 14px;
+  background: #e2e8f0;
+  position: relative;
+}
+
+.mockup-toggle-btn.on {
+  background: #22c55e;
+}
+
+.mockup-toggle-knob {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #ffffff;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease;
+}
+
+.mockup-toggle-btn.on .mockup-toggle-knob {
+  transform: translateX(18px);
+}
+
+.mockup-rec-section {
+  margin-top: 2px;
+}
+
+.mockup-rec-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2px;
+}
+
+.mockup-rec-title {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.mockup-rec-all {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.mockup-rec-sub {
+  font-size: 11.5px;
+  color: #64748b;
+  line-height: 1.35;
+  margin: 0 0 8px;
+}
+
+.mockup-rec-box {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 12px 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  margin-bottom: 8px;
+}
+
+.mockup-rec-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #94a3b8;
+  margin-bottom: 3px;
+  font-weight: 600;
+}
+
+.mockup-rec-h {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 3px;
+}
+
+.mockup-rec-p {
+  font-size: 11.5px;
+  color: #64748b;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.mockup-note-box {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 12px 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.mockup-note-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.mockup-note-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 11px;
+  color: #64748b;
+  line-height: 1.45;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.mockup-note-list li {
+  position: relative;
+  padding-left: 12px;
+}
+
+.mockup-note-list li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: #94a3b8;
+}
+
+/* Thanh điều hướng Tab Bar ở đáy iPhone */
+.mockup-tab-bar {
+  height: 56px;
+  background: #ffffff;
+  border-top: 1px solid #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 10px 10px;
+  flex-shrink: 0;
+}
+
+.mockup-tab-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-size: 9.5px;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+.mockup-tab-item.active {
+  color: #2b5cff;
+}
+
+.mockup-tab-item svg {
+  width: 19px;
+  height: 19px;
+  fill: currentColor;
 }
 
 .iphone-home-bar {
@@ -1375,80 +1589,112 @@ body {
   bottom: 7px;
   left: 50%;
   transform: translateX(-50%);
-  width: 120px;
+  width: 130px;
   height: 4.5px;
   background: #000000;
   border-radius: 8px;
   z-index: 30;
 }
 
-/* ── CỘT PHẢI: KHUNG THẺ BO GÓC ── */
+/* ── CỘT PHẢI: THẺ TO 100% ẢNH 1 - TIÊU ĐỀ TRÊN CÙNG CỐ ĐỊNH KHÔNG BỊ CHE ── */
 .managed-right-col {
   position: relative;
   width: 100%;
-  max-width: 440px;
-  height: 380px;
+  max-width: 480px;
+  height: clamp(660px, 81vh, 760px);
   margin-left: auto;
 }
 
-.managed-card {
+.blue-card-outer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #2b5cff;
+  border-radius: 44px;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(43, 92, 255, 0.22);
+  display: flex;
+  flex-direction: column;
+}
+
+/* TIÊU ĐỀ TRÊN CÙNG CỦA THẺ XANH (CỐ ĐỊNH, KHÔNG BAO GIỜ BỊ CHE KHI KÉO) */
+.card-fixed-header {
+  position: relative;
+  z-index: 30;
+  padding: 38px 36px 20px 36px;
+  color: #ffffff;
+  flex-shrink: 0;
+}
+
+.card-fixed-title {
+  font-size: clamp(2rem, 2.5vw, 2.45rem);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  margin: 0 0 8px;
+  color: #ffffff;
+}
+
+.card-fixed-subtitle {
+  font-size: clamp(1.05rem, 1.2vw, 1.2rem);
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.92);
+  font-weight: 500;
+  margin: 0;
+}
+
+/* KHUNG CHỨA CÁC THẺ TRẮNG TRƯỢT (BÊN DƯỚI TIÊU ĐỀ, TRƯỢT KHÔNG CHE TIÊU ĐỀ) */
+.white-card-deck {
+  position: relative;
+  flex: 1;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 38px 38px 0 0;
+  background: #ffffff;
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.white-slide-card {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  border-radius: 28px;
-  overflow: hidden;
-  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.08);
+  height: 100%;
+  background: #ffffff;
+  padding: 38px 34px;
+  box-sizing: border-box;
   will-change: transform;
 }
 
-.card-banner-top {
-  background: #2b5cff;
-  color: #ffffff;
-  padding: 20px 28px;
-  font-size: 1.25rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-}
-
-.card-banner-top.banner-emerald {
-  background: #059669;
-}
-
-.card-white-inner {
-  background: #ffffff;
-  padding: 32px 28px 36px;
-}
-
-.card-content-title {
-  font-size: 1.65rem;
-  font-weight: 800;
-  color: #0f172a;
-  margin: 0 0 1rem;
-  letter-spacing: -0.02em;
-}
-
-.card-content-desc {
-  font-size: 1.02rem;
-  line-height: 1.6;
-  color: #475569;
-  margin: 0;
-}
-
-.managed-card-1 {
+.white-slide-card-1 {
   z-index: 10;
 }
 
-.managed-card-2 {
+.white-slide-card-2 {
   z-index: 20;
-  transform: translateY(115%);
-  box-shadow: 0 -20px 50px rgba(15, 23, 42, 0.12), 0 20px 50px rgba(15, 23, 42, 0.08);
+  transform: translateY(105%);
+  box-shadow: 0 -16px 36px rgba(0, 0, 0, 0.1);
+}
+
+.white-card-heading {
+  font-size: clamp(1.75rem, 2.2vw, 2.1rem);
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 18px;
+  letter-spacing: -0.025em;
+}
+
+.white-card-desc {
+  font-size: clamp(1.05rem, 1.18vw, 1.18rem);
+  line-height: 1.62;
+  color: #475569;
+  margin: 0;
 }
 
 @media (max-width: 992px) {
   .managed-app-grid {
     grid-template-columns: 1fr;
-    gap: 2rem;
+    gap: 2.5rem;
     height: auto;
   }
   .managed-left-col {
@@ -1458,7 +1704,7 @@ body {
   .managed-app-sticky {
     height: auto;
     min-height: 100vh;
-    padding: 2rem 1.5rem;
+    padding: 2.5rem 1.5rem;
   }
   .managed-right-col {
     margin: 0 auto;
