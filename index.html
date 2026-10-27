@@ -44,38 +44,40 @@
   <main id="story-main" aria-label="Trải nghiệm khảo thí số KiyoEdu">
 
     <!-- ══════════════════════════════════════════════════════════════════════
-         01: TỔNG QUAN NỀN TẢNG (HERO STAGE - FULLSCREEN VISUAL)
+         01: TỔNG QUAN NỀN TẢNG (HERO STAGE - CINEMATIC FULLSCREEN BACKGROUND)
          ══════════════════════════════════════════════════════════════════════ -->
     <section class="stage-section stage-hero" id="tong-quan" data-stage="0">
       
-      <!-- TOP: Text & Actions (Chảy vô từ 2 bên) -->
-      <div class="hero-header-block flow-in-left" id="hero-parallax-target">
-        <h1 class="hero-title">
-          Dạy thông minh.<br>Học hào hứng.
-        </h1>
-
-        <p class="hero-lead">
-          Bóc tách đề AI trong 3 giây · Đấu trường trực tiếp 0ms · Chấm trắc nghiệm tự động
-        </p>
-
-        <div class="hero-actions flow-in-right">
-          <a href="http://localhost:3000/register" target="_blank" class="btn-hero-primary">
-            Bắt đầu miễn phí
-          </a>
-          <a href="#boc-tach-ai" class="btn-hero-secondary">
-            Khám phá tính năng
-          </a>
-        </div>
+      <!-- BACKGROUND: Ảnh ở nền toàn màn hình ("ảnh ở nền" · full ở bên trên) -->
+      <div class="hero-backdrop" aria-hidden="true">
+        <img class="hero-backdrop-img" src="assets/kiyoedu-student-tablet.jpg" alt="Học sinh giải trắc nghiệm trên tablet KiyoEdu" width="1920" height="1080" fetchpriority="high">
+        <div class="hero-backdrop-overlay"></div>
       </div>
 
-      <!-- BELOW: Fullscreen / Full-width Cinematic Image Showcase -->
-      <div class="hero-fullscreen-visual flow-in-up">
-        <div class="hero-cinematic-frame">
-          <img src="assets/kiyoedu-student-tablet.jpg" alt="Học sinh giải trắc nghiệm trên tablet KiyoEdu" width="1920" height="1080" loading="eager">
-          <div class="visual-caption-bar">
-            <span class="cap-title">Live Quiz Không Độ Trễ</span>
-            <span class="cap-badge">42 Học sinh trực tuyến</span>
+      <!-- FOREGROUND: Chữ và nút chảy vô từ hai bên -->
+      <div class="hero-foreground-content">
+        <div class="hero-header-block flow-in-left" id="hero-parallax-target">
+          <h1 class="hero-title">
+            Dạy thông minh.<br>Học hào hứng.
+          </h1>
+
+          <p class="hero-lead">
+            Bóc tách đề AI trong 3 giây · Đấu trường trực tiếp 0ms · Chấm trắc nghiệm tự động
+          </p>
+
+          <div class="hero-actions flow-in-right">
+            <a href="http://localhost:3000/register" target="_blank" class="btn-hero-primary">
+              Bắt đầu miễn phí
+            </a>
+            <a href="#boc-tach-ai" class="btn-hero-secondary">
+              Khám phá tính năng
+            </a>
           </div>
+        </div>
+
+        <div class="hero-floating-badges flow-in-right" aria-hidden="true">
+          <span class="hero-badge-pill"><span class="badge-dot"></span> Live Quiz Không Độ Trễ</span>
+          <span class="hero-badge-pill">42 Học sinh trực tuyến</span>
         </div>
       </div>
 
