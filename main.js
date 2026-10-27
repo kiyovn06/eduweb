@@ -47,6 +47,7 @@ async function initScrollytelling() {
   const heroStage = document.getElementById('tong-quan');
   const heroForeground = document.getElementById('hero-foreground');
   const heroBackdrop = document.getElementById('hero-backdrop');
+  const heroBgImg = document.getElementById('hero-bg-img');
   const heroTarget = document.getElementById('hero-parallax-target');
   const heroScrollCue = document.getElementById('hero-scroll-cue');
 
@@ -78,12 +79,14 @@ async function initScrollytelling() {
       heroForeground.style.opacity = textOpacity;
     }
 
-    // 2. Ảnh to nhỏ lại (Scale down image as user scrolls down)
+    // 2. Ảnh to nhỏ lại nhưng KHÔNG bo góc để không làm lộ viền mép màn hình
+    if (heroBgImg) {
+      const imgScale = Math.max(0.92, 1 - progress * 0.08);
+      heroBgImg.style.transform = `scale(${imgScale})`;
+    }
     if (heroBackdrop) {
-      const imgScale = Math.max(0.86, 1 - progress * 0.14);
-      const imgRadius = progress * 24;
-      heroBackdrop.style.transform = `scale(${imgScale})`;
-      heroBackdrop.style.borderRadius = `${imgRadius}px`;
+      heroBackdrop.style.transform = 'none';
+      heroBackdrop.style.borderRadius = '0px';
     }
 
     // 3. Scroll Cue
