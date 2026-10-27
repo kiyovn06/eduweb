@@ -17,6 +17,7 @@ async function initScrollytelling() {
     wheelMultiplier: 1.0,
     touchMultiplier: 1.5,
   });
+  window.lenis = lenis;
 
   function raf(time) {
     lenis.raf(time);
@@ -276,16 +277,17 @@ async function initScrollytelling() {
     // Phase 2 (0.22 -> 0.82): Phone 2 & Card 2 slide up and stack over Phone 1 & Card 1
     const stackProgress = Math.min(1, Math.max(0, (progress - 0.22) / 0.60));
     const easeY = 1 - Math.pow(1 - stackProgress, 2.5); // Smooth natural deceleration
-    const translateYPct = (1 - easeY) * 105;
+    const phoneY = 48 - (98 * easeY);
+    const cardY = (1 - easeY) * 115;
 
-    p2.style.transform = `translate(-50%, ${translateYPct.toFixed(2)}%)`;
-    c2.style.transform = `translateY(${translateYPct.toFixed(2)}%)`;
+    p2.style.transform = `translate(-50%, ${phoneY.toFixed(2)}%)`;
+    c2.style.transform = `translateY(${cardY.toFixed(2)}%)`;
 
     // Under-card subtle scale down & brightness reduction
     const underScale = (1 - 0.045 * easeY).toFixed(3);
     const underBright = (1 - 0.15 * easeY).toFixed(2);
     if (p1) {
-      p1.style.transform = `translate(-50%, 0) scale(${underScale})`;
+      p1.style.transform = `translate(-50%, -50%) scale(${underScale})`;
       p1.style.filter = `brightness(${underBright})`;
     }
     if (c1) {
@@ -434,6 +436,9 @@ async function initScrollytelling() {
   lenis.on('scroll', (e) => {
     onScrollUpdate(e.scroll);
   });
+  window.addEventListener('scroll', () => {
+    onScrollUpdate(window.scrollY);
+  }, { passive: true });
 
   // Smooth anchor link scrolling via Lenis
   document.querySelectorAll('a[href^="#"]').forEach((anchor) => {

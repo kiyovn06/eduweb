@@ -1104,140 +1104,125 @@ body {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   05: SHOWCASE QUẢN LÝ TRONG 1 ỨNG DỤNG (TOÀN MÀN HÌNH SAU KHI KÉO XONG CHƯƠNG 03)
+   05: MANAGED IN ONE APP (TOÀN MÀN HÌNH SAU KHI KÉO XONG CHƯƠNG 03 - CHUẨN ẢNH 1, 2)
    ══════════════════════════════════════════════════════════════════════════ */
 .stage-app-showcase-track {
   position: relative;
   min-height: 250vh;
   width: 100%;
-  background: #ffffff;
+  background: #f3f4f6 !important;
   padding: 0 !important;
   margin: 0 !important;
 }
 
-.app-showcase-fullscreen-sticky {
+.managed-app-sticky {
   position: sticky;
   top: 0;
   height: 100vh;
   width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: clamp(2rem, 3.5vw, 3.5rem) clamp(2.5rem, 5vw, 6rem);
   box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
   overflow: hidden;
-  background: #ffffff;
+  background: #f3f4f6;
   z-index: 20;
 }
 
-/* TIÊU ĐỀ Ở GÓC TRÊN BÊN TRÁI, KHÔNG CANH GIỮA, KHÔNG BỊ ĐÈ */
-.app-showcase-header {
-  flex-shrink: 0;
-  text-align: left;
-  margin-bottom: clamp(1rem, 2vh, 1.75rem);
-  position: relative;
-  z-index: 50;
-}
-
-.app-header-eyebrow {
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: var(--accent-blue, #2563eb);
-  text-transform: uppercase;
-  margin-bottom: 0.35rem;
-}
-
-.app-showcase-title {
-  font-family: var(--font-artistic), 'Playfair Display', Georgia, serif;
-  font-size: clamp(2rem, 3.2vw, 3.1rem);
-  font-weight: 800;
-  color: #0f172a;
-  line-height: 1.15;
-  margin: 0 0 0.5rem;
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  flex-wrap: wrap;
-  text-align: left;
-}
-
-/* SỐ 1 TO ĐẸP NỔI BẬT */
-.app-num-one-glow {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: clamp(48px, 4vw, 62px);
-  height: clamp(48px, 4vw, 62px);
-  background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 50%, #3b82f6 100%);
-  color: #ffffff;
-  border-radius: 16px;
-  font-family: var(--font-artistic), 'Playfair Display', Georgia, serif;
-  font-size: clamp(2.2rem, 3vw, 2.9rem);
-  font-weight: 900;
-  line-height: 1;
-  margin: 0 0.15em;
-  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.35), inset 0 1px 2px rgba(255, 255, 255, 0.4);
-  vertical-align: middle;
-  transform: translateY(-0.04em);
-}
-
-.app-showcase-desc {
-  font-size: clamp(0.92rem, 1.05vw, 1.1rem);
-  color: #64748b;
-  line-height: 1.45;
-  margin: 0;
-  max-width: 720px;
-  text-align: left;
-}
-
-/* 2-COLUMN BODY GRID */
-.app-showcase-body {
-  flex: 1;
+.managed-app-grid {
   display: grid;
-  grid-template-columns: clamp(310px, 25vw, 350px) 1fr;
+  grid-template-columns: 1fr 340px 1.15fr;
   gap: clamp(2rem, 3.5vw, 4.5rem);
   align-items: center;
-  position: relative;
-  min-height: 0;
   width: 100%;
+  max-width: 1360px;
+  height: 100%;
 }
 
-/* ══════════════════════════════════════════════════════════════════════════
-   IPHONE 15/16 PRO MOCKUP (TỰ CODE TỪ ĐẦU GIỐNG 100% ẢNH 1)
-   ══════════════════════════════════════════════════════════════════════════ */
-.phone-stack-container {
+/* ── CỘT TRÁI: TIÊU ĐỀ 2 DÒNG + LOGO APPLE & ANDROID ── */
+.managed-left-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: clamp(520px, 66vh, 640px);
+  padding: 20px 0;
+  box-sizing: border-box;
+}
+
+.managed-title {
+  font-family: var(--font-sans), 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: clamp(2.8rem, 4.2vw, 4.5rem);
+  font-weight: 800;
+  color: #2b5cff;
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+  margin: 0;
+  text-align: left;
+}
+
+.managed-platform-badges {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.platform-badge-circle {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0f172a;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.platform-badge-circle:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.platform-badge-circle svg {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+}
+
+/* ── CỘT GIỮA: IPHONE MOCKUP ── */
+.managed-center-col {
   position: relative;
-  width: 100%;
-  height: clamp(490px, 63vh, 600px);
+  width: 330px;
+  height: clamp(560px, 70vh, 670px);
   margin: 0 auto;
 }
 
 .iphone-frame {
   position: absolute;
-  top: 0;
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  max-width: 320px;
-  height: 100%;
-  border-radius: 48px;
+  transform: translate(-50%, -50%);
+  width: 320px;
+  height: 640px;
+  border-radius: 50px;
   background: #000000;
   padding: 7px;
   box-sizing: border-box;
   border: 3.5px solid #d4d4d8;
-  box-shadow: 0 0 0 1px #a1a1aa, 0 30px 70px -16px rgba(15, 23, 42, 0.4), 0 10px 25px -5px rgba(15, 23, 42, 0.2);
+  box-shadow: 0 0 0 1px #a1a1aa, 0 32px 75px -16px rgba(15, 23, 42, 0.35);
   overflow: hidden;
-  will-change: transform, filter;
-  transition: transform 0.08s ease-out;
+  will-change: transform;
 }
 
-/* Side Buttons on Chassis */
 .iphone-frame::before {
   content: '';
   position: absolute;
   left: -6.5px;
-  top: 95px;
+  top: 100px;
   width: 3.5px;
   height: 22px;
   background: #94a3b8;
@@ -1249,7 +1234,7 @@ body {
   content: '';
   position: absolute;
   right: -6.5px;
-  top: 120px;
+  top: 125px;
   width: 3.5px;
   height: 60px;
   background: #94a3b8;
@@ -1262,21 +1247,19 @@ body {
 
 .phone-frame-2 {
   z-index: 20;
-  transform: translate(-50%, 105%);
-  box-shadow: 0 -24px 60px rgba(0, 0, 0, 0.4), 0 30px 70px -16px rgba(15, 23, 42, 0.4);
+  transform: translate(-50%, 48%);
+  box-shadow: 0 -24px 60px rgba(0, 0, 0, 0.35), 0 32px 75px -16px rgba(15, 23, 42, 0.35);
 }
 
-/* Screen Surface */
 .iphone-screen {
   position: relative;
   width: 100%;
   height: 100%;
-  border-radius: 40px;
+  border-radius: 42px;
   overflow: hidden;
   background: #ffffff;
 }
 
-/* Top Status Bar */
 .iphone-status-bar {
   position: absolute;
   top: 0;
@@ -1299,7 +1282,6 @@ body {
   letter-spacing: -0.01em;
 }
 
-/* Dynamic Island */
 .dynamic-island {
   position: absolute;
   top: 8px;
@@ -1332,7 +1314,6 @@ body {
   background: #04060b;
 }
 
-/* Status Icons */
 .status-icons {
   display: flex;
   align-items: center;
@@ -1381,7 +1362,6 @@ body {
   border-radius: 1px;
 }
 
-/* Screenshot in iPhone */
 .iphone-screenshot {
   width: 100%;
   height: 100%;
@@ -1390,7 +1370,6 @@ body {
   display: block;
 }
 
-/* Home Indicator Bar */
 .iphone-home-bar {
   position: absolute;
   bottom: 7px;
@@ -1403,117 +1382,87 @@ body {
   z-index: 30;
 }
 
-/* ══════════════════════════════════════════════════════════════════════════
-   RIGHT COLUMN: KHUNG NHIỀU MÀU KÉO DÀI TỪ TRÊN XUỐNG DƯỚI BO GÓC
-   ══════════════════════════════════════════════════════════════════════════ */
-.cards-stack-container {
+/* ── CỘT PHẢI: KHUNG THẺ BO GÓC ── */
+.managed-right-col {
   position: relative;
   width: 100%;
-  height: clamp(490px, 63vh, 600px);
+  max-width: 440px;
+  height: 380px;
+  margin-left: auto;
 }
 
-.colorful-feature-card {
+.managed-card {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
-  border-radius: 36px;
-  padding: clamp(2rem, 3.2vw, 3.2rem);
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  will-change: transform, filter;
-  transition: transform 0.08s ease-out;
+  border-radius: 28px;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.08);
+  will-change: transform;
 }
 
-/* CARD 1: SẮC XANH COBALT SANG TRỌNG */
-.card-feature-1 {
-  background: linear-gradient(155deg, #0f172a 0%, #1e3a8a 50%, #2563eb 100%);
+.card-banner-top {
+  background: #2b5cff;
   color: #ffffff;
-  z-index: 10;
-  box-shadow: 0 24px 60px rgba(30, 58, 138, 0.28);
-}
-
-/* CARD 2: SẮC XANH EMERALD & NGỌC BÍCH NỔI BẬT */
-.card-feature-2 {
-  background: linear-gradient(155deg, #022c22 0%, #065f46 50%, #059669 100%);
-  color: #ffffff;
-  z-index: 20;
-  transform: translateY(105%);
-  box-shadow: 0 -24px 60px rgba(0, 0, 0, 0.35), 0 24px 60px rgba(6, 95, 70, 0.3);
-}
-
-.card-pill-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 14px;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(8px);
-  border-radius: 20px;
-  font-size: 0.76rem;
+  padding: 20px 28px;
+  font-size: 1.25rem;
   font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  width: fit-content;
-  margin-bottom: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  letter-spacing: -0.01em;
 }
 
-.card-heading {
-  font-size: clamp(1.45rem, 2.1vw, 2rem);
+.card-banner-top.banner-emerald {
+  background: #059669;
+}
+
+.card-white-inner {
+  background: #ffffff;
+  padding: 32px 28px 36px;
+}
+
+.card-content-title {
+  font-size: 1.65rem;
   font-weight: 800;
-  line-height: 1.25;
-  margin: 0 0 0.75rem;
+  color: #0f172a;
+  margin: 0 0 1rem;
   letter-spacing: -0.02em;
 }
 
-.card-description {
-  font-size: clamp(0.9rem, 1.05vw, 1.05rem);
-  line-height: 1.5;
-  color: rgba(255, 255, 255, 0.85);
-  margin: 0 0 1.25rem;
-}
-
-/* 3 BENTO SUB-BOXES KÉO DÀI BÊN TRONG */
-.card-subfeatures {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.subfeature-box {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 16px;
-  padding: 12px 16px;
-  box-sizing: border-box;
-}
-
-.subfeature-icon {
-  font-size: 1.2rem;
-  line-height: 1;
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-
-.subfeature-text h5 {
-  font-size: 0.95rem;
-  font-weight: 700;
-  margin: 0 0 2px;
-  color: #ffffff;
-}
-
-.subfeature-text p {
-  font-size: 0.82rem;
-  line-height: 1.35;
+.card-content-desc {
+  font-size: 1.02rem;
+  line-height: 1.6;
+  color: #475569;
   margin: 0;
-  color: rgba(255, 255, 255, 0.75);
+}
+
+.managed-card-1 {
+  z-index: 10;
+}
+
+.managed-card-2 {
+  z-index: 20;
+  transform: translateY(115%);
+  box-shadow: 0 -20px 50px rgba(15, 23, 42, 0.12), 0 20px 50px rgba(15, 23, 42, 0.08);
+}
+
+@media (max-width: 992px) {
+  .managed-app-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    height: auto;
+  }
+  .managed-left-col {
+    height: auto;
+    gap: 1.5rem;
+  }
+  .managed-app-sticky {
+    height: auto;
+    min-height: 100vh;
+    padding: 2rem 1.5rem;
+  }
+  .managed-right-col {
+    margin: 0 auto;
+  }
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
