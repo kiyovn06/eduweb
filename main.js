@@ -645,29 +645,27 @@ async function initScrollytelling() {
     const progress = Math.min(1, Math.max(0, -rect.top / totalDist));
     lastQuyTrinhProgress = progress;
 
-    // 7 visual states matching Reference Images:
-    // 0: Initial Hero "Một quy trình đơn giản trong ba bước." (0.00 - 0.12)
-    // 1: Bước 1 (0.12 - 0.24)
-    // 2: Bước 2 (0.24 - 0.36)
-    // 3: Bước 3 (0.36 - 0.48)
-    // 4: Bước 4 (0.48 - 0.60)
-    // 5: Ảnh 2 Editorial Impact (0.60 - 0.76)
-    // -: Ảnh 3 Fullscreen bars showcase (0.76 - 0.88, no text overlay)
-    // 6: Ảnh 4 Centered Final "Được làm riêng cho bạn..." (0.88 - 1.00)
+    // Visual states:
+    // 0: Initial Hero (0.00 - 0.10)
+    // 1: Bước 1 (0.10 - 0.22)
+    // 2: Bước 2 (0.22 - 0.34)
+    // 3: Bước 3 (0.34 - 0.44)
+    // 4: Bước 4 (0.44 - 0.52)
+    // -: Image 2 Centered 3D Perspective Ladder (0.52 - 0.68, clean visual, no text overlay)
+    // -: Image 3 Fullscreen Dot Slats (0.68 - 0.84, no text overlay)
+    // 6: Image 4 Centered Final "Được làm riêng cho bạn. Không giới hạn ." (0.84 - 1.00, light grey background)
     let activeStep = -1;
-    if (progress >= 0.88) {
+    if (progress >= 0.84) {
       activeStep = 6;
-    } else if (progress >= 0.76) {
-      activeStep = -1; // Phase C: Fullscreen bars showcase (no text, matching Image 3)
-    } else if (progress >= 0.60) {
-      activeStep = 5;
-    } else if (progress >= 0.48) {
+    } else if (progress >= 0.52) {
+      activeStep = -1; // Clean cinematic view for Image 2 (ladder) and Image 3 (fullscreen slats)
+    } else if (progress >= 0.44) {
       activeStep = 4;
-    } else if (progress >= 0.36) {
+    } else if (progress >= 0.34) {
       activeStep = 3;
-    } else if (progress >= 0.24) {
+    } else if (progress >= 0.22) {
       activeStep = 2;
-    } else if (progress >= 0.12) {
+    } else if (progress >= 0.10) {
       activeStep = 1;
     } else {
       activeStep = 0;
@@ -682,14 +680,14 @@ async function initScrollytelling() {
       });
     }
 
-    // Milestones glide and fade out cleanly
+    // Milestones glide and fade out as ladder morphs to center
     if (quyTrinhMilestones) {
-      const mAlpha = Math.max(0, Math.min(1, 1 - (progress - 0.58) / 0.10));
+      const mAlpha = Math.max(0, Math.min(1, 1 - (progress - 0.48) / 0.08));
       quyTrinhMilestones.style.opacity = mAlpha.toFixed(2);
       quyTrinhMilestones.style.transform = `translateY(${(progress - 0.25) * 60}px)`;
     }
 
-    // Render Procedural Solid Black Canvas
+    // Render Procedural Dot Canvas
     renderQuyTrinhCanvas(progress, activeStep);
   }
 
@@ -701,142 +699,195 @@ async function initScrollytelling() {
     const h = quyTrinhCanvas.height / dpr;
     if (w <= 0 || h <= 0) return;
 
-    ctx.clearRect(0, 0, w, h);
+    // ── 1. BACKGROUND COLOR TRANSITION (To Image 4 light grey at end) ──
+    // 0.00 - 0.84: Dark #0a0b0e
+    // 0.84 - 0.94: Smooth transition to light #ececee
+    const bgProg = Math.min(1, Math.max(0, (progress - 0.84) / 0.10));
+    const bgEase = bgProg * bgProg * (3 - 2 * bgProg);
+    const r = Math.round(10 + (236 - 10) * bgEase);
+    const g = Math.round(11 + (236 - 11) * bgEase);
+    const b = Math.round(14 + (238 - 14) * bgEase);
+    ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+    ctx.fillRect(0, 0, w, h);
 
-    // Left center position of the ruler (Image 1 placement)
+    // Sync viewport background color
+    const viewportEl = document.getElementById('quy-trinh-viewport');
+    if (viewportEl) {
+      viewportEl.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+    }
+
+    // ── 2. MICRO-DOT MATRIX PATTERN (Image 1, 2, 3, 4) ──
+    const gridPitch = 14;
+    const dotAlpha = bgEase > 0.5 ? 0.07 : 0.09;
+    ctx.fillStyle = bgEase > 0.5 ? `rgba(0, 0, 0, ${dotAlpha})` : `rgba(255, 255, 255, ${dotAlpha})`;
+    const cols = Math.ceil(w / gridPitch);
+    const rows = Math.ceil(h / gridPitch);
+    for (let c = 0; c < cols; c++) {
+      const gx = c * gridPitch + 7;
+      for (let ro = 0; ro < rows; ro++) {
+        const gy = ro * gridPitch + 7;
+        ctx.fillRect(gx, gy, 1.2, 1.2);
+      }
+    }
+
+    // When fully transitioned to Image 4, the dot slats are faded out
+    if (bgEase >= 1) return;
+
     const isDesktop = w >= 960;
-    const cx = isDesktop ? w * 0.36 : (w > 640 ? w * 0.28 : w * 0.22);
+    const initialCx = isDesktop ? w * 0.36 : (w > 640 ? w * 0.28 : w * 0.22);
+    const centerCx = w * 0.50;
 
-    const topY = h * 0.08;
-    const bottomY = h * 0.92;
-    const rulerH = bottomY - topY;
+    // ── 3. PHASES TIMELINE ──
+    // Phase 1 (0.00 - 0.50): Streaming dot ruler on the left
+    // Phase 2 (0.50 - 0.68): Morph into centered 3D perspective ladder (Image 2)
+    // Phase 3 (0.68 - 0.84): Fullscreen expansion of dot slats (Image 3)
+    // Phase 4 (0.84 - 1.00): Fade out rungs into Image 4 light screen
 
-    // Phase B: 3D perspective ladder morph (0.58 to 0.74)
-    const morphRaw = Math.min(1, Math.max(0, (progress - 0.58) / 0.16));
-    const perspT = morphRaw * morphRaw * (3 - 2 * morphRaw);
+    const morphRaw = Math.min(1, Math.max(0, (progress - 0.50) / 0.16));
+    const morphT = morphRaw * morphRaw * (3 - 2 * morphRaw);
 
-    // Phase C: Fullscreen horizontal expansion (0.74 to 0.86)
-    const fullRaw = Math.min(1, Math.max(0, (progress - 0.74) / 0.12));
+    const fullRaw = Math.min(1, Math.max(0, (progress - 0.68) / 0.16));
     const fullT = fullRaw * fullRaw * (3 - 2 * fullRaw);
 
-    // Phase D: Fade out at the end for clean white centered text (0.87 to 0.92)
-    const fadeRaw = Math.min(1, Math.max(0, (progress - 0.87) / 0.05));
-    const fadeT = Math.min(1, Math.max(0, fadeRaw));
-
-    if (fadeT >= 1) return;
-
-    // Continuous running tape calculation ("chạy càng nhiều càng tốt")
-    // When scrolling down, tape moves continuously, streaming bars through the viewport!
-    const tapeTravel = progress * 4200;
-    const barSpacing = 16;
-
-    // Milestone date dictionary
-    const milestoneDates = [
-      'THỨ NĂM, NGÀY 22 THÁNG 10',
-      'THỨ SÁU, NGÀY 23 THÁNG 10',
-      'THỨ HAI, NGÀY 26 THÁNG 10',
-      'THỨ TƯ, NGÀY 28 THÁNG 10',
-      'THỨ SÁU, NGÀY 30 THÁNG 10',
-      'THỨ HAI, NGÀY 02 THÁNG 11',
-      'THỨ TƯ, NGÀY 04 THÁNG 11',
-      'THỨ SÁU, NGÀY 06 THÁNG 11',
-    ];
-
+    const rungAlpha = Math.max(0, 1 - bgEase);
     ctx.save();
-    ctx.globalAlpha = Math.max(0, 1 - fadeT);
-    ctx.fillStyle = '#111111';
+    ctx.globalAlpha = rungAlpha;
 
-    if (perspT < 0.99) {
-      // 1. Continuous stream of solid black bars (Phase 1)
+    const dotPitch = 7.2;
+
+    if (morphT < 0.85) {
+      // ══════════════════════════════════════════════════════════════════════
+      // PHASE 1: STREAMING DOT RULER (Image 1, "tròn tròn tí", continuous)
+      // ══════════════════════════════════════════════════════════════════════
+      const barSpacing = 16;
+      const tapeTravel = progress * 4800;
       const minY = -40;
       const maxY = h + 40;
       const kMin = Math.floor((minY - tapeTravel) / barSpacing);
       const kMax = Math.ceil((maxY - tapeTravel) / barSpacing);
 
+      const milestoneDates = [
+        'THỨ NĂM, NGÀY 22 THÁNG 10',
+        'THỨ SÁU, NGÀY 23 THÁNG 10',
+        'THỨ HAI, NGÀY 26 THÁNG 10',
+        'THỨ TƯ, NGÀY 28 THÁNG 10',
+        'THỨ SÁU, NGÀY 30 THÁNG 10',
+        'THỨ HAI, NGÀY 02 THÁNG 11',
+        'THỨ TƯ, NGÀY 04 THÁNG 11',
+      ];
+
+      const cx = initialCx * (1 - morphT) + centerCx * morphT;
+
       for (let k = kMin; k <= kMax; k++) {
         const flatY = k * barSpacing + tapeTravel;
         if (flatY < minY || flatY > maxY) continue;
 
-        // Perspective depth factor based on screen Y
-        const normY = Math.max(0, Math.min(1, (flatY - topY) / rulerH));
-        const depthP = Math.pow(normY, 1.65);
-        const perspY = topY + depthP * rulerH;
-        const currentY = flatY * (1 - perspT) + perspY * perspT;
-
-        // Normal bar width = 76px (halfW = 38)
         const baseHalfW = isDesktop ? 38 : 28;
-
-        // Milestone bar every 14 bars
         const isMilestone = (Math.abs(k) % 14 === 0);
+
         let milestoneExtension = 0;
         if (isMilestone) {
           const mType = Math.abs(Math.floor(k / 14)) % 2;
           milestoneExtension = isDesktop ? (mType === 1 ? 135 : 85) : (mType === 1 ? 85 : 55);
 
-          // Draw milestone date on far left (desktop only, fades out during perspective)
-          if (isDesktop && perspT < 0.8 && currentY >= topY - 20 && currentY <= bottomY + 20) {
+          // Milestone date on far left (fades out as it morphs to center)
+          if (isDesktop && morphT < 0.6 && flatY >= 40 && flatY <= h - 40) {
             const dateIdx = Math.abs(Math.floor(k / 14)) % milestoneDates.length;
             const dateLabel = milestoneDates[dateIdx];
             ctx.save();
-            ctx.globalAlpha = Math.max(0, (1 - perspT * 1.4) * (1 - fadeT) * 0.7);
+            ctx.globalAlpha = Math.max(0, (1 - morphT * 1.6) * 0.7 * rungAlpha);
             ctx.font = '600 11px monospace';
             ctx.fillStyle = '#888888';
-            ctx.fillText(dateLabel, 48, currentY + 3.5);
+            ctx.fillText(dateLabel, 48, flatY + 3.5);
             ctx.restore();
           }
         }
 
-        // Perspective widening
-        const perspHalfW = (baseHalfW * 0.85) + depthP * (isDesktop ? 220 : 140);
+        // Active focus cluster (thicker rungs made of 3-4 rows of round dots, matching Image 1)
+        const distToCenter = Math.abs(flatY - h * 0.50);
+        const isFocused = distToCenter < 100;
+        const focusFactor = Math.max(0, 1 - distToCenter / 100);
 
-        // Interpolate edges
+        let numRows = 1;
+        if (isFocused && focusFactor > 0.35) {
+          numRows = focusFactor > 0.7 ? 4 : 3;
+        } else if (isMilestone) {
+          numRows = 1;
+        } else {
+          numRows = (Math.abs(k) % 2 === 0) ? 2 : 1;
+        }
+
         const flatLeft = cx - baseHalfW;
-        const perspLeft = cx - perspHalfW;
-        const currentLeft = flatLeft * (1 - perspT) + perspLeft * perspT;
-        const finalLeft = currentLeft * (1 - fullT) + 0 * fullT;
+        const flatRight = cx + baseHalfW + milestoneExtension * (1 - morphT);
 
-        const flatRight = cx + baseHalfW + milestoneExtension * (1 - perspT);
-        const perspRight = cx + perspHalfW;
-        const currentRight = flatRight * (1 - perspT) + perspRight * perspT;
-        const finalRight = currentRight * (1 - fullT) + w * fullT;
+        // Draw circular dots ("tròn tròn tí")
+        const dotR = 1.4 + (focusFactor * 0.5);
+        ctx.fillStyle = isFocused ? '#ffffff' : 'rgba(235, 238, 245, 0.85)';
 
-        // Thickness
-        const baseThick = (isMilestone ? 2.8 : 2.2) + depthP * perspT * 1.5;
-        const fullThick = 3.5 + depthP * 14.0;
-        const barThickness = baseThick * (1 - fullT) + fullThick * fullT;
+        const dotCount = Math.floor((flatRight - flatLeft) / dotPitch);
+        const rowSpacing = 3.2;
 
-        const barWidth = Math.max(2, finalRight - finalLeft);
-        ctx.fillRect(finalLeft, currentY - barThickness / 2, barWidth, barThickness);
+        for (let d = 0; d <= dotCount; d++) {
+          const dotX = flatLeft + d * dotPitch;
+          for (let rIdx = 0; rIdx < numRows; rIdx++) {
+            const rowOffset = (rIdx - (numRows - 1) / 2) * rowSpacing;
+            const dotY = flatY + rowOffset;
+            ctx.beginPath();
+            ctx.arc(dotX, dotY, dotR, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
       }
     } else {
-      // 2. Pure 3D Perspective Ladder / Fullscreen Expansion (Phase 2 & Phase 3)
-      const numLadderRungs = 38;
+      // ══════════════════════════════════════════════════════════════════════
+      // PHASE 2 & 3: CENTERED 3D PERSPECTIVE LADDER & FULLSCREEN EXPANSION
+      // (Image 2: Center 3D perspective ladder / Image 3: Fullscreen dot slats)
+      // ══════════════════════════════════════════════════════════════════════
+      const cx = centerCx;
+      const ladderTopY = h * 0.22;
+      const ladderBottomY = h * 1.05;
+      const rulerH = ladderBottomY - ladderTopY;
+
+      const numLadderRungs = 16;
       for (let i = 0; i < numLadderRungs; i++) {
         const frac = i / (numLadderRungs - 1);
-        const depthP = Math.pow(frac, 1.65);
-        const currentY = topY + depthP * rulerH;
+        const depthP = Math.pow(frac, 1.85); // Foreshortened 3D spacing
+        const currentY = ladderTopY + depthP * rulerH;
 
-        const baseHalfW = isDesktop ? 38 : 28;
-        const perspHalfW = (baseHalfW * 0.85) + depthP * (isDesktop ? 220 : 140);
+        // Image 2 width vs Image 3 full width
+        const topHalfW = 60 + 240 * fullT;
+        const bottomHalfW = (isDesktop ? 340 : 190) + (w * 0.65 - (isDesktop ? 340 : 190)) * fullT;
+        const currentHalfW = topHalfW + (bottomHalfW - topHalfW) * depthP;
 
-        const perspLeft = cx - perspHalfW;
-        const finalLeft = perspLeft * (1 - fullT) + 0 * fullT;
+        const finalLeft = cx - currentHalfW;
+        const finalRight = cx + currentHalfW;
 
-        const perspRight = cx + perspHalfW;
-        const finalRight = perspRight * (1 - fullT) + w * fullT;
+        // Number of dot rows:
+        // Image 2 (fullT = 0): 1 row at top, up to 7 rows at bottom
+        // Image 3 (fullT = 1): 2 rows at top, up to 14 rows at bottom
+        const numRows = Math.round(1 + depthP * 6 + depthP * 7 * fullT);
 
-        const baseThick = 2.5 + depthP * 1.5;
-        const fullThick = 3.5 + depthP * 14.0;
-        const barThickness = baseThick * (1 - fullT) + fullThick * fullT;
+        const dotR = 1.4 + depthP * 0.6 + fullT * 0.3;
+        ctx.fillStyle = depthP > 0.5 ? '#ffffff' : 'rgba(235, 238, 245, 0.85)';
 
-        const barWidth = Math.max(2, finalRight - finalLeft);
-        ctx.fillRect(finalLeft, currentY - barThickness / 2, barWidth, barThickness);
+        const dotCount = Math.floor((finalRight - finalLeft) / dotPitch);
+        const rowSpacing = 3.1 + fullT * 0.6;
+
+        for (let d = 0; d <= dotCount; d++) {
+          const dotX = finalLeft + d * dotPitch;
+          for (let rIdx = 0; rIdx < numRows; rIdx++) {
+            const rowOffset = (rIdx - (numRows - 1) / 2) * rowSpacing;
+            const dotY = currentY + rowOffset;
+            ctx.beginPath();
+            ctx.arc(dotX, dotY, dotR, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
       }
     }
 
     ctx.restore();
   }
-
   // ── 5. Real Metrics Count-Up ─────────────────────────────────────────────
   function runCountUp(el, target, duration = 1400) {
     const start = 0;
