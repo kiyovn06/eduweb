@@ -67,11 +67,15 @@ async function initScrollytelling() {
   // Quy Trình Scrollytelling & Solid Black Timeline Ladder
   const quyTrinhTrack = document.getElementById('quy-trinh-track');
   const quyTrinhCanvas = document.getElementById('quy-trinh-canvas');
+  const quyTrinhRulerHandle = document.getElementById('quy-trinh-ruler-handle');
   const quyTrinhStepViews = Array.from(document.querySelectorAll('.quy-trinh-step-view'));
   const quyTrinhMilestones = document.getElementById('quy-trinh-milestones');
   let quyTrinhCanvasCtx = null;
   let lastActiveQuyTrinhStep = -1;
   let lastQuyTrinhProgress = 0;
+  let isDraggingRuler = false;
+  let rulerDragStartY = 0;
+  let rulerDragStartScrollY = 0;
 
   // Stats Counters
   const statsStrip = document.getElementById('stats-counter-strip');
@@ -642,6 +646,44 @@ async function initScrollytelling() {
     quyTrinhCanvasCtx = quyTrinhCanvas.getContext('2d');
     resizeQuyTrinhCanvas();
     window.addEventListener('resize', resizeQuyTrinhCanvas, { passive: true });
+
+    // Interactive Drag-to-Scroll on ruler handle ("phải kéo được")
+    if (quyTrinhRulerHandle) {
+      quyTrinhRulerHandle.addEventListener('pointerdown', (e) => {
+        isDraggingRuler = true;
+        rulerDragStartY = e.clientY;
+        rulerDragStartScrollY = window.scrollY;
+        quyTrinhRulerHandle.classList.add('is-grabbing');
+        try { quyTrinhRulerHandle.setPointerCapture(e.pointerId); } catch (err) {}
+        document.body.style.userSelect = 'none';
+      });
+
+      quyTrinhRulerHandle.addEventListener('pointermove', (e) => {
+        if (!isDraggingRuler || !quyTrinhTrack) return;
+        const dy = e.clientY - rulerDragStartY;
+        const trackRect = quyTrinhTrack.getBoundingClientRect();
+        const totalDist = trackRect.height - window.innerHeight;
+        // Sensitivity: dragging across ~70% screen height scrolls through the section
+        const dragRatio = totalDist / (window.innerHeight * 0.70);
+        const targetScrollY = rulerDragStartScrollY + dy * dragRatio;
+        if (window.lenis) {
+          window.lenis.scrollTo(targetScrollY, { immediate: true });
+        } else {
+          window.scrollTo(0, targetScrollY);
+        }
+      });
+
+      const stopRulerDrag = (e) => {
+        if (!isDraggingRuler) return;
+        isDraggingRuler = false;
+        quyTrinhRulerHandle.classList.remove('is-grabbing');
+        try { quyTrinhRulerHandle.releasePointerCapture(e.pointerId); } catch (err) {}
+        document.body.style.userSelect = '';
+      };
+
+      quyTrinhRulerHandle.addEventListener('pointerup', stopRulerDrag);
+      quyTrinhRulerHandle.addEventListener('pointercancel', stopRulerDrag);
+    }
   }
 
   function resizeQuyTrinhCanvas() {
@@ -731,12 +773,9 @@ async function initScrollytelling() {
     const isDesktop = w >= 960;
     const cx = isDesktop ? w * 0.36 : (w > 640 ? w * 0.28 : w * 0.22);
 
-    const topY = h * 0.10;
-    const bottomY = h * 0.90;
+    const topY = h * 0.08;
+    const bottomY = h * 0.92;
     const rulerH = bottomY - topY;
-
-    // Scroll glide motion: left bar moves down as user scrolls
-    const scrollGlide = (progress - 0.25) * 90;
 
     // Phase B: 3D perspective ladder morph (0.58 to 0.74)
     const morphRaw = Math.min(1, Math.max(0, (progress - 0.58) / 0.16));
@@ -752,54 +791,113 @@ async function initScrollytelling() {
 
     if (fadeT >= 1) return;
 
-    const numBars = 38;
+    // Continuous running tape calculation ("chạy càng nhiều càng tốt")
+    // When scrolling down, tape moves continuously, streaming bars through the viewport!
+    const tapeTravel = progress * 4200;
+    const barSpacing = 16;
+
+    // Milestone date dictionary
+    const milestoneDates = [
+      'THỨ NĂM, NGÀY 22 THÁNG 10',
+      'THỨ SÁU, NGÀY 23 THÁNG 10',
+      'THỨ HAI, NGÀY 26 THÁNG 10',
+      'THỨ TƯ, NGÀY 28 THÁNG 10',
+      'THỨ SÁU, NGÀY 30 THÁNG 10',
+      'THỨ HAI, NGÀY 02 THÁNG 11',
+      'THỨ TƯ, NGÀY 04 THÁNG 11',
+      'THỨ SÁU, NGÀY 06 THÁNG 11',
+    ];
+
     ctx.save();
     ctx.globalAlpha = Math.max(0, 1 - fadeT);
     ctx.fillStyle = '#111111';
 
-    for (let i = 0; i < numBars; i++) {
-      const frac = i / (numBars - 1);
+    if (perspT < 0.99) {
+      // 1. Continuous stream of solid black bars (Phase 1)
+      const minY = -40;
+      const maxY = h + 40;
+      const kMin = Math.floor((minY - tapeTravel) / barSpacing);
+      const kMax = Math.ceil((maxY - tapeTravel) / barSpacing);
 
-      // Depth curve for 3D perspective ladder (foreground spread out)
-      const depthP = Math.pow(frac, 1.65);
-      const flatY = topY + frac * rulerH + scrollGlide;
-      const perspY = topY + depthP * rulerH + scrollGlide * 0.4;
-      const currentY = flatY * (1 - perspT) + perspY * perspT;
+      for (let k = kMin; k <= kMax; k++) {
+        const flatY = k * barSpacing + tapeTravel;
+        if (flatY < minY || flatY > maxY) continue;
 
-      // Normal bar width = 76px (halfW = 38)
-      const baseHalfW = isDesktop ? 38 : 28;
+        // Perspective depth factor based on screen Y
+        const normY = Math.max(0, Math.min(1, (flatY - topY) / rulerH));
+        const depthP = Math.pow(normY, 1.65);
+        const perspY = topY + depthP * rulerH;
+        const currentY = flatY * (1 - perspT) + perspY * perspT;
 
-      // Three extended milestone bars (matching Image 1)
-      let milestoneExtension = 0;
-      if (i === 6) {
-        milestoneExtension = isDesktop ? 85 : 55;
-      } else if (i === 19) {
-        milestoneExtension = isDesktop ? 135 : 85;
-      } else if (i === 32) {
-        milestoneExtension = isDesktop ? 85 : 55;
+        // Normal bar width = 76px (halfW = 38)
+        const baseHalfW = isDesktop ? 38 : 28;
+
+        // Milestone bar every 14 bars
+        const isMilestone = (Math.abs(k) % 14 === 0);
+        let milestoneExtension = 0;
+        if (isMilestone) {
+          const mType = Math.abs(Math.floor(k / 14)) % 2;
+          milestoneExtension = isDesktop ? (mType === 1 ? 135 : 85) : (mType === 1 ? 85 : 55);
+
+          // Draw milestone date on far left (desktop only, fades out during perspective)
+          if (isDesktop && perspT < 0.8 && currentY >= topY - 20 && currentY <= bottomY + 20) {
+            const dateIdx = Math.abs(Math.floor(k / 14)) % milestoneDates.length;
+            const dateLabel = milestoneDates[dateIdx];
+            ctx.save();
+            ctx.globalAlpha = Math.max(0, (1 - perspT * 1.4) * (1 - fadeT) * 0.7);
+            ctx.font = '600 11px monospace';
+            ctx.fillStyle = '#888888';
+            ctx.fillText(dateLabel, 48, currentY + 3.5);
+            ctx.restore();
+          }
+        }
+
+        // Perspective widening
+        const perspHalfW = (baseHalfW * 0.85) + depthP * (isDesktop ? 220 : 140);
+
+        // Interpolate edges
+        const flatLeft = cx - baseHalfW;
+        const perspLeft = cx - perspHalfW;
+        const currentLeft = flatLeft * (1 - perspT) + perspLeft * perspT;
+        const finalLeft = currentLeft * (1 - fullT) + 0 * fullT;
+
+        const flatRight = cx + baseHalfW + milestoneExtension * (1 - perspT);
+        const perspRight = cx + perspHalfW;
+        const currentRight = flatRight * (1 - perspT) + perspRight * perspT;
+        const finalRight = currentRight * (1 - fullT) + w * fullT;
+
+        // Thickness
+        const baseThick = (isMilestone ? 2.8 : 2.2) + depthP * perspT * 1.5;
+        const fullThick = 3.5 + depthP * 14.0;
+        const barThickness = baseThick * (1 - fullT) + fullThick * fullT;
+
+        const barWidth = Math.max(2, finalRight - finalLeft);
+        ctx.fillRect(finalLeft, currentY - barThickness / 2, barWidth, barThickness);
       }
+    } else {
+      // 2. Pure 3D Perspective Ladder / Fullscreen Expansion (Phase 2 & Phase 3)
+      const numLadderRungs = 38;
+      for (let i = 0; i < numLadderRungs; i++) {
+        const frac = i / (numLadderRungs - 1);
+        const depthP = Math.pow(frac, 1.65);
+        const currentY = topY + depthP * rulerH;
 
-      // Perspective width widens from top to bottom
-      const perspHalfW = (baseHalfW * 0.85) + depthP * (isDesktop ? 220 : 140);
+        const baseHalfW = isDesktop ? 38 : 28;
+        const perspHalfW = (baseHalfW * 0.85) + depthP * (isDesktop ? 220 : 140);
 
-      // Interpolate left and right edges
-      const flatLeft = cx - baseHalfW;
-      const perspLeft = cx - perspHalfW;
-      const currentLeft = flatLeft * (1 - perspT) + perspLeft * perspT;
-      const finalLeft = currentLeft * (1 - fullT) + 0 * fullT;
+        const perspLeft = cx - perspHalfW;
+        const finalLeft = perspLeft * (1 - fullT) + 0 * fullT;
 
-      const flatRight = cx + baseHalfW + milestoneExtension * (1 - perspT);
-      const perspRight = cx + perspHalfW;
-      const currentRight = flatRight * (1 - perspT) + perspRight * perspT;
-      const finalRight = currentRight * (1 - fullT) + w * fullT;
+        const perspRight = cx + perspHalfW;
+        const finalRight = perspRight * (1 - fullT) + w * fullT;
 
-      // Bar thickness: 2.5px in flat, in perspective foreground slightly thicker, and grows when expanding full-width
-      const baseThick = 2.5 + depthP * perspT * 1.5;
-      const fullThick = 3.5 + depthP * 14.0;
-      const barThickness = baseThick * (1 - fullT) + fullThick * fullT;
+        const baseThick = 2.5 + depthP * 1.5;
+        const fullThick = 3.5 + depthP * 14.0;
+        const barThickness = baseThick * (1 - fullT) + fullThick * fullT;
 
-      const barWidth = Math.max(2, finalRight - finalLeft);
-      ctx.fillRect(finalLeft, currentY - barThickness / 2, barWidth, barThickness);
+        const barWidth = Math.max(2, finalRight - finalLeft);
+        ctx.fillRect(finalLeft, currentY - barThickness / 2, barWidth, barThickness);
+      }
     }
 
     ctx.restore();

@@ -2131,6 +2131,24 @@ body {
   z-index: 2;
 }
 
+/* Draggable Interactive Ruler Hitbox ("kéo thanh để cuộn") */
+.quy-trinh-ruler-handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(36% - 70px);
+  width: clamp(160px, 20vw, 260px);
+  z-index: 15;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.quy-trinh-ruler-handle:active,
+.quy-trinh-ruler-handle.is-grabbing {
+  cursor: grabbing !important;
+}
+
 /* Overlay Stage: Left Milestones & Right Text Column */
 .quy-trinh-overlay-stage {
   position: relative;
