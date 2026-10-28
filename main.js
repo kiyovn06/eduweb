@@ -650,25 +650,25 @@ async function initScrollytelling() {
     lastQuyTrinhProgress = progress;
 
     // Sybiosme 5-State Step Mapping:
-    // 0: Intro (0.00 - 0.12)
-    // 1: Bước 01 (0.12 - 0.28) - Milestone: NGÀY 1
-    // 2: Bước 02 (0.28 - 0.44) - Milestone: NGÀY 4
-    // 3: Bước 03 (0.44 - 0.58) - Milestone: NGÀY 7
-    // 4: Phase 2 Text & 3D Perspective Ladder (0.58 - 0.72) - Milestone: NGÀY THỨ 10
-    // -1: Phase 3 Fullscreen Slats (0.72 - 0.86, pure visual, no text)
-    // 5: Phase 4 Light Screen "Được làm riêng cho bạn..." (0.86 - 1.00)
+    // 0: Intro (0.00 - 0.10)
+    // 1: Bước 01 (0.10 - 0.28) - Milestone: NGÀY 1 (peak 0.19)
+    // 2: Bước 02 (0.28 - 0.46) - Milestone: NGÀY 4 (peak 0.37)
+    // 3: Bước 03 (0.46 - 0.62) - Milestone: NGÀY 7 (peak 0.54)
+    // 4: Phase 2 Text & 3D Perspective Ladder (0.62 - 0.74) - Milestone: NGÀY THỨ 10 (peak 0.67)
+    // -1: Phase 3 Fullscreen Slats (0.74 - 0.84, pure visual cinematic)
+    // 5: Phase 4 Clean White Screen (0.87 - 1.00, light paper #f2f2f4)
     let activeStep = -1;
-    if (progress >= 0.86) {
+    if (progress >= 0.87) {
       activeStep = 5;
-    } else if (progress >= 0.72) {
+    } else if (progress >= 0.74) {
       activeStep = -1; // Fullscreen slats pure cinematic
-    } else if (progress >= 0.58) {
+    } else if (progress >= 0.62) {
       activeStep = 4;
-    } else if (progress >= 0.44) {
+    } else if (progress >= 0.46) {
       activeStep = 3;
     } else if (progress >= 0.28) {
       activeStep = 2;
-    } else if (progress >= 0.12) {
+    } else if (progress >= 0.10) {
       activeStep = 1;
     } else {
       activeStep = 0;
@@ -695,14 +695,15 @@ async function initScrollytelling() {
     const h = quyTrinhCanvas.height / dpr;
     if (w <= 0 || h <= 0) return;
 
-    // ── 1. BACKGROUND COLOR BLEND (To Image 4 light grey at end) ──
-    // 0.00 - 0.86: Dark #0a0b0e (Void)
-    // 0.86 - 0.96: Smooth Hermite blend to light #ececee
-    const bgProg = Math.min(1, Math.max(0, (progress - 0.86) / 0.10));
+    // ── 1. BACKGROUND COLOR BLEND (Hermite curve to #f2f2f4 Clean Light Paper) ──
+    // 0.00 - 0.82: Deep Void #0a0b0e
+    // 0.82 - 0.87: Smooth Hermite transition to #f2f2f4
+    // 0.87 - 1.00: 100% Solid Clean Light Paper
+    const bgProg = Math.min(1, Math.max(0, (progress - 0.82) / 0.05));
     const bgEase = bgProg * bgProg * (3 - 2 * bgProg);
-    const r = Math.round(10 + (236 - 10) * bgEase);
-    const g = Math.round(11 + (236 - 11) * bgEase);
-    const b = Math.round(14 + (238 - 14) * bgEase);
+    const r = Math.round(10 + (242 - 10) * bgEase);
+    const g = Math.round(11 + (242 - 11) * bgEase);
+    const b = Math.round(14 + (244 - 14) * bgEase);
     ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
     ctx.fillRect(0, 0, w, h);
 
@@ -712,9 +713,15 @@ async function initScrollytelling() {
       viewportEl.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
     }
 
+    // Toggle header light mode (Logo and buttons turn dark on light background)
+    const headerEl = document.querySelector('.sybios-floating-header');
+    if (headerEl) {
+      headerEl.classList.toggle('is-light', bgEase > 0.5);
+    }
+
     // ── 2. AMBIENT HALFTONE MICRO-GRID (Lưới chấm nền tinh tế chuẩn Sybiosme) ──
     const gridPitch = 12; // 12px lattice
-    const dotAlpha = bgEase > 0.5 ? 0.07 : 0.085;
+    const dotAlpha = bgEase > 0.5 ? 0.075 : 0.085;
     ctx.fillStyle = bgEase > 0.5 ? `rgba(0, 0, 0, ${dotAlpha})` : `rgba(255, 255, 255, ${dotAlpha})`;
     const cols = Math.ceil(w / gridPitch);
     const rows = Math.ceil(h / gridPitch);
@@ -726,136 +733,157 @@ async function initScrollytelling() {
       }
     }
 
-    // Fade out rungs into Image 4 light screen
-    if (bgEase >= 1) return;
+    // Fade out rungs completely into Image 4 light screen (Zero slats when background is light)
+    const slatAlpha = Math.max(0, 1 - bgEase);
+    if (slatAlpha <= 0) return;
 
     const isDesktop = w >= 960;
     const initialCx = isDesktop ? w * 0.38 : (w > 640 ? w * 0.28 : w * 0.22);
     const centerCx = w * 0.50;
 
-    // Morph to centered 3D perspective ladder (0.54 - 0.70)
-    const morphRaw = Math.min(1, Math.max(0, (progress - 0.54) / 0.16));
+    // Morph to centered 3D perspective ladder (0.58 - 0.72)
+    const morphRaw = Math.min(1, Math.max(0, (progress - 0.58) / 0.14));
     const morphT = morphRaw * morphRaw * (3 - 2 * morphRaw);
 
-    // Fullscreen expansion (0.70 - 0.86)
-    const fullRaw = Math.min(1, Math.max(0, (progress - 0.70) / 0.14));
+    // Fullscreen expansion (0.72 - 0.82)
+    const fullRaw = Math.min(1, Math.max(0, (progress - 0.72) / 0.10));
     const fullT = fullRaw * fullRaw * (3 - 2 * fullRaw);
 
-    const rungAlpha = Math.max(0, 1 - bgEase);
     ctx.save();
-    ctx.globalAlpha = rungAlpha;
+    ctx.globalAlpha = slatAlpha;
 
     const dotPitch = 7.2;
 
-    if (morphT < 0.85) {
+    if (morphT < 0.90) {
       // ══════════════════════════════════════════════════════════════════════
-      // PHASE 1: STREAMING DOT RULER (Chuẩn 100% Ảnh 1 & media_1793148858848_69559470.png)
+      // PHASE 1: STREAMING DOT RULER DRUM (Chuẩn 100% Ảnh 1 & media_1793148858848_69559470.png)
       // ══════════════════════════════════════════════════════════════════════
-      const barSpacing = 16;
-      const tapeTravel = progress * 4800;
-      const minY = -40;
-      const maxY = h + 40;
-      const kMin = Math.floor((minY - tapeTravel) / barSpacing);
-      const kMax = Math.ceil((maxY - tapeTravel) / barSpacing);
+      const centerY = h * 0.50;
+      const rungSpacing = 26; // Spacing between adjacent rungs
 
-      // Sybiosme milestones: Day 1, Day 4, Day 7, Day 10
-      const milestoneDict = {
-        0:  { date: 'THỨ NĂM, NGÀY 29 THÁNG 10', day: 'NGÀY 1' },
-        14: { date: 'THỨ BA, NGÀY 03 THÁNG 11',  day: 'NGÀY 4' },
-        28: { date: 'THỨ SÁU, NGÀY 06 THÁNG 11', day: 'NGÀY 7' },
-        42: { date: 'THỨ NĂM, NGÀY 12 THÁNG 11', day: 'NGÀY THỨ 10' },
-      };
+      // Piecewise smooth drum continuous offset (scrolls UPWARD as progress increases)
+      // p = 0.19 -> Milestone 0 (NGÀY 1) at center
+      // p = 0.37 -> Milestone 1 (NGÀY 4) at center
+      // p = 0.54 -> Milestone 2 (NGÀY 7) at center
+      // p = 0.67 -> Milestone 3 (NGÀY THỨ 10) at center
+      let drumOffset = 0;
+      if (progress < 0.19) {
+        drumOffset = ((progress - 0.19) / 0.19) * 400;
+      } else if (progress < 0.37) {
+        drumOffset = ((progress - 0.19) / 0.18) * 520;
+      } else if (progress < 0.54) {
+        drumOffset = 520 + ((progress - 0.37) / 0.17) * 520;
+      } else if (progress < 0.67) {
+        drumOffset = 1040 + ((progress - 0.54) / 0.13) * 520;
+      } else {
+        drumOffset = 1560 + ((progress - 0.67) / 0.15) * 600;
+      }
 
-      const regularDates = [
-        'THỨ TƯ, NGÀY 28 THÁNG 10',
-        'THỨ SÁU, NGÀY 30 THÁNG 10',
-        'THỨ HAI, NGÀY 02 THÁNG 11',
-        'THỨ TƯ, NGÀY 04 THÁNG 11',
-        'THỨ NĂM, NGÀY 05 THÁNG 11',
-        'THỨ HAI, NGÀY 09 THÁNG 11',
-        'THỨ BA, NGÀY 10 THÁNG 11',
+      // Milestones definition:
+      // m = 0: Day 1 (Tape Y = 0)
+      // m = 20: Day 4 (Tape Y = 20 * 26 = 520)
+      // m = 40: Day 7 (Tape Y = 40 * 26 = 1040)
+      // m = 60: Day 10 (Tape Y = 60 * 26 = 1560)
+      const milestones = [
+        { rung: 0,  date: 'THỨ NĂM, NGÀY 29 THÁNG 10', day: 'NGÀY 1',      subDate: 'THỨ SÁU, NGÀY 30 THÁNG 10' },
+        { rung: 20, date: 'THỨ BA, NGÀY 03 THÁNG 11',  day: 'NGÀY 4',      subDate: 'THỨ TƯ, NGÀY 04 THÁNG 11' },
+        { rung: 40, date: 'THỨ SÁU, NGÀY 06 THÁNG 11', day: 'NGÀY 7',      subDate: 'THỨ BẢY, NGÀY 07 THÁNG 11' },
+        { rung: 60, date: 'THỨ NĂM, NGÀY 12 THÁNG 11', day: 'NGÀY THỨ 10', subDate: 'THỨ SÁU, NGÀY 13 THÁNG 11' }
       ];
 
       const cx = initialCx * (1 - morphT) + centerCx * morphT;
 
-      for (let k = kMin; k <= kMax; k++) {
-        const flatY = k * barSpacing + tapeTravel;
-        if (flatY < minY || flatY > maxY) continue;
+      // Draw all rungs from tape index -12 to 75
+      for (let j = -12; j <= 75; j++) {
+        const flatY = centerY + j * rungSpacing - drumOffset;
+        if (flatY < -50 || flatY > h + 50) continue;
 
-        // Subtle barrel lens curvature (rungs at center bulge slightly)
-        const distToCenter = Math.abs(flatY - h * 0.50);
-        const lensBulge = Math.max(0, 1 - Math.pow(distToCenter / (h * 0.5), 2)) * 7;
-        const baseHalfW = (isDesktop ? 36 : 26) + lensBulge;
+        const distToCenter = Math.abs(flatY - centerY);
+        const normDist = Math.min(1, distToCenter / (h * 0.48));
+        const lensBulge = Math.max(0, 1 - normDist * normDist) * 12;
+        const baseHalfW = (isDesktop ? 34 : 24) + lensBulge;
 
-        const isMilestone = (Math.abs(k) % 14 === 0);
-        let milestoneExtension = 0;
+        // Check if this rung is a milestone
+        const mInfo = milestones.find(m => m.rung === j);
+        const isMilestone = !!mInfo;
 
-        if (isMilestone) {
-          milestoneExtension = isDesktop ? 220 : 120; // Long extended single-line dot row
+        // Milestone extension: single horizontal line shooting +220px to the right
+        const milestoneExtension = isMilestone ? (isDesktop ? 220 : 120) * (1 - morphT) : 0;
 
-          // Left Date & Day Marker (Matching Ảnh 1 & media_1793148858848_69559470.png)
-          if (isDesktop && morphT < 0.6 && flatY >= 40 && flatY <= h - 40) {
-            const mKey = (Math.abs(k) % 56);
-            const mData = milestoneDict[mKey] || { date: 'THỨ NĂM, NGÀY 29 THÁNG 10', day: 'NGÀY 1' };
-
-            ctx.save();
-            ctx.globalAlpha = Math.max(0, (1 - morphT * 1.6) * 0.85 * rungAlpha);
-
-            // 1. Date string on the left
-            ctx.font = '500 11px monospace';
-            ctx.fillStyle = '#888888';
-            ctx.textAlign = 'right';
-            const dateRightX = cx - baseHalfW - 80;
-            ctx.fillText(mData.date, dateRightX, flatY + 4);
-
-            // 2. Vertical separator line
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(dateRightX + 16, flatY - 8);
-            ctx.lineTo(dateRightX + 16, flatY + 8);
-            ctx.stroke();
-
-            // 3. Day label (bold white)
-            ctx.font = '700 11px monospace';
-            ctx.fillStyle = '#ffffff';
-            ctx.textAlign = 'left';
-            ctx.fillText(mData.day, dateRightX + 28, flatY + 4);
-
-            ctx.restore();
-          }
-        } else if ((Math.abs(k) % 14 === 7) && isDesktop && morphT < 0.6 && flatY >= 60 && flatY <= h - 60) {
-          // Additional secondary date label below milestone (matching Ảnh 1)
-          const dIdx = Math.abs(Math.floor(k / 7)) % regularDates.length;
+        // Milestone date marker on left
+        if (isMilestone && isDesktop && morphT < 0.65 && flatY >= 35 && flatY <= h - 35) {
           ctx.save();
-          ctx.globalAlpha = Math.max(0, (1 - morphT * 1.6) * 0.45 * rungAlpha);
-          ctx.font = '500 10px monospace';
-          ctx.fillStyle = '#666666';
+          const labelAlpha = Math.max(0, (1 - morphT * 1.5) * slatAlpha);
+          ctx.globalAlpha = labelAlpha;
+
+          // 1. Date string (grey)
+          ctx.font = '500 11px monospace';
+          ctx.fillStyle = '#8e929b';
           ctx.textAlign = 'right';
-          ctx.fillText(regularDates[dIdx], cx - baseHalfW - 80, flatY + 3.5);
+          const dateRightX = cx - baseHalfW - 80;
+          ctx.fillText(mInfo.date, dateRightX, flatY + 4);
+
+          // 2. Vertical separator '|'
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.22)';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(dateRightX + 16, flatY - 8);
+          ctx.lineTo(dateRightX + 16, flatY + 8);
+          ctx.stroke();
+
+          // 3. Day label (bold white)
+          ctx.font = '700 11px monospace';
+          ctx.fillStyle = '#ffffff';
+          ctx.textAlign = 'left';
+          ctx.fillText(mInfo.day, dateRightX + 28, flatY + 4);
+
           ctx.restore();
         }
 
-        // Active focus cluster in center (4 thick rows of bright round dots)
-        const isFocused = distToCenter < 90;
-        const focusFactor = Math.max(0, 1 - distToCenter / 90);
-
-        let numRows = 1;
-        if (isFocused && focusFactor > 0.3) {
-          numRows = focusFactor > 0.65 ? 4 : 3;
-        } else if (isMilestone) {
-          numRows = 1; // Extended milestone is a single sharp row of dots
-        } else {
-          numRows = (Math.abs(k) % 2 === 0) ? 2 : 1;
+        // Secondary date label 4 rungs below milestone (matching Ảnh 1)
+        const subMInfo = milestones.find(m => m.rung === j - 4);
+        if (subMInfo && isDesktop && morphT < 0.65 && flatY >= 40 && flatY <= h - 40) {
+          ctx.save();
+          const subAlpha = Math.max(0, (1 - morphT * 1.5) * 0.45 * slatAlpha);
+          ctx.globalAlpha = subAlpha;
+          ctx.font = '500 10px monospace';
+          ctx.fillStyle = '#6b7280';
+          ctx.textAlign = 'right';
+          ctx.fillText(subMInfo.subDate, cx - baseHalfW - 80, flatY + 3.5);
+          ctx.restore();
         }
 
+        // Rung Dot Configuration:
+        // - Milestone: ALWAYS 1 row of dots (sharp single extended line)
+        // - Center active cluster (<75px from center): 3 rows of bright white dots
+        // - Mid rungs (<240px from center): 2 rows of dots
+        // - Outer rungs: 1 row of dots
+        let numRows = 1;
+        let dotR = 1.45;
+        let rungDotAlpha = 0.75;
+
+        if (isMilestone) {
+          numRows = 1;
+          dotR = 1.5;
+          rungDotAlpha = 1.0;
+        } else if (distToCenter < 75) {
+          numRows = 3;
+          dotR = 1.6;
+          rungDotAlpha = 1.0;
+        } else if (distToCenter < 240) {
+          numRows = 2;
+          dotR = 1.45;
+          rungDotAlpha = 0.80;
+        } else {
+          numRows = 1;
+          dotR = 1.35;
+          rungDotAlpha = Math.max(0.18, 0.55 - (distToCenter - 240) / 280);
+        }
+
+        ctx.fillStyle = rungDotAlpha >= 0.95 ? '#ffffff' : `rgba(235, 238, 245, ${rungDotAlpha.toFixed(2)})`;
+
         const flatLeft = cx - baseHalfW;
-        const flatRight = cx + baseHalfW + milestoneExtension * (1 - morphT);
-
-        // Circular dots ("tròn tròn tí" - ctx.arc)
-        const dotR = 1.45 + (focusFactor * 0.45);
-        ctx.fillStyle = isFocused ? '#ffffff' : (isMilestone ? '#ffffff' : 'rgba(235, 238, 245, 0.78)');
-
+        const flatRight = cx + baseHalfW + milestoneExtension;
         const dotCount = Math.floor((flatRight - flatLeft) / dotPitch);
         const rowSpacing = 3.2;
 

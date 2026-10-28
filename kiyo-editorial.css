@@ -2204,18 +2204,24 @@ body {
   left: 0;
   right: 0;
   top: 50%;
-  transform: translateY(calc(-50% + 32px));
+  transform: translateY(calc(-50% + 20px));
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transition: opacity 0.45s ease, transform 0.55s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.45s ease;
+  transition: opacity 0.22s ease, transform 0.26s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.22s;
 }
 
 .quy-trinh-step-view.is-active {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-  transform: translateY(-50%);
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  transform: translateY(-50%) !important;
+}
+
+.quy-trinh-step-view:not(.is-active) {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
 }
 
 .step-num-line {
@@ -2288,10 +2294,10 @@ body {
 }
 
 .quy-trinh-step-view.step-final-centered.is-active {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-  transform: translateY(0);
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  transform: translateY(0) !important;
 }
 
 .step-ultimate-title {
@@ -2984,4 +2990,24 @@ body {
   border-radius: 50%;
   background-color: #fe4701;
   box-shadow: 0 0 10px rgba(254, 71, 1, 0.8);
+}
+
+/* ── SYBIOSME FLOATING HEADER LIGHT MODE (Khi nền chuyển sang trắng #f2f2f4) ── */
+.sybios-floating-header {
+  transition: color 0.3s ease;
+}
+
+.sybios-floating-header.is-light .sybios-brand-logo {
+  color: #0a0b0e !important;
+}
+
+.sybios-floating-header.is-light .sybios-toolbar {
+  background: rgba(255, 255, 255, 0.90) !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
+}
+
+.sybios-floating-header.is-light .sybios-tool-btn:not(.btn-orange) {
+  background: #18181c !important;
+  color: #ffffff !important;
 }
