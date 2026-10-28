@@ -649,27 +649,26 @@ async function initScrollytelling() {
     const progress = Math.min(1, Math.max(0, -rect.top / totalDist));
     lastQuyTrinhProgress = progress;
 
-    // Visual states:
-    // 0: Initial Hero (0.00 - 0.10)
-    // 1: Bước 1 (0.10 - 0.22)
-    // 2: Bước 2 (0.22 - 0.34)
-    // 3: Bước 3 (0.34 - 0.44)
-    // 4: Bước 4 (0.44 - 0.52)
-    // -: Image 2 Centered 3D Perspective Ladder (0.52 - 0.68, clean visual, no text overlay)
-    // -: Image 3 Fullscreen Dot Slats (0.68 - 0.84, no text overlay)
-    // 6: Image 4 Centered Final "Được làm riêng cho bạn. Không giới hạn ." (0.84 - 1.00, light grey background)
+    // Sybiosme 5-State Step Mapping:
+    // 0: Intro (0.00 - 0.12)
+    // 1: Bước 01 (0.12 - 0.28) - Milestone: NGÀY 1
+    // 2: Bước 02 (0.28 - 0.44) - Milestone: NGÀY 4
+    // 3: Bước 03 (0.44 - 0.58) - Milestone: NGÀY 7
+    // 4: Phase 2 Text & 3D Perspective Ladder (0.58 - 0.72) - Milestone: NGÀY THỨ 10
+    // -1: Phase 3 Fullscreen Slats (0.72 - 0.86, pure visual, no text)
+    // 5: Phase 4 Light Screen "Được làm riêng cho bạn..." (0.86 - 1.00)
     let activeStep = -1;
-    if (progress >= 0.84) {
-      activeStep = 6;
-    } else if (progress >= 0.52) {
-      activeStep = -1; // Clean cinematic view for Image 2 (ladder) and Image 3 (fullscreen slats)
-    } else if (progress >= 0.44) {
+    if (progress >= 0.86) {
+      activeStep = 5;
+    } else if (progress >= 0.72) {
+      activeStep = -1; // Fullscreen slats pure cinematic
+    } else if (progress >= 0.58) {
       activeStep = 4;
-    } else if (progress >= 0.34) {
+    } else if (progress >= 0.44) {
       activeStep = 3;
-    } else if (progress >= 0.22) {
+    } else if (progress >= 0.28) {
       activeStep = 2;
-    } else if (progress >= 0.10) {
+    } else if (progress >= 0.12) {
       activeStep = 1;
     } else {
       activeStep = 0;
@@ -684,14 +683,7 @@ async function initScrollytelling() {
       });
     }
 
-    // Milestones glide and fade out as ladder morphs to center
-    if (quyTrinhMilestones) {
-      const mAlpha = Math.max(0, Math.min(1, 1 - (progress - 0.48) / 0.08));
-      quyTrinhMilestones.style.opacity = mAlpha.toFixed(2);
-      quyTrinhMilestones.style.transform = `translateY(${(progress - 0.25) * 60}px)`;
-    }
-
-    // Render Procedural Dot Canvas
+    // Render Procedural Halftone Dot Canvas
     renderQuyTrinhCanvas(progress, activeStep);
   }
 
@@ -703,10 +695,10 @@ async function initScrollytelling() {
     const h = quyTrinhCanvas.height / dpr;
     if (w <= 0 || h <= 0) return;
 
-    // ── 1. BACKGROUND COLOR TRANSITION (To Image 4 light grey at end) ──
-    // 0.00 - 0.84: Dark #0a0b0e
-    // 0.84 - 0.94: Smooth transition to light #ececee
-    const bgProg = Math.min(1, Math.max(0, (progress - 0.84) / 0.10));
+    // ── 1. BACKGROUND COLOR BLEND (To Image 4 light grey at end) ──
+    // 0.00 - 0.86: Dark #0a0b0e (Void)
+    // 0.86 - 0.96: Smooth Hermite blend to light #ececee
+    const bgProg = Math.min(1, Math.max(0, (progress - 0.86) / 0.10));
     const bgEase = bgProg * bgProg * (3 - 2 * bgProg);
     const r = Math.round(10 + (236 - 10) * bgEase);
     const g = Math.round(11 + (236 - 11) * bgEase);
@@ -714,43 +706,39 @@ async function initScrollytelling() {
     ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
     ctx.fillRect(0, 0, w, h);
 
-    // Sync viewport background color
+    // Sync sticky viewport background
     const viewportEl = document.getElementById('quy-trinh-viewport');
     if (viewportEl) {
       viewportEl.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
     }
 
-    // ── 2. MICRO-DOT MATRIX PATTERN (Image 1, 2, 3, 4) ──
-    const gridPitch = 14;
-    const dotAlpha = bgEase > 0.5 ? 0.07 : 0.09;
+    // ── 2. AMBIENT HALFTONE MICRO-GRID (Lưới chấm nền tinh tế chuẩn Sybiosme) ──
+    const gridPitch = 12; // 12px lattice
+    const dotAlpha = bgEase > 0.5 ? 0.07 : 0.085;
     ctx.fillStyle = bgEase > 0.5 ? `rgba(0, 0, 0, ${dotAlpha})` : `rgba(255, 255, 255, ${dotAlpha})`;
     const cols = Math.ceil(w / gridPitch);
     const rows = Math.ceil(h / gridPitch);
     for (let c = 0; c < cols; c++) {
-      const gx = c * gridPitch + 7;
+      const gx = c * gridPitch + 6;
       for (let ro = 0; ro < rows; ro++) {
-        const gy = ro * gridPitch + 7;
+        const gy = ro * gridPitch + 6;
         ctx.fillRect(gx, gy, 1.2, 1.2);
       }
     }
 
-    // When fully transitioned to Image 4, the dot slats are faded out
+    // Fade out rungs into Image 4 light screen
     if (bgEase >= 1) return;
 
     const isDesktop = w >= 960;
-    const initialCx = isDesktop ? w * 0.36 : (w > 640 ? w * 0.28 : w * 0.22);
+    const initialCx = isDesktop ? w * 0.38 : (w > 640 ? w * 0.28 : w * 0.22);
     const centerCx = w * 0.50;
 
-    // ── 3. PHASES TIMELINE ──
-    // Phase 1 (0.00 - 0.50): Streaming dot ruler on the left
-    // Phase 2 (0.50 - 0.68): Morph into centered 3D perspective ladder (Image 2)
-    // Phase 3 (0.68 - 0.84): Fullscreen expansion of dot slats (Image 3)
-    // Phase 4 (0.84 - 1.00): Fade out rungs into Image 4 light screen
-
-    const morphRaw = Math.min(1, Math.max(0, (progress - 0.50) / 0.16));
+    // Morph to centered 3D perspective ladder (0.54 - 0.70)
+    const morphRaw = Math.min(1, Math.max(0, (progress - 0.54) / 0.16));
     const morphT = morphRaw * morphRaw * (3 - 2 * morphRaw);
 
-    const fullRaw = Math.min(1, Math.max(0, (progress - 0.68) / 0.16));
+    // Fullscreen expansion (0.70 - 0.86)
+    const fullRaw = Math.min(1, Math.max(0, (progress - 0.70) / 0.14));
     const fullT = fullRaw * fullRaw * (3 - 2 * fullRaw);
 
     const rungAlpha = Math.max(0, 1 - bgEase);
@@ -761,7 +749,7 @@ async function initScrollytelling() {
 
     if (morphT < 0.85) {
       // ══════════════════════════════════════════════════════════════════════
-      // PHASE 1: STREAMING DOT RULER (Image 1, "tròn tròn tí", continuous)
+      // PHASE 1: STREAMING DOT RULER (Chuẩn 100% Ảnh 1 & media_1793148858848_69559470.png)
       // ══════════════════════════════════════════════════════════════════════
       const barSpacing = 16;
       const tapeTravel = progress * 4800;
@@ -770,14 +758,22 @@ async function initScrollytelling() {
       const kMin = Math.floor((minY - tapeTravel) / barSpacing);
       const kMax = Math.ceil((maxY - tapeTravel) / barSpacing);
 
-      const milestoneDates = [
-        'THỨ NĂM, NGÀY 22 THÁNG 10',
-        'THỨ SÁU, NGÀY 23 THÁNG 10',
-        'THỨ HAI, NGÀY 26 THÁNG 10',
+      // Sybiosme milestones: Day 1, Day 4, Day 7, Day 10
+      const milestoneDict = {
+        0:  { date: 'THỨ NĂM, NGÀY 29 THÁNG 10', day: 'NGÀY 1' },
+        14: { date: 'THỨ BA, NGÀY 03 THÁNG 11',  day: 'NGÀY 4' },
+        28: { date: 'THỨ SÁU, NGÀY 06 THÁNG 11', day: 'NGÀY 7' },
+        42: { date: 'THỨ NĂM, NGÀY 12 THÁNG 11', day: 'NGÀY THỨ 10' },
+      };
+
+      const regularDates = [
         'THỨ TƯ, NGÀY 28 THÁNG 10',
         'THỨ SÁU, NGÀY 30 THÁNG 10',
         'THỨ HAI, NGÀY 02 THÁNG 11',
         'THỨ TƯ, NGÀY 04 THÁNG 11',
+        'THỨ NĂM, NGÀY 05 THÁNG 11',
+        'THỨ HAI, NGÀY 09 THÁNG 11',
+        'THỨ BA, NGÀY 10 THÁNG 11',
       ];
 
       const cx = initialCx * (1 - morphT) + centerCx * morphT;
@@ -786,37 +782,69 @@ async function initScrollytelling() {
         const flatY = k * barSpacing + tapeTravel;
         if (flatY < minY || flatY > maxY) continue;
 
-        const baseHalfW = isDesktop ? 38 : 28;
+        // Subtle barrel lens curvature (rungs at center bulge slightly)
+        const distToCenter = Math.abs(flatY - h * 0.50);
+        const lensBulge = Math.max(0, 1 - Math.pow(distToCenter / (h * 0.5), 2)) * 7;
+        const baseHalfW = (isDesktop ? 36 : 26) + lensBulge;
+
         const isMilestone = (Math.abs(k) % 14 === 0);
-
         let milestoneExtension = 0;
-        if (isMilestone) {
-          const mType = Math.abs(Math.floor(k / 14)) % 2;
-          milestoneExtension = isDesktop ? (mType === 1 ? 135 : 85) : (mType === 1 ? 85 : 55);
 
-          // Milestone date on far left (fades out as it morphs to center)
+        if (isMilestone) {
+          milestoneExtension = isDesktop ? 220 : 120; // Long extended single-line dot row
+
+          // Left Date & Day Marker (Matching Ảnh 1 & media_1793148858848_69559470.png)
           if (isDesktop && morphT < 0.6 && flatY >= 40 && flatY <= h - 40) {
-            const dateIdx = Math.abs(Math.floor(k / 14)) % milestoneDates.length;
-            const dateLabel = milestoneDates[dateIdx];
+            const mKey = (Math.abs(k) % 56);
+            const mData = milestoneDict[mKey] || { date: 'THỨ NĂM, NGÀY 29 THÁNG 10', day: 'NGÀY 1' };
+
             ctx.save();
-            ctx.globalAlpha = Math.max(0, (1 - morphT * 1.6) * 0.7 * rungAlpha);
-            ctx.font = '600 11px monospace';
+            ctx.globalAlpha = Math.max(0, (1 - morphT * 1.6) * 0.85 * rungAlpha);
+
+            // 1. Date string on the left
+            ctx.font = '500 11px monospace';
             ctx.fillStyle = '#888888';
-            ctx.fillText(dateLabel, 48, flatY + 3.5);
+            ctx.textAlign = 'right';
+            const dateRightX = cx - baseHalfW - 80;
+            ctx.fillText(mData.date, dateRightX, flatY + 4);
+
+            // 2. Vertical separator line
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(dateRightX + 16, flatY - 8);
+            ctx.lineTo(dateRightX + 16, flatY + 8);
+            ctx.stroke();
+
+            // 3. Day label (bold white)
+            ctx.font = '700 11px monospace';
+            ctx.fillStyle = '#ffffff';
+            ctx.textAlign = 'left';
+            ctx.fillText(mData.day, dateRightX + 28, flatY + 4);
+
             ctx.restore();
           }
+        } else if ((Math.abs(k) % 14 === 7) && isDesktop && morphT < 0.6 && flatY >= 60 && flatY <= h - 60) {
+          // Additional secondary date label below milestone (matching Ảnh 1)
+          const dIdx = Math.abs(Math.floor(k / 7)) % regularDates.length;
+          ctx.save();
+          ctx.globalAlpha = Math.max(0, (1 - morphT * 1.6) * 0.45 * rungAlpha);
+          ctx.font = '500 10px monospace';
+          ctx.fillStyle = '#666666';
+          ctx.textAlign = 'right';
+          ctx.fillText(regularDates[dIdx], cx - baseHalfW - 80, flatY + 3.5);
+          ctx.restore();
         }
 
-        // Active focus cluster (thicker rungs made of 3-4 rows of round dots, matching Image 1)
-        const distToCenter = Math.abs(flatY - h * 0.50);
-        const isFocused = distToCenter < 100;
-        const focusFactor = Math.max(0, 1 - distToCenter / 100);
+        // Active focus cluster in center (4 thick rows of bright round dots)
+        const isFocused = distToCenter < 90;
+        const focusFactor = Math.max(0, 1 - distToCenter / 90);
 
         let numRows = 1;
-        if (isFocused && focusFactor > 0.35) {
-          numRows = focusFactor > 0.7 ? 4 : 3;
+        if (isFocused && focusFactor > 0.3) {
+          numRows = focusFactor > 0.65 ? 4 : 3;
         } else if (isMilestone) {
-          numRows = 1;
+          numRows = 1; // Extended milestone is a single sharp row of dots
         } else {
           numRows = (Math.abs(k) % 2 === 0) ? 2 : 1;
         }
@@ -824,9 +852,9 @@ async function initScrollytelling() {
         const flatLeft = cx - baseHalfW;
         const flatRight = cx + baseHalfW + milestoneExtension * (1 - morphT);
 
-        // Draw circular dots ("tròn tròn tí")
-        const dotR = 1.4 + (focusFactor * 0.5);
-        ctx.fillStyle = isFocused ? '#ffffff' : 'rgba(235, 238, 245, 0.85)';
+        // Circular dots ("tròn tròn tí" - ctx.arc)
+        const dotR = 1.45 + (focusFactor * 0.45);
+        ctx.fillStyle = isFocused ? '#ffffff' : (isMilestone ? '#ffffff' : 'rgba(235, 238, 245, 0.78)');
 
         const dotCount = Math.floor((flatRight - flatLeft) / dotPitch);
         const rowSpacing = 3.2;
@@ -844,8 +872,7 @@ async function initScrollytelling() {
       }
     } else {
       // ══════════════════════════════════════════════════════════════════════
-      // PHASE 2 & 3: CENTERED 3D PERSPECTIVE LADDER & FULLSCREEN EXPANSION
-      // (Image 2: Center 3D perspective ladder / Image 3: Fullscreen dot slats)
+      // PHASE 2 & 3: 3D PERSPECTIVE LADDER & FULLWIDTH EXPANSION (Ảnh 2 & Ảnh 3)
       // ══════════════════════════════════════════════════════════════════════
       const cx = centerCx;
       const ladderTopY = h * 0.22;
@@ -858,7 +885,7 @@ async function initScrollytelling() {
         const depthP = Math.pow(frac, 1.85); // Foreshortened 3D spacing
         const currentY = ladderTopY + depthP * rulerH;
 
-        // Image 2 width vs Image 3 full width
+        // Ảnh 2 width vs Ảnh 3 full width
         const topHalfW = 60 + 240 * fullT;
         const bottomHalfW = (isDesktop ? 340 : 190) + (w * 0.65 - (isDesktop ? 340 : 190)) * fullT;
         const currentHalfW = topHalfW + (bottomHalfW - topHalfW) * depthP;
@@ -867,11 +894,11 @@ async function initScrollytelling() {
         const finalRight = cx + currentHalfW;
 
         // Number of dot rows:
-        // Image 2 (fullT = 0): 1 row at top, up to 7 rows at bottom
-        // Image 3 (fullT = 1): 2 rows at top, up to 14 rows at bottom
+        // Ảnh 2: 1 row at top, 7 rows at bottom
+        // Ảnh 3: up to 14 dense rows of dots at bottom
         const numRows = Math.round(1 + depthP * 6 + depthP * 7 * fullT);
 
-        const dotR = 1.4 + depthP * 0.6 + fullT * 0.3;
+        const dotR = 1.45 + depthP * 0.6 + fullT * 0.3;
         ctx.fillStyle = depthP > 0.5 ? '#ffffff' : 'rgba(235, 238, 245, 0.85)';
 
         const dotCount = Math.floor((finalRight - finalLeft) / dotPitch);

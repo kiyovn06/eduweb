@@ -2898,3 +2898,90 @@ body {
     width: 100%;
   }
 }
+
+/* ── SYBIOSME FLOATING HEADER (Logo Left & Pill Toolbar Right - Chuẩn Ảnh 1) ── */
+.sybios-floating-header {
+  position: absolute;
+  top: 24px;
+  left: clamp(24px, 4vw, 56px);
+  right: clamp(24px, 4vw, 56px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 25;
+  pointer-events: none;
+}
+
+.sybios-brand-logo {
+  display: flex;
+  align-items: center;
+  color: #ffffff;
+  pointer-events: auto;
+  opacity: 0.9;
+  transition: opacity 0.2s ease;
+}
+
+.sybios-brand-logo:hover {
+  opacity: 1;
+}
+
+.sybios-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(18, 18, 22, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  padding: 6px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  pointer-events: auto;
+}
+
+.sybios-tool-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: #24252a;
+  color: #ffffff;
+  cursor: pointer;
+  padding: 0;
+  transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+.sybios-tool-btn:hover {
+  transform: scale(1.06);
+}
+
+.sybios-tool-btn.btn-orange {
+  background: #fe4701 !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 14px rgba(254, 71, 1, 0.5);
+}
+
+/* ── STORY EYEBROW BADGE (Dấu chấm tròn cam #fe4701 + Bước 01) ── */
+.story-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.55em;
+  font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: 0.02em;
+  margin-bottom: 1.1rem;
+}
+
+.story-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: #fe4701;
+  box-shadow: 0 0 10px rgba(254, 71, 1, 0.8);
+}
