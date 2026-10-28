@@ -1032,9 +1032,9 @@ body {
 .grail-gallery-strip {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 0 !important; /* Spacing handled smoothly by JS margin-left to prevent pops */
   width: 100%;
-  height: clamp(500px, 75vh, 720px); /* TO HƠN RẤT NHIỀU THEO ĐÚNG YÊU CẦU */
+  height: clamp(500px, 75vh, 720px);
   position: relative;
   will-change: transform;
 }
@@ -1053,13 +1053,15 @@ body {
   flex-shrink: 0;
   cursor: pointer;
   box-sizing: border-box;
-  will-change: width, min-width, max-width, opacity;
-  transition: box-shadow 0.25s ease, transform 0.25s ease;
+  min-width: 0 !important;
+  max-width: none !important;
+  will-change: width, margin-left;
+  transition: box-shadow 0.25s ease !important;
 }
 
 .grail-gallery-item:first-child {
   width: clamp(560px, 58vw, 980px);
-  min-width: 40px;
+  min-width: 0 !important;
 }
 
 .grail-gallery-item:hover {

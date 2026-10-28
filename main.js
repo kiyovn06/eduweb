@@ -237,6 +237,20 @@ async function initScrollytelling() {
   }
 
   // ── 3.3 Stage 04: Grail-Style Editorial Sheet Transition (Chương 03 · Quản lý lớp học) ─────────
+  // Cached visual width to prevent layout thrashing on scroll
+  let cachedGrailVisualW = 0;
+  function getGrailVisualW(visualEl) {
+    if (cachedGrailVisualW > 0) return cachedGrailVisualW;
+    if (!visualEl) return window.innerWidth - 380;
+    cachedGrailVisualW = visualEl.clientWidth || (window.innerWidth - 380);
+    return cachedGrailVisualW;
+  }
+  window.addEventListener('resize', () => {
+    const visualEl = document.querySelector('.grail-sheet-visual');
+    if (visualEl) cachedGrailVisualW = visualEl.clientWidth || (window.innerWidth - 380);
+  });
+
+  // ── 3.3 Stage 04: Grail-Style Editorial Sheet Transition (Chương 03 · Quản lý lớp học) ─────────
   function updateGrailSheetTransition() {
     const sheetCard = document.getElementById('grail-sheet-card');
     const sheetSection = document.getElementById('quan-ly-lop');
@@ -274,7 +288,7 @@ async function initScrollytelling() {
         galleryItems.forEach((it, idx) => {
           it.style.display = idx === 0 ? 'block' : 'none';
           it.style.width = idx === 0 ? '100%' : '0px';
-          it.style.maxWidth = idx === 0 ? '100%' : '0px';
+          it.style.marginLeft = '0px';
           it.style.opacity = idx === 0 ? '1' : '0';
         });
       }
@@ -284,32 +298,15 @@ async function initScrollytelling() {
     const rect = sheetSection.getBoundingClientRect();
     const windowH = window.innerHeight;
 
-    // Cố định hoàn toàn thẻ và khung: Không tilt nghiêng, không lệch sang phải
-    sheetCard.style.transform = 'none';
-    sheetCard.style.borderRadius = '0';
-    sheetCard.style.maxWidth = '100vw';
-    sheetCard.style.width = '100%';
-    sheetCard.style.boxShadow = 'none';
-
-    if (headerEl) {
-      headerEl.style.transform = 'none';
-      headerEl.style.opacity = '1';
-    }
-    if (visualEl) {
-      visualEl.style.transform = 'none';
-      visualEl.style.opacity = '1';
-    }
-
     if (rect.top <= windowH && galleryItems && numItems > 0) {
-      const visualBox = visualEl.getBoundingClientRect();
-      const visualW = visualBox.width > 0 ? visualBox.width : (window.innerWidth - 380);
+      const visualW = getGrailVisualW(visualEl);
       const collapsedW = 40; // 40px standard slice
       const gap = 14;
 
       const totalDist = rect.height - windowH;
       const galleryProgress = totalDist > 0 ? Math.min(1, Math.max(0, -rect.top / totalDist)) : 0;
 
-      // Các bước chuyển cảnh tự động tính theo số lượng ảnh:
+      // Calculate step windows with smooth Hermite easing
       const numTransitions = numItems - 1;
       const startPad = 0.04;
       const endPad = 0.04;
@@ -327,19 +324,23 @@ async function initScrollytelling() {
       }
 
       const widths = new Array(numItems).fill(0);
+      const margins = new Array(numItems).fill(0);
 
       if (steps.length === 0 || galleryProgress < steps[0].start) {
-        // Trạng thái ban đầu: Ảnh 0 chiếm trọn chiều rộng visualW
+        // Initial state: Photo 0 takes full width
         widths[0] = visualW;
+        margins[0] = 0;
       } else if (galleryProgress >= steps[steps.length - 1].end) {
-        // Đã cuộn hết: Các ảnh trước thu nhỏ 40px nằm bên trái, ảnh cuối cùng lấp đầy phần còn lại
+        // Final state: Photos 0..N-2 collapsed to 40px on left, last photo fills rest
         for (let i = 0; i < numItems - 1; i++) {
           widths[i] = collapsedW;
+          margins[i] = i === 0 ? 0 : gap;
         }
         const usedLeft = (numItems - 1) * (collapsedW + gap);
-        widths[numItems - 1] = Math.max(40, visualW - usedLeft);
+        widths[numItems - 1] = Math.max(collapsedW, visualW - usedLeft);
+        margins[numItems - 1] = gap;
       } else {
-        // Đang trong quá trình chuyển cảnh giữa step from -> to:
+        // Transitioning between step from and to:
         let currentStepIdx = 0;
         for (let s = 0; s < steps.length; s++) {
           if (galleryProgress >= steps[s].start && galleryProgress < steps[s].end) {
@@ -350,61 +351,64 @@ async function initScrollytelling() {
         const curStep = steps[currentStepIdx];
         const rawP = Math.max(0, Math.min(1, (galleryProgress - curStep.start) / (curStep.end - curStep.start)));
 
-        // Easing mượt mà
-        let easeT = 0;
-        if (rawP <= 0.12) {
-          easeT = 0;
-        } else if (rawP >= 0.88) {
-          easeT = 1;
-        } else {
-          const normT = (rawP - 0.12) / 0.76;
-          easeT = 0.5 - 0.5 * Math.cos(normT * Math.PI);
-        }
+        // Smooth Hermite easing (Smoothstep) for zero-jitter, continuous velocity
+        const easeT = rawP * rawP * (3 - 2 * rawP);
 
-        // 1. Các ảnh trước đó đã thu nhỏ 40px nằm cố định bên trái:
+        // Previous items are fully collapsed to 40px
         for (let i = 0; i < curStep.from; i++) {
           widths[i] = collapsedW;
+          margins[i] = i === 0 ? 0 : gap;
         }
 
-        // 2. Không gian còn lại cho cặp đang chuyển cảnh (from và to):
+        // Space available for current pair (from & to)
         const usedLeft = curStep.from * (collapsedW + gap);
         const spaceForPair = Math.max(collapsedW + gap + 40, visualW - usedLeft);
 
-        // Ảnh from thu nhỏ dần về 40px:
+        // Photo `from` margin:
+        margins[curStep.from] = curStep.from === 0 ? 0 : gap;
+
+        // Photo `from` shrinks smoothly to collapsedW (40px)
         const fromW = spaceForPair - (spaceForPair - collapsedW) * easeT;
         widths[curStep.from] = fromW;
 
-        // Ảnh to mở rộng chiếm chính xác không gian còn lại (khoá cứng mép phải vào visualW!):
-        const toW = Math.max(0, spaceForPair - fromW - gap);
+        // Gap between `from` and `to` grows smoothly from 0 to 14px
+        const curGap = gap * easeT;
+        margins[curStep.to] = curGap;
+
+        // Photo `to` expands to fill exact remainder
+        // Mathematical invariant: fromW + curGap + toW = spaceForPair AT ALL TIMES!
+        const toW = Math.max(0, spaceForPair - fromW - curGap);
         widths[curStep.to] = toW;
 
-        // 3. Các ảnh sau đó chưa xuất hiện:
+        // Subsequent items remain hidden
         for (let i = curStep.to + 1; i < numItems; i++) {
           widths[i] = 0;
+          margins[i] = 0;
         }
       }
 
-      // Áp dụng độ rộng chuẩn xác cho từng ảnh:
+      // Apply widths and margins with subpixel precision
       galleryItems.forEach((item, idx) => {
         const w = widths[idx];
-        if (w <= 0) {
-          item.style.display = 'none';
-          item.style.width = '0px';
-          item.style.minWidth = '0px';
-          item.style.maxWidth = '0px';
-          item.style.opacity = '0';
-          item.style.pointerEvents = 'none';
-          item.classList.remove('is-active', 'is-collapsed');
+        const ml = margins[idx];
+
+        if (w <= 0.5) {
+          if (item.style.display !== 'none') {
+            item.style.display = 'none';
+            item.style.opacity = '0';
+            item.classList.remove('is-active', 'is-collapsed');
+          }
         } else {
-          item.style.display = 'block';
+          if (item.style.display !== 'block') {
+            item.style.display = 'block';
+            item.style.opacity = '1';
+          }
+
           const isCollapsed = w <= 45;
           const isActive = !isCollapsed;
 
-          item.style.width = `${Math.round(w)}px`;
-          item.style.minWidth = isCollapsed ? `${collapsedW}px` : '40px';
-          item.style.maxWidth = `${Math.round(w)}px`;
-          item.style.opacity = '1';
-          item.style.pointerEvents = 'auto';
+          item.style.width = `${w.toFixed(2)}px`;
+          item.style.marginLeft = `${ml.toFixed(2)}px`;
 
           item.classList.toggle('is-collapsed', isCollapsed);
           item.classList.toggle('is-active', isActive);
@@ -1002,12 +1006,15 @@ async function initScrollytelling() {
     });
   }
 
-  lenis.on('scroll', (e) => {
-    onScrollUpdate(e.scroll);
-  });
-  window.addEventListener('scroll', () => {
-    onScrollUpdate(window.scrollY);
-  }, { passive: true });
+  if (lenis) {
+    lenis.on('scroll', (e) => {
+      onScrollUpdate(e.scroll);
+    });
+  } else {
+    window.addEventListener('scroll', () => {
+      onScrollUpdate(window.scrollY);
+    }, { passive: true });
+  }
 
   // Smooth anchor link scrolling via Lenis
   document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
