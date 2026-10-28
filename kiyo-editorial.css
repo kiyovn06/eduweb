@@ -2094,23 +2094,23 @@ body {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   06: LỘ TRÌNH 4 BƯỚC (DOT-MATRIX PROCEDURAL TIMELINE & 3D LADDER)
+   06: LỘ TRÌNH QUY TRÌNH (MINIMALIST WHITE · SOLID BLACK BARS · FULLSCREEN EXPANSION)
    ══════════════════════════════════════════════════════════════════════════ */
-.stage-quy-trinh-track {
+.stage-quy-trinh-white {
   position: relative;
-  background-color: #08080a !important;
-  color: #ffffff;
+  background-color: #ffffff !important;
+  color: #000000 !important;
   padding: 0 !important;
-  min-height: 420vh;
+  min-height: 560vh;
 }
 
-.quy-trinh-scroll-track {
+.stage-quy-trinh-white .quy-trinh-scroll-track {
   position: relative;
   width: 100%;
-  min-height: 420vh;
+  min-height: 560vh;
 }
 
-.quy-trinh-sticky-viewport {
+.stage-quy-trinh-white .quy-trinh-sticky-viewport {
   position: sticky;
   top: 0;
   left: 0;
@@ -2118,341 +2118,194 @@ body {
   height: 100vh;
   overflow: hidden;
   display: flex;
-  flex-direction: column;
-  background: #08080a;
+  background: #ffffff;
 }
 
-/* Background Dot Matrix Pattern */
-.quy-trinh-dot-grid {
+/* Fullscreen Canvas for Solid Black Bars & Perspective Ladder & Fullwidth Expansion */
+.quy-trinh-canvas-fullscreen {
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.12) 1.2px, transparent 1.2px);
-  background-size: 20px 20px;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
-  z-index: 1;
+  z-index: 2;
 }
 
-/* Minimal Top Status Bar (Matching Reference Image 5) */
-.quy-trinh-top-bar {
-  position: relative;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: clamp(14px, 2.5vh, 24px) clamp(24px, 4vw, 48px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(8, 8, 10, 0.75);
-  backdrop-filter: blur(12px);
-}
-
-.quy-trinh-brand-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  font-family: var(--font-mono, 'JetBrains Mono', monospace);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  color: rgba(255, 255, 255, 0.7);
-  text-transform: uppercase;
-}
-
-.quy-trinh-pulse-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #fe4701;
-  box-shadow: 0 0 10px rgba(254, 71, 1, 0.9);
-  animation: pulseQuyTrinh 2s ease-in-out infinite;
-}
-
-@keyframes pulseQuyTrinh {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 0.9;
-  }
-  50% {
-    transform: scale(1.3);
-    opacity: 1;
-  }
-}
-
-.quy-trinh-steps-nav {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.step-nav-btn {
-  padding: 5px 12px;
-  border-radius: 999px;
-  font-family: var(--font-mono, monospace);
-  font-size: 0.75rem;
-  font-weight: 700;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: rgba(255, 255, 255, 0.55);
-  cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.step-nav-btn:hover {
-  color: #ffffff;
-  border-color: rgba(255, 255, 255, 0.25);
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.step-nav-btn.is-active {
-  background: #fe4701;
-  color: #ffffff;
-  border-color: #fe4701;
-  box-shadow: 0 0 12px rgba(254, 71, 1, 0.5);
-}
-
-/* Stage Core Two-Column Split */
-.quy-trinh-stage-inner {
-  flex: 1;
+/* Overlay Stage: Left Milestones & Right Text Column */
+.quy-trinh-overlay-stage {
   position: relative;
   z-index: 5;
-  display: grid;
-  grid-template-columns: 1.1fr 1fr;
-  align-items: center;
-  padding: 0 clamp(24px, 4vw, 48px);
-  gap: clamp(24px, 4vw, 64px);
-  max-width: 1400px;
-  margin: 0 auto;
   width: 100%;
-}
-
-/* LEFT COLUMN: Milestone Dates & Procedural Canvas */
-.quy-trinh-visual-col {
-  position: relative;
+  height: 100%;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  height: clamp(400px, 60vh, 560px);
-  width: 100%;
+  justify-content: space-between;
+  padding: 0 clamp(24px, 5vw, 72px);
+  max-width: 1440px;
+  margin: 0 auto;
 }
 
-.quy-trinh-milestones {
+/* Left Milestones: Date labels matching Ảnh 1 */
+.quy-trinh-left-milestones {
+  position: absolute;
+  left: clamp(24px, 5vw, 64px);
+  top: 15%;
+  bottom: 15%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 80%;
-  padding-right: clamp(12px, 2vw, 24px);
-  border-right: 1px dashed rgba(255, 255, 255, 0.1);
-  min-width: 140px;
+  pointer-events: none;
+  z-index: 4;
 }
 
-.milestone-item {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  font-family: var(--font-mono, monospace);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  opacity: 0.35;
-  transform: translateX(0);
-  cursor: pointer;
-}
-
-.milestone-item.is-active {
-  opacity: 1;
-  transform: translateX(4px);
-}
-
-.milestone-phase {
-  font-size: 0.68rem;
-  font-weight: 700;
-  color: #fe4701;
-  letter-spacing: 0.1em;
+.milestone-date-item {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #888888;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
-.milestone-title {
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: #ffffff;
-  letter-spacing: 0.04em;
-}
-
-.quy-trinh-canvas-box {
-  flex: 1;
-  height: 100%;
+/* Right Content Column: Minimalist Typography (Zero creative fluff) */
+.quy-trinh-text-col {
   position: relative;
+  margin-left: auto;
+  width: clamp(340px, 48vw, 620px);
+  height: 100%;
   display: flex;
   align-items: center;
-  justify-content: center;
-}
-
-#quy-trinh-canvas {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-
-/* RIGHT COLUMN: Step Views with Bottom-to-Top Text Reveal */
-.quy-trinh-content-col {
-  position: relative;
-  height: clamp(380px, 55vh, 520px);
-  display: flex;
-  align-items: center;
+  z-index: 6;
 }
 
 .quy-trinh-step-view {
   position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(calc(-50% + 32px));
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transform: translateY(32px);
-  transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.4s ease;
+  transition: opacity 0.45s ease, transform 0.55s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.45s ease;
 }
 
 .quy-trinh-step-view.is-active {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
-  transform: translateY(0);
+  transform: translateY(-50%);
 }
 
-/* Elements slide up from bottom with staggered timing */
-.step-badge-row,
-.step-main-title,
-.step-main-desc,
-.step-meta-tag {
-  opacity: 0;
-  transform: translateY(32px);
-  transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.45s ease;
-  will-change: transform, opacity;
-}
-
-.quy-trinh-step-view.is-active .step-badge-row {
-  opacity: 1;
-  transform: translateY(0);
-  transition-delay: 0.05s;
-}
-
-.quy-trinh-step-view.is-active .step-main-title {
-  opacity: 1;
-  transform: translateY(0);
-  transition-delay: 0.12s;
-}
-
-.quy-trinh-step-view.is-active .step-main-desc {
-  opacity: 1;
-  transform: translateY(0);
-  transition-delay: 0.20s;
-}
-
-.quy-trinh-step-view.is-active .step-meta-tag {
-  opacity: 1;
-  transform: translateY(0);
-  transition-delay: 0.28s;
-}
-
-/* Badge Row */
-.step-badge-row {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 0.85rem;
-}
-
-.step-orange-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: #fe4701;
-  box-shadow: 0 0 10px #fe4701;
-  flex-shrink: 0;
-}
-
-.step-badge-text {
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: #fe4701;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+.step-num-line {
   font-family: var(--font-mono, monospace);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #888888;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
 }
 
-/* Main Title */
-.step-main-title {
+.step-hero-title {
   font-family: var(--font-display, 'Plus Jakarta Sans', sans-serif);
-  font-size: clamp(2.2rem, 3.6vw, 3.4rem);
-  font-weight: 800;
-  line-height: 1.14;
-  color: #ffffff;
-  letter-spacing: -0.025em;
-  margin-bottom: 1.15rem;
+  font-size: clamp(2.4rem, 4vw, 3.8rem);
+  font-weight: 700;
+  line-height: 1.15;
+  color: #000000;
+  letter-spacing: -0.03em;
+  margin-bottom: 1.25rem;
 }
 
-.step-impact-headline {
-  font-size: clamp(1.8rem, 2.8vw, 2.6rem);
+.step-impact-editorial {
+  font-size: clamp(2rem, 3.2vw, 3rem);
   line-height: 1.25;
 }
 
-.highlight-orange {
-  color: #fe4701;
-  font-weight: 800;
+.text-orange-accent {
+  color: #fe4701 !important;
+  font-weight: 700;
 }
 
-/* Description */
-.step-main-desc {
-  font-size: clamp(0.95rem, 1.2vw, 1.12rem);
-  line-height: 1.65;
-  color: #94a3b8;
+.step-hero-desc {
+  font-size: clamp(1.05rem, 1.35vw, 1.25rem);
+  line-height: 1.6;
+  color: #555555;
   max-width: 520px;
-  margin-bottom: 1.6rem;
+  margin-bottom: 1.1rem;
 }
 
-/* Meta Tag Pill */
-.step-meta-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 7px 16px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 999px;
-  font-size: 0.82rem;
+.step-sublabel {
+  font-size: 0.88rem;
   font-weight: 600;
-  color: #e2e8f0;
-  backdrop-filter: blur(8px);
+  color: #888888;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 
-.tag-bullet {
-  color: #fe4701;
-  font-size: 0.75rem;
+/* Step 6: Ảnh 4 Style (Centered Final Text) */
+.quy-trinh-step-view.step-final-centered {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  z-index: 20;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(28px);
+  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.6s ease;
 }
 
-/* Responsive Breakpoints for Quy Trình */
+.quy-trinh-step-view.step-final-centered.is-active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.step-ultimate-title {
+  font-family: var(--font-display, 'Plus Jakarta Sans', sans-serif);
+  font-size: clamp(2.6rem, 4.5vw, 4.2rem);
+  font-weight: 700;
+  line-height: 1.22;
+  color: #000000;
+  letter-spacing: -0.025em;
+  text-align: center;
+}
+
+/* Responsive */
 @media (max-width: 960px) {
-  .stage-quy-trinh-track {
-    min-height: 360vh;
+  .stage-quy-trinh-white {
+    min-height: 380vh;
   }
-  .quy-trinh-stage-inner {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-    padding-top: 1rem;
+  .quy-trinh-overlay-stage {
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 24px;
   }
-  .quy-trinh-visual-col {
-    height: 240px;
-    min-height: 220px;
+  .quy-trinh-left-milestones {
+    display: none;
   }
-  .quy-trinh-milestones {
-    min-width: 110px;
-    padding-right: 10px;
+  .quy-trinh-text-col {
+    width: 100%;
+    margin-left: 0;
   }
-  .quy-trinh-content-col {
-    height: 280px;
+  .step-hero-title {
+    font-size: 2rem;
   }
-  .step-main-title {
-    font-size: 1.8rem;
+  .quy-trinh-step-view.step-final-centered {
+    left: 0;
+    right: 0;
+    width: 100%;
   }
 }
 

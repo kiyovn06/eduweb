@@ -339,157 +339,103 @@
          05: LỘ TRÌNH 4 BƯỚC TRIỂN KHAI
          ══════════════════════════════════════════════════════════════════════ -->
     <!-- ══════════════════════════════════════════════════════════════════════
-         05: LỘ TRÌNH 4 BƯỚC TRIỂN KHAI (DOT-MATRIX PROCEDURAL TIMELINE & 3D LADDER)
+         05: QUY TRÌNH TRIỂN KHAI (MINIMALIST WHITE · SOLID BLACK BARS · FULLSCREEN EXPANSION)
          ══════════════════════════════════════════════════════════════════════ -->
-    <section class="stage-section stage-chapter stage-quy-trinh-track" id="quy-trinh" data-stage="5">
+    <section class="stage-section stage-chapter stage-quy-trinh-white" id="quy-trinh" data-stage="5">
       <div class="quy-trinh-scroll-track" id="quy-trinh-track">
         <div class="quy-trinh-sticky-viewport" id="quy-trinh-viewport">
 
-          <!-- Background Dot Grid Raster (Noir #08080a with illuminated dot matrix) -->
-          <div class="quy-trinh-dot-grid" aria-hidden="true"></div>
+          <!-- Fullscreen Canvas for Solid Black Bars & 3D Ladder & Fullwidth Expansion -->
+          <canvas id="quy-trinh-canvas" class="quy-trinh-canvas-fullscreen"></canvas>
 
-          <!-- Top Minimal Status Bar (Logo pill on left, Steps on right matching Image 5) -->
-          <div class="quy-trinh-top-bar">
-            <div class="quy-trinh-brand-pill">
-              <span class="quy-trinh-pulse-dot"></span>
-              <span class="quy-trinh-pill-text">TRIỂN KHAI TRONG 4 BƯỚC · 60 GIÂY</span>
-            </div>
-            <div class="quy-trinh-steps-nav" id="quy-trinh-steps-nav" role="tablist" aria-label="Các bước triển khai">
-              <button class="step-nav-btn is-active" data-goto-step="0" aria-label="Bước 1">01</button>
-              <button class="step-nav-btn" data-goto-step="1" aria-label="Bước 2">02</button>
-              <button class="step-nav-btn" data-goto-step="2" aria-label="Bước 3">03</button>
-              <button class="step-nav-btn" data-goto-step="3" aria-label="Bước 4">04</button>
-            </div>
-          </div>
+          <!-- Stage Core: Milestone labels on far left, Content on right -->
+          <div class="quy-trinh-overlay-stage">
 
-          <!-- Stage Core: Split Left (Milestones + Procedural Canvas Ruler) & Right (Bottom-Up Text Reveal) -->
-          <div class="quy-trinh-stage-inner">
-
-            <!-- LEFT & CENTER VISUAL: Milestone Labels + Dot Matrix Canvas Timeline / 3D Ladder -->
-            <div class="quy-trinh-visual-col" id="quy-trinh-visual-col">
-              
-              <!-- Left Milestones / Timestamps (matching reference image 1, 2, 3) -->
-              <div class="quy-trinh-milestones" id="quy-trinh-milestones">
-                <div class="milestone-item is-active" data-milestone="0">
-                  <span class="milestone-phase">BƯỚC 01</span>
-                  <span class="milestone-title">THIẾT LẬP · 15S</span>
-                </div>
-                <div class="milestone-item" data-milestone="1">
-                  <span class="milestone-phase">BƯỚC 02</span>
-                  <span class="milestone-title">TRỢ LÝ AI · 3S</span>
-                </div>
-                <div class="milestone-item" data-milestone="2">
-                  <span class="milestone-phase">BƯỚC 03</span>
-                  <span class="milestone-title">LIVE QUIZ</span>
-                </div>
-                <div class="milestone-item" data-milestone="3">
-                  <span class="milestone-phase">BƯỚC 04</span>
-                  <span class="milestone-title">BÁO CÁO SMAS</span>
-                </div>
-              </div>
-
-              <!-- Procedural Canvas: Vertical LED Dotted Ruler morphing into 3D Perspective Ladder -->
-              <div class="quy-trinh-canvas-box" id="quy-trinh-canvas-box">
-                <canvas id="quy-trinh-canvas"></canvas>
-              </div>
-
+            <!-- Far-left Milestones (Timestamps matching Ảnh 1) -->
+            <div class="quy-trinh-left-milestones" id="quy-trinh-milestones" aria-hidden="true">
+              <div class="milestone-date-item m-top">THỨ NĂM, NGÀY 22 THÁNG 10</div>
+              <div class="milestone-date-item m-mid">THỨ SÁU, NGÀY 23 THÁNG 10</div>
+              <div class="milestone-date-item m-bot">THỨ HAI, NGÀY 26 THÁNG 10</div>
             </div>
 
-            <!-- RIGHT CONTENT: Bottom-to-Top Sliding Text Reveal -->
-            <div class="quy-trinh-content-col" id="quy-trinh-content-col">
+            <!-- Right Content Container: 100% Minimalist Typography (Zero Extra Creative Clutter) -->
+            <div class="quy-trinh-text-col" id="quy-trinh-content-col">
 
-              <!-- BƯỚC 1 -->
+              <!-- Step 0: Initial Screen (Ảnh 1 style) -->
               <div class="quy-trinh-step-view is-active" data-step="0">
-                <div class="step-badge-row">
-                  <span class="step-orange-dot"></span>
-                  <span class="step-badge-text">Bước 01 · BƯỚC 1</span>
-                </div>
-                <h3 class="step-main-title">
+                <h2 class="step-hero-title">
+                  Một quy trình đơn giản<br>
+                  trong ba bước.
+                </h2>
+              </div>
+
+              <!-- Step 1: Bước 1 -->
+              <div class="quy-trinh-step-view" data-step="1">
+                <div class="step-num-line">01 · BƯỚC 1</div>
+                <h3 class="step-hero-title">
                   Tạo Lớp Học<br>&amp; Mã Phòng
                 </h3>
-                <p class="step-main-desc">
+                <p class="step-hero-desc">
                   Khởi tạo lớp mới, lấy mã lớp hoặc đường link gửi học sinh tham gia trên mọi thiết bị.
                 </p>
-                <div class="step-meta-tag">
-                  <span class="tag-bullet">✦</span>
-                  <span class="tag-label">Thiết lập lớp học</span>
-                </div>
+                <div class="step-sublabel">Thiết lập lớp học</div>
               </div>
 
-              <!-- BƯỚC 2 -->
-              <div class="quy-trinh-step-view" data-step="1">
-                <div class="step-badge-row">
-                  <span class="step-orange-dot"></span>
-                  <span class="step-badge-text">Bước 02 · BƯỚC 2</span>
-                </div>
-                <h3 class="step-main-title">
+              <!-- Step 2: Bước 2 -->
+              <div class="quy-trinh-step-view" data-step="2">
+                <div class="step-num-line">02 · BƯỚC 2</div>
+                <h3 class="step-hero-title">
                   Bóc Tách Bằng<br>Trợ Lý AI
                 </h3>
-                <p class="step-main-desc">
+                <p class="step-hero-desc">
                   Tải file Word hoặc PDF đề thi lên hệ thống. Tự động chuẩn hóa câu hỏi và đáp án trong 3 giây.
                 </p>
-                <div class="step-meta-tag">
-                  <span class="tag-bullet">✦</span>
-                  <span class="tag-label">Soạn đề SI</span>
-                </div>
+                <div class="step-sublabel">Soạn đề SI</div>
               </div>
 
-              <!-- BƯỚC 3 -->
-              <div class="quy-trinh-step-view" data-step="2">
-                <div class="step-badge-row">
-                  <span class="step-orange-dot"></span>
-                  <span class="step-badge-text">Bước 03 · BƯỚC 3</span>
-                </div>
-                <h3 class="step-main-title">
+              <!-- Step 3: Bước 3 -->
+              <div class="quy-trinh-step-view" data-step="3">
+                <div class="step-num-line">03 · BƯỚC 3</div>
+                <h3 class="step-hero-title">
                   Thi Đấu &amp;<br>Giao Bài
                 </h3>
-                <p class="step-main-desc">
+                <p class="step-hero-desc">
                   Mở phòng Live Quiz trực tiếp trên lớp hoặc giao bài tập về nhà với thời hạn cụ thể.
                 </p>
-                <div class="step-meta-tag">
-                  <span class="tag-bullet">✦</span>
-                  <span class="tag-label">Tổ chức thi đấu</span>
-                </div>
+                <div class="step-sublabel">Tổ chức thi đấu</div>
               </div>
 
-              <!-- BƯỚC 4 -->
-              <div class="quy-trinh-step-view" data-step="3">
-                <div class="step-badge-row">
-                  <span class="step-orange-dot"></span>
-                  <span class="step-badge-text">Bước 04 · BƯỚC 4</span>
-                </div>
-                <h3 class="step-main-title">
+              <!-- Step 4: Bước 4 -->
+              <div class="quy-trinh-step-view" data-step="4">
+                <div class="step-num-line">04 · BƯỚC 4</div>
+                <h3 class="step-hero-title">
                   Chấm Tự Động<br>&amp; Báo Cáo
                 </h3>
-                <p class="step-main-desc">
+                <p class="step-hero-desc">
                   Nhận ngay bảng điểm chi tiết, phổ điểm lớp học và xuất file Excel chuẩn VnEdu / SMAS.
                 </p>
-                <div class="step-meta-tag">
-                  <span class="tag-bullet">✦</span>
-                  <span class="tag-label">Tổng kết và báo cáo</span>
-                </div>
+                <div class="step-sublabel">Tổng kết và báo cáo</div>
               </div>
 
-              <!-- BƯỚC 5: SUMMARY & IMPACT (matching reference image 4 & 5) -->
-              <div class="quy-trinh-step-view" data-step="4">
-                <div class="step-badge-row">
-                  <span class="step-orange-dot"></span>
-                  <span class="step-badge-text">Tổng kết quy trình</span>
-                </div>
-                <h3 class="step-main-title step-impact-headline">
-                  Chỉ mất <span class="highlight-orange">60 giây</span> để bắt đầu.<br>
-                  Biến <span class="highlight-orange">toàn bộ đề thi</span> thành<br>
-                  <span class="highlight-orange">sản phẩm thực tế</span> đa nền tảng.
+              <!-- Step 5: Ảnh 2 Style (Perspective Ladder Impact) -->
+              <div class="quy-trinh-step-view" data-step="5">
+                <h3 class="step-hero-title step-impact-editorial">
+                  Việc đưa trang web lên sóng chỉ<br>
+                  là một bước. Biến hành động<br>
+                  trang web của bạn đã thành <span class="text-orange-accent">công</span><br>
+                  <span class="text-orange-accent">sản phẩm</span> thực tế vẫn tiếp tục diễn ra
                 </h3>
-                <p class="step-main-desc">
-                  Khởi tạo tức thì trên trình duyệt web, không cần cài đặt phần mềm. Hoạt động ổn định trên cả máy tính, tablet và smartphone học sinh.
-                </p>
-                <div class="step-meta-tag">
-                  <span class="tag-bullet">✦</span>
-                  <span class="tag-label">Sẵn sàng trong 60 giây</span>
-                </div>
               </div>
 
+            </div>
+
+            <!-- Step 6: Ảnh 4 Style (Final Centered Minimalist Typography) -->
+            <div class="quy-trinh-step-view step-final-centered" data-step="6">
+              <h2 class="step-ultimate-title">
+                Được làm<br>
+                riêng cho bạn.<br>
+                Không giới hạn .
+              </h2>
             </div>
 
           </div>

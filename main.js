@@ -64,12 +64,11 @@ async function initScrollytelling() {
   const fanCardR1 = document.getElementById('fan-card-r1');
   const fanCardR2 = document.getElementById('fan-card-r2');
 
-  // Quy Trình Scrollytelling & Dot-Matrix Procedural Ladder
+  // Quy Trình Scrollytelling & Solid Black Timeline Ladder
   const quyTrinhTrack = document.getElementById('quy-trinh-track');
   const quyTrinhCanvas = document.getElementById('quy-trinh-canvas');
   const quyTrinhStepViews = Array.from(document.querySelectorAll('.quy-trinh-step-view'));
-  const quyTrinhMilestones = Array.from(document.querySelectorAll('.milestone-item'));
-  const quyTrinhNavBtns = Array.from(document.querySelectorAll('.step-nav-btn'));
+  const quyTrinhMilestones = document.getElementById('quy-trinh-milestones');
   let quyTrinhCanvasCtx = null;
   let lastActiveQuyTrinhStep = -1;
   let lastQuyTrinhProgress = 0;
@@ -637,54 +636,19 @@ async function initScrollytelling() {
     }
   }
 
-  // ── 4. Dot-Matrix Procedural Timeline & 3D Ladder (#quy-trinh) ───────────────
+  // ── 4. Minimalist Solid Black Timeline & Fullscreen Expansion (#quy-trinh) ───
   function initQuyTrinhCanvas() {
     if (!quyTrinhCanvas) return;
     quyTrinhCanvasCtx = quyTrinhCanvas.getContext('2d');
     resizeQuyTrinhCanvas();
     window.addEventListener('resize', resizeQuyTrinhCanvas, { passive: true });
-
-    // Handle button clicks to smoothly scroll to that step
-    quyTrinhNavBtns.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const targetStep = parseInt(btn.getAttribute('data-goto-step'), 10) || 0;
-        scrollQuyTrinhToStep(targetStep);
-      });
-    });
-
-    quyTrinhMilestones.forEach((mItem) => {
-      mItem.addEventListener('click', () => {
-        const targetMilestone = parseInt(mItem.getAttribute('data-milestone'), 10) || 0;
-        scrollQuyTrinhToStep(targetMilestone);
-      });
-    });
-  }
-
-  function scrollQuyTrinhToStep(stepIdx) {
-    if (!quyTrinhTrack) return;
-    const trackRect = quyTrinhTrack.getBoundingClientRect();
-    const trackTop = window.scrollY + trackRect.top;
-    const totalDist = trackRect.height - window.innerHeight;
-    if (totalDist <= 0) return;
-    // Map step (0..3) to target progress (0.08, 0.32, 0.55, 0.75, 0.95)
-    const stepFractions = [0.08, 0.32, 0.55, 0.75, 0.95];
-    const targetP = stepFractions[Math.min(stepIdx, stepFractions.length - 1)];
-    const targetY = trackTop + targetP * totalDist;
-    if (window.lenis) {
-      window.lenis.scrollTo(targetY, { duration: 1.2 });
-    } else {
-      window.scrollTo({ top: targetY, behavior: 'smooth' });
-    }
   }
 
   function resizeQuyTrinhCanvas() {
     if (!quyTrinhCanvas || !quyTrinhCanvasCtx) return;
-    const box = quyTrinhCanvas.parentElement;
-    if (!box) return;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const rect = box.getBoundingClientRect();
-    const w = Math.max(280, rect.width || 360);
-    const h = Math.max(320, rect.height || 480);
+    const w = window.innerWidth;
+    const h = window.innerHeight;
     quyTrinhCanvas.width = Math.round(w * dpr);
     quyTrinhCanvas.height = Math.round(h * dpr);
     quyTrinhCanvas.style.width = `${w}px`;
@@ -701,24 +665,33 @@ async function initScrollytelling() {
     const totalDist = rect.height - windowH;
     if (totalDist <= 0) return;
 
-    // Progress 0.0 to 1.0
+    // Progress 0.0 to 1.0 across the 560vh track
     const progress = Math.min(1, Math.max(0, -rect.top / totalDist));
     lastQuyTrinhProgress = progress;
 
-    // Determine current active step:
-    // 0: Bước 1 (0.00 - 0.22)
-    // 1: Bước 2 (0.22 - 0.44)
-    // 2: Bước 3 (0.44 - 0.66)
-    // 3: Bước 4 (0.66 - 0.85)
-    // 4: Summary Impact (0.85 - 1.00)
-    let activeStep = 0;
-    if (progress >= 0.85) {
+    // 7 visual states matching Reference Images:
+    // 0: Initial Hero "Một quy trình đơn giản trong ba bước." (0.00 - 0.12)
+    // 1: Bước 1 (0.12 - 0.24)
+    // 2: Bước 2 (0.24 - 0.36)
+    // 3: Bước 3 (0.36 - 0.48)
+    // 4: Bước 4 (0.48 - 0.60)
+    // 5: Ảnh 2 Editorial Impact (0.60 - 0.76)
+    // -: Ảnh 3 Fullscreen bars showcase (0.76 - 0.88, no text overlay)
+    // 6: Ảnh 4 Centered Final "Được làm riêng cho bạn..." (0.88 - 1.00)
+    let activeStep = -1;
+    if (progress >= 0.88) {
+      activeStep = 6;
+    } else if (progress >= 0.76) {
+      activeStep = -1; // Phase C: Fullscreen bars showcase (no text, matching Image 3)
+    } else if (progress >= 0.60) {
+      activeStep = 5;
+    } else if (progress >= 0.48) {
       activeStep = 4;
-    } else if (progress >= 0.66) {
+    } else if (progress >= 0.36) {
       activeStep = 3;
-    } else if (progress >= 0.44) {
+    } else if (progress >= 0.24) {
       activeStep = 2;
-    } else if (progress >= 0.22) {
+    } else if (progress >= 0.12) {
       activeStep = 1;
     } else {
       activeStep = 0;
@@ -727,24 +700,20 @@ async function initScrollytelling() {
     if (activeStep !== lastActiveQuyTrinhStep) {
       lastActiveQuyTrinhStep = activeStep;
 
-      // Update Step Views
-      quyTrinhStepViews.forEach((view, idx) => {
-        view.classList.toggle('is-active', idx === activeStep);
-      });
-
-      // Update Milestones (4 milestone items)
-      const milestoneIdx = Math.min(activeStep, 3);
-      quyTrinhMilestones.forEach((mItem, idx) => {
-        mItem.classList.toggle('is-active', idx === milestoneIdx);
-      });
-
-      // Update Top Nav Buttons
-      quyTrinhNavBtns.forEach((btn, idx) => {
-        btn.classList.toggle('is-active', idx === milestoneIdx);
+      quyTrinhStepViews.forEach((view) => {
+        const stepIdx = parseInt(view.getAttribute('data-step'), 10);
+        view.classList.toggle('is-active', stepIdx === activeStep);
       });
     }
 
-    // Render Procedural Canvas
+    // Milestones glide and fade out cleanly
+    if (quyTrinhMilestones) {
+      const mAlpha = Math.max(0, Math.min(1, 1 - (progress - 0.58) / 0.10));
+      quyTrinhMilestones.style.opacity = mAlpha.toFixed(2);
+      quyTrinhMilestones.style.transform = `translateY(${(progress - 0.25) * 60}px)`;
+    }
+
+    // Render Procedural Solid Black Canvas
     renderQuyTrinhCanvas(progress, activeStep);
   }
 
@@ -758,193 +727,82 @@ async function initScrollytelling() {
 
     ctx.clearRect(0, 0, w, h);
 
-    const cx = w * 0.5;
-    const topY = h * 0.12;
-    const bottomY = h * 0.88;
+    // Left center position of the ruler (Image 1 placement)
+    const isDesktop = w >= 960;
+    const cx = isDesktop ? w * 0.36 : (w > 640 ? w * 0.28 : w * 0.22);
+
+    const topY = h * 0.10;
+    const bottomY = h * 0.90;
     const rulerH = bottomY - topY;
 
-    // Perspective morph factor: from 0.0 (straight ruler) to 1.0 (3D perspective ladder)
-    // Smooth transition starting around 0.55
-    const morphRaw = Math.min(1, Math.max(0, (progress - 0.55) / 0.35));
+    // Scroll glide motion: left bar moves down as user scrolls
+    const scrollGlide = (progress - 0.25) * 90;
+
+    // Phase B: 3D perspective ladder morph (0.58 to 0.74)
+    const morphRaw = Math.min(1, Math.max(0, (progress - 0.58) / 0.16));
     const perspT = morphRaw * morphRaw * (3 - 2 * morphRaw);
 
-    // Continuous cursor position along the timeline
-    const stepProgress = Math.min(1, Math.max(0, progress / 0.85));
-    const cursorY = topY + stepProgress * rulerH;
+    // Phase C: Fullscreen horizontal expansion (0.74 to 0.86)
+    const fullRaw = Math.min(1, Math.max(0, (progress - 0.74) / 0.12));
+    const fullT = fullRaw * fullRaw * (3 - 2 * fullRaw);
 
-    // 1. Background Vertical Guide Dots
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.14)';
-    const verticalTracks = [-60, -30, 0, 30, 60];
-    verticalTracks.forEach((xOff) => {
-      for (let y = topY - 10; y <= bottomY + 10; y += 14) {
-        ctx.beginPath();
-        ctx.arc(cx + xOff * (1 - perspT * 0.25), y, 1.1, 0, Math.PI * 2);
-        ctx.fill();
+    // Phase D: Fade out at the end for clean white centered text (0.87 to 0.92)
+    const fadeRaw = Math.min(1, Math.max(0, (progress - 0.87) / 0.05));
+    const fadeT = Math.min(1, Math.max(0, fadeRaw));
+
+    if (fadeT >= 1) return;
+
+    const numBars = 38;
+    ctx.save();
+    ctx.globalAlpha = Math.max(0, 1 - fadeT);
+    ctx.fillStyle = '#111111';
+
+    for (let i = 0; i < numBars; i++) {
+      const frac = i / (numBars - 1);
+
+      // Depth curve for 3D perspective ladder (foreground spread out)
+      const depthP = Math.pow(frac, 1.65);
+      const flatY = topY + frac * rulerH + scrollGlide;
+      const perspY = topY + depthP * rulerH + scrollGlide * 0.4;
+      const currentY = flatY * (1 - perspT) + perspY * perspT;
+
+      // Normal bar width = 76px (halfW = 38)
+      const baseHalfW = isDesktop ? 38 : 28;
+
+      // Three extended milestone bars (matching Image 1)
+      let milestoneExtension = 0;
+      if (i === 6) {
+        milestoneExtension = isDesktop ? 85 : 55;
+      } else if (i === 19) {
+        milestoneExtension = isDesktop ? 135 : 85;
+      } else if (i === 32) {
+        milestoneExtension = isDesktop ? 85 : 55;
       }
-    });
 
-    // 2. Horizontal Rungs / Slats (morphing into 3D trapezoid ladder)
-    const numRungs = 26;
-    for (let i = 0; i < numRungs; i++) {
-      const rungFrac = i / (numRungs - 1);
-      
-      // Depth curve for 3D perspective
-      const depthP = Math.pow(rungFrac, 1.6);
-      const flatY = topY + rungFrac * rulerH;
-      const perspY = topY + depthP * rulerH;
-      const rungY = flatY * (1 - perspT) + perspY * perspT;
+      // Perspective width widens from top to bottom
+      const perspHalfW = (baseHalfW * 0.85) + depthP * (isDesktop ? 220 : 140);
 
-      // Width of rung
-      const flatHalfW = 52;
-      const perspHalfW = 42 + depthP * 145; // widens down to ~380px width
-      const halfW = flatHalfW * (1 - perspT) + perspHalfW * perspT;
+      // Interpolate left and right edges
+      const flatLeft = cx - baseHalfW;
+      const perspLeft = cx - perspHalfW;
+      const currentLeft = flatLeft * (1 - perspT) + perspLeft * perspT;
+      const finalLeft = currentLeft * (1 - fullT) + 0 * fullT;
 
-      const xLeft = cx - halfW;
-      const xRight = cx + halfW;
+      const flatRight = cx + baseHalfW + milestoneExtension * (1 - perspT);
+      const perspRight = cx + perspHalfW;
+      const currentRight = flatRight * (1 - perspT) + perspRight * perspT;
+      const finalRight = currentRight * (1 - fullT) + w * fullT;
 
-      // Distance to cursor for illumination
-      const distToCursor = Math.abs(rungY - cursorY);
-      const isLit = distToCursor < (28 + perspT * 36);
-      const litFactor = isLit ? Math.max(0, 1 - distToCursor / 40) : 0;
+      // Bar thickness: 2.5px in flat, in perspective foreground slightly thicker, and grows when expanding full-width
+      const baseThick = 2.5 + depthP * perspT * 1.5;
+      const fullThick = 3.5 + depthP * 14.0;
+      const barThickness = baseThick * (1 - fullT) + fullThick * fullT;
 
-      // Perspective glow for bottom rungs (matching Reference Image 4 & 5)
-      const bottomGlow = Math.pow(depthP, 1.4) * perspT;
-
-      // Draw dotted rung
-      const dotSpacing = Math.max(4.5, 7.5 * (1 - perspT * 0.2));
-      const dotCount = Math.floor((xRight - xLeft) / dotSpacing);
-
-      for (let d = 0; d <= dotCount; d++) {
-        const dotX = xLeft + d * dotSpacing;
-        const normX = Math.abs(dotX - cx) / halfW;
-        
-        let alpha = (1 - normX * 0.25) * (0.35 + litFactor * 0.65);
-        let dotR = 1.3 + litFactor * 0.9;
-
-        if (bottomGlow > 0.25) {
-          alpha = Math.min(1, alpha + bottomGlow * 0.45);
-          dotR += bottomGlow * 0.6;
-        }
-
-        ctx.save();
-        if (isLit) {
-          const litAlpha = Math.min(1, 0.55 + litFactor * 0.45);
-          ctx.fillStyle = litFactor > 0.35 ? ("rgba(254, 71, 1, " + litAlpha + ")") : ("rgba(255, 255, 255, " + litAlpha + ")");
-          ctx.shadowColor = "#fe4701";
-          ctx.shadowBlur = litFactor > 0.35 ? 10 : 0;
-          ctx.beginPath();
-          ctx.arc(dotX, rungY, dotR, 0, Math.PI * 2);
-          ctx.fill();
-        } else if (bottomGlow > 0.35) {
-          const glowAlpha = Math.min(1, 0.5 + bottomGlow * 0.5);
-          ctx.fillStyle = "rgba(254, 71, 1, " + glowAlpha + ")";
-          ctx.shadowColor = "rgba(254, 71, 1, 0.8)";
-          ctx.shadowBlur = 8;
-          ctx.beginPath();
-          ctx.arc(dotX, rungY, dotR, 0, Math.PI * 2);
-          ctx.fill();
-        } else {
-          const rungAlpha = Math.min(0.85, alpha * 0.95);
-          ctx.fillStyle = "rgba(255, 255, 255, " + rungAlpha + ")";
-          ctx.beginPath();
-          ctx.arc(dotX, rungY, 1.3, 0, Math.PI * 2);
-          ctx.fill();
-        }
-        ctx.restore();
-      }
+      const barWidth = Math.max(2, finalRight - finalLeft);
+      ctx.fillRect(finalLeft, currentY - barThickness / 2, barWidth, barThickness);
     }
 
-    // 3. Step Milestones & Connecting Crosshairs
-    const milestoneSteps = [0, 1/3, 2/3, 1];
-    milestoneSteps.forEach((mFrac, idx) => {
-      const mFlatY = topY + mFrac * rulerH;
-      const mDepthP = Math.pow(mFrac, 1.6);
-      const mPerspY = topY + mDepthP * rulerH;
-      const mY = mFlatY * (1 - perspT) + mPerspY * perspT;
-
-      const mHalfW = (48 * (1 - perspT)) + ((38 + mDepthP * 140) * perspT);
-      const isStepActive = (idx === Math.min(activeStep, 3));
-
-      // Indicator dot on left edge of ruler
-      ctx.save();
-      ctx.beginPath();
-      ctx.arc(cx - mHalfW - 10, mY, isStepActive ? 4 : 2.5, 0, Math.PI * 2);
-      ctx.fillStyle = isStepActive ? '#fe4701' : 'rgba(255, 255, 255, 0.45)';
-      if (isStepActive) {
-        ctx.shadowColor = '#fe4701';
-        ctx.shadowBlur = 10;
-      }
-      ctx.fill();
-      ctx.restore();
-
-      if (isStepActive) {
-        // Glowing halo
-        ctx.beginPath();
-        ctx.arc(cx - mHalfW - 8, mY, 8, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(254, 71, 1, 0.4)';
-        ctx.lineWidth = 1;
-        ctx.stroke();
-
-        // Horizontal dashed connector beam extending right towards content
-        ctx.save();
-        ctx.setLineDash([3, 4]);
-        ctx.strokeStyle = 'rgba(254, 71, 1, 0.5)';
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.moveTo(cx + mHalfW + 6, mY);
-        ctx.lineTo(w, mY);
-        ctx.stroke();
-        ctx.restore();
-      }
-    });
-
-    // 4. Cursor Target Bracket (matching reference image 3)
-    if (perspT < 0.75) {
-      const bracketAlpha = 1 - perspT / 0.75;
-      const bHalfW = 58;
-      const bHalfH = 22;
-      const bx = cx - bHalfW;
-      const by = cursorY - bHalfH;
-      const bw = bHalfW * 2;
-      const bh = bHalfH * 2;
-
-      ctx.save();
-      ctx.globalAlpha = bracketAlpha;
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
-      ctx.lineWidth = 1.4;
-
-      // Draw corner brackets
-      const cornerLen = 10;
-      // Top-left
-      ctx.beginPath();
-      ctx.moveTo(bx, by + cornerLen);
-      ctx.lineTo(bx, by);
-      ctx.lineTo(bx + cornerLen, by);
-      // Top-right
-      ctx.moveTo(bx + bw - cornerLen, by);
-      ctx.lineTo(bx + bw);
-      ctx.lineTo(bx + bw, by + cornerLen);
-      // Bottom-left
-      ctx.beginPath();
-      ctx.moveTo(bx, by + bh - cornerLen);
-      ctx.lineTo(bx, by + bh);
-      ctx.lineTo(bx + cornerLen, by + bh);
-      // Bottom-right
-      ctx.moveTo(bx + bw - cornerLen, by + bh);
-      ctx.lineTo(bx + bw);
-      ctx.lineTo(bx + bw, by + bh - cornerLen);
-      ctx.stroke();
-
-      // Orange dot on cursor bracket
-      ctx.fillStyle = '#fe4701';
-      ctx.shadowColor = '#fe4701';
-      ctx.shadowBlur = 8;
-      ctx.beginPath();
-      ctx.arc(bx + 4, cursorY, 3, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.restore();
-    }
+    ctx.restore();
   }
 
   // ── 5. Real Metrics Count-Up ─────────────────────────────────────────────
