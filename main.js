@@ -662,9 +662,9 @@ async function initScrollytelling() {
       activeStep = 5;
     } else if (progress >= 0.74) {
       activeStep = -1; // Fullscreen slats pure cinematic
-    } else if (progress >= 0.62) {
+    } else if (progress >= 0.59) {
       activeStep = 4;
-    } else if (progress >= 0.46) {
+    } else if (progress >= 0.44) {
       activeStep = 3;
     } else if (progress >= 0.28) {
       activeStep = 2;
@@ -742,8 +742,8 @@ async function initScrollytelling() {
     const initialCx = isDesktop ? w * 0.32 : (w > 640 ? w * 0.28 : w * 0.22);
     const centerCx = w * 0.50;
 
-    // Morph to 3D perspective ladder (0.58 - 0.62) - Fully active for Step 4 (Ảnh 4)
-    const morphRaw = Math.min(1, Math.max(0, (progress - 0.58) / 0.04));
+    // Morph to 3D perspective ladder (0.54 - 0.64) - Smooth continuous interpolation
+    const morphRaw = Math.min(1, Math.max(0, (progress - 0.54) / 0.10));
     const morphT = morphRaw * morphRaw * (3 - 2 * morphRaw);
 
     // Fullscreen slats expansion (0.74 - 0.84) - Expanding to full screen (Ảnh 5)
@@ -755,19 +755,16 @@ async function initScrollytelling() {
 
     const dotPitch = 7.2;
 
-    if (morphT < 0.92) {
-      // ══════════════════════════════════════════════════════════════════════
-      // PHASE 1: STREAMING DOT RULER DRUM (Chuẩn 100% Ảnh 1 & media_1793181988785_69096f44.png)
-      // ══════════════════════════════════════════════════════════════════════
+    // ══════════════════════════════════════════════════════════════════════
+    // LAYER 1: STREAMING DOT RULER DRUM (Active when morphT < 1.0)
+    // ══════════════════════════════════════════════════════════════════════
+    if (morphT < 1.0) {
+      const drumFade = 1 - morphT;
+      const drumAlpha = drumFade * slatAlpha;
+
       const centerY = h * 0.50;
       const rungSpacing = 26; // Spacing between adjacent rungs
 
-      // Piecewise smooth drum continuous offset (scrolls UPWARD as progress increases)
-      // p = 0.04 -> Intro (Day -2: THỨ HAI, NGÀY 26 THÁNG 10 near center, matching Ảnh 1)
-      // p = 0.18 -> Milestone 0 (NGÀY 1) at center
-      // p = 0.36 -> Milestone 1 (NGÀY 4) at center
-      // p = 0.52 -> Milestone 2 (NGÀY 7) at center
-      // p = 0.65 -> Milestone 3 (NGÀY THỨ 10) at center
       let drumOffset = 0;
       if (progress < 0.18) {
         drumOffset = -260 + (progress / 0.18) * 260;
@@ -781,7 +778,6 @@ async function initScrollytelling() {
         drumOffset = 1560 + (progress - 0.65) * 2200;
       }
 
-      // Special rungs with dates & extensions (including Intro dates from Image 1)
       const specialRungs = {
         '-18': { date: 'THỨ SÁU, NGÀY 23 THÁNG 10', day: '', ext: 0, extRows: 1 },
         '-10': { date: 'THỨ HAI, NGÀY 26 THÁNG 10', day: '', ext: (isDesktop ? 65 : 40), extRows: 2 },
@@ -792,9 +788,8 @@ async function initScrollytelling() {
         '60':  { date: 'THỨ NĂM, NGÀY 12 THÁNG 11', day: 'NGÀY THỨ 10', ext: (isDesktop ? 220 : 120), extRows: 1, subDate: 'THỨ SÁU, NGÀY 13 THÁNG 11' }
       };
 
-      const cx = initialCx * (1 - morphT) + initialCx * morphT; // Stays at initialCx (w * 0.32) in Phase 1 & 2!
+      const cx = initialCx;
 
-      // Draw all rungs from tape index -25 to 75
       for (let j = -25; j <= 75; j++) {
         const flatY = centerY + j * rungSpacing - drumOffset;
         if (flatY < -50 || flatY > h + 50) continue;
@@ -813,7 +808,7 @@ async function initScrollytelling() {
         if (sInfo && isDesktop && morphT < 0.65 && flatY >= 35 && flatY <= h - 35) {
           ctx.save();
           const isMainMilestone = !!sInfo.day;
-          const labelAlpha = Math.max(0, (1 - morphT * 1.5) * (isMainMilestone ? 0.95 : 0.45) * slatAlpha);
+          const labelAlpha = Math.max(0, (1 - morphT * 1.5) * (isMainMilestone ? 0.95 : 0.45) * drumAlpha);
           ctx.globalAlpha = labelAlpha;
 
           // 1. Date string (grey)
@@ -846,7 +841,7 @@ async function initScrollytelling() {
           const subY = flatY + 4 * rungSpacing;
           if (subY >= 40 && subY <= h - 40) {
             ctx.save();
-            ctx.globalAlpha = Math.max(0, (1 - morphT * 1.5) * 0.45 * slatAlpha);
+            ctx.globalAlpha = Math.max(0, (1 - morphT * 1.5) * 0.45 * drumAlpha);
             ctx.font = '500 10px monospace';
             ctx.fillStyle = '#6b7280';
             ctx.textAlign = 'right';
@@ -855,11 +850,6 @@ async function initScrollytelling() {
           }
         }
 
-        // Rung Dot Configuration:
-        // - Milestone extension: exactly 1 row (or extRows)
-        // - Center active cluster (<75px from center): 3 rows of bright white dots
-        // - Mid rungs (<240px from center): 2 rows of dots
-        // - Outer rungs: 1 row of dots
         let numRows = 1;
         let dotR = 1.45;
         let rungDotAlpha = 0.75;
@@ -886,7 +876,9 @@ async function initScrollytelling() {
           numRows = sInfo.extRows;
         }
 
-        ctx.fillStyle = rungDotAlpha >= 0.95 ? '#ffffff' : `rgba(235, 238, 245, ${rungDotAlpha.toFixed(2)})`;
+        ctx.save();
+        ctx.globalAlpha = drumAlpha * rungDotAlpha;
+        ctx.fillStyle = '#ffffff';
 
         const flatLeft = cx - baseHalfW;
         const flatRight = cx + baseHalfW + milestoneExtension;
@@ -903,13 +895,18 @@ async function initScrollytelling() {
             ctx.fill();
           }
         }
+        ctx.restore();
       }
-    } else {
-      // ══════════════════════════════════════════════════════════════════════
-      // PHASE 2 & 3: 3D PERSPECTIVE LADDER & FULLSCREEN SLATS (Ảnh 2, 3, 4, 5)
-      // ══════════════════════════════════════════════════════════════════════
-      // In Phase 2: ladder is on the LEFT at initialCx (w * 0.32), matching Ảnh 4!
-      // In Phase 3: slats expand to full screen center (w * 0.50), matching Ảnh 5!
+    }
+
+    // ══════════════════════════════════════════════════════════════════════
+    // LAYER 2: 3D PERSPECTIVE LADDER & FULLSCREEN SLATS (Active when morphT > 0.0)
+    // ══════════════════════════════════════════════════════════════════════
+    if (morphT > 0.0) {
+      const ladderAlpha = morphT * slatAlpha;
+      ctx.save();
+      ctx.globalAlpha = ladderAlpha;
+
       const slatCenterCx = initialCx * (1 - fullT) + centerCx * fullT;
       ctx.fillStyle = '#ffffff';
 
@@ -918,14 +915,22 @@ async function initScrollytelling() {
       const rulerH = ladderBottomY - ladderTopY;
 
       const numLadderRungs = 16;
+      // Smoothly tilt depth power from 1.0 (uniform spacing like drum) to 1.9 (deep 3D foreshortening)
+      const depthPower = 1.0 + 0.9 * morphT;
+
       for (let i = 0; i < numLadderRungs; i++) {
         const frac = i / (numLadderRungs - 1);
-        const depthP = Math.pow(frac, 1.9); // Foreshortened 3D perspective spacing
+        const depthP = Math.pow(frac, depthPower);
         const currentY = ladderTopY + depthP * rulerH;
 
-        // Ladder width on left (Ảnh 3, 4) vs Fullscreen width (Ảnh 5)
-        const topHalfW = (32 + 30 * depthP) * (1 - fullT) + (w * 0.36) * fullT;
-        const bottomHalfW = (180 + 20 * depthP) * (1 - fullT) + (w * 0.52) * fullT;
+        // Ladder width morphs from drum width into 3D perspective ladder width,
+        // and expands to full screen in Phase 3 (fullT)
+        const drumHalfW = isDesktop ? 34 : 24;
+        const targetTopHalfW = (32 + 30 * depthP) * (1 - fullT) + (w * 0.36) * fullT;
+        const targetBottomHalfW = (180 + 20 * depthP) * (1 - fullT) + (w * 0.52) * fullT;
+
+        const topHalfW = drumHalfW * (1 - morphT) + targetTopHalfW * morphT;
+        const bottomHalfW = drumHalfW * (1 - morphT) + targetBottomHalfW * morphT;
         const currentHalfW = topHalfW + (bottomHalfW - topHalfW) * depthP;
 
         // Number of dot rows per rung:
@@ -942,17 +947,19 @@ async function initScrollytelling() {
         else if (frac > 0.40) baseRows = 2;
         else baseRows = 1;
 
-        const numRows = Math.round(baseRows * (1 - fullT) + (1 + depthP * 12) * fullT);
-        const dotR = 1.45 + depthP * 0.55 + fullT * 0.3;
+        const targetRows = Math.round(baseRows * (1 - fullT) + (1 + depthP * 12) * fullT);
+        const numRows = Math.max(1, Math.round(1 + (targetRows - 1) * morphT));
+        const dotR = 1.45 + (depthP * 0.55 + fullT * 0.3) * morphT;
         const rowSpacing = 3.2;
+
+        // Trapezoid bevel angle smoothly ramps up with morphT
+        const bevelFactor = morphT;
 
         for (let rIdx = 0; rIdx < numRows; rIdx++) {
           const rowOffset = (rIdx - (numRows - 1) / 2) * rowSpacing;
           const dotY = currentY + rowOffset;
 
-          // Trapezoid beveled ends (45-degree slant on both sides - Chuẩn Ảnh 3, 5):
-          // Each row down expands outward by 1 dot pitch
-          const bevelExpand = (rIdx - (numRows - 1) / 2) * dotPitch * 0.95;
+          const bevelExpand = (rIdx - (numRows - 1) / 2) * dotPitch * 0.95 * bevelFactor;
           const rowHalfW = currentHalfW + bevelExpand;
 
           const rowLeft = slatCenterCx - rowHalfW;
@@ -967,6 +974,7 @@ async function initScrollytelling() {
           }
         }
       }
+      ctx.restore();
     }
 
     ctx.restore();

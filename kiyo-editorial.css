@@ -2204,24 +2204,19 @@ body {
   left: 0;
   right: 0;
   top: 50%;
-  transform: translateY(calc(-50% + 20px));
+  transform: translateY(calc(-50% + 16px));
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transition: opacity 0.22s ease, transform 0.26s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.22s;
+  transition: opacity 0.32s cubic-bezier(0.16, 1, 0.3, 1), transform 0.36s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.32s;
+  will-change: opacity, transform;
 }
 
 .quy-trinh-step-view.is-active {
-  opacity: 1 !important;
-  visibility: visible !important;
-  pointer-events: auto !important;
-  transform: translateY(-50%) !important;
-}
-
-.quy-trinh-step-view:not(.is-active) {
-  opacity: 0 !important;
-  visibility: hidden !important;
-  pointer-events: none !important;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(-50%);
 }
 
 .step-num-line {
