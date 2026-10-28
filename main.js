@@ -244,7 +244,7 @@ async function initScrollytelling() {
 
     const headerEl = sheetSection.querySelector('.grail-sheet-header');
     const visualEl = sheetSection.querySelector('.grail-sheet-visual');
-    const galleryItems = sheetSection.querySelectorAll('.grail-gallery-item');
+    const galleryItems = Array.from(sheetSection.querySelectorAll('.grail-gallery-item'));
     const numItems = galleryItems ? galleryItems.length : 0;
 
     // Click handler for 40px collapsed items to quickly jump
@@ -272,6 +272,7 @@ async function initScrollytelling() {
       if (visualEl) { visualEl.style.transform = 'none'; visualEl.style.opacity = '1'; }
       if (galleryItems) {
         galleryItems.forEach((it, idx) => {
+          it.style.display = idx === 0 ? 'block' : 'none';
           it.style.width = idx === 0 ? '100%' : '0px';
           it.style.maxWidth = idx === 0 ? '100%' : '0px';
           it.style.opacity = idx === 0 ? '1' : '0';
@@ -283,199 +284,132 @@ async function initScrollytelling() {
     const rect = sheetSection.getBoundingClientRect();
     const windowH = window.innerHeight;
 
-    // ── GIAI ĐOẠN 1: KHI CUỘN TỪ DƯỚI LÊN ĐÈ VÀO VIEWPORT (TILT & SMOOTH ENTRANCE) ──
-    if (rect.top > 0 && rect.top <= windowH) {
-      const progress = 1 - (rect.top / windowH); // 0 khi mới ló ở đáy, 1 khi chạm đỉnh
-      const ease = 1 - Math.pow(1 - progress, 2.5);
+    // Cố định hoàn toàn thẻ và khung: Không tilt nghiêng, không lệch sang phải
+    sheetCard.style.transform = 'none';
+    sheetCard.style.borderRadius = '0';
+    sheetCard.style.maxWidth = '100vw';
+    sheetCard.style.width = '100%';
+    sheetCard.style.boxShadow = 'none';
 
-      // Hiệu ứng chéo qua bên phải và từ từ thẳng lại:
-      const rot = ((1 - ease) * 4.2).toFixed(2);
-      const scale = (0.91 + 0.09 * ease).toFixed(4);
-      const radius = Math.round((1 - ease) * 32);
-      const maxW = (92 + 8 * ease).toFixed(1);
+    if (headerEl) {
+      headerEl.style.transform = 'none';
+      headerEl.style.opacity = '1';
+    }
+    if (visualEl) {
+      visualEl.style.transform = 'none';
+      visualEl.style.opacity = '1';
+    }
 
-      sheetCard.style.transform = `scale(${scale}) rotate(${rot}deg)`;
-      sheetCard.style.transformOrigin = 'center 15%';
-      sheetCard.style.borderRadius = `${radius}px ${radius}px 0 0`;
-      sheetCard.style.maxWidth = `${maxW}vw`;
-      sheetCard.style.width = '100%';
-      sheetCard.style.boxShadow = `0 -${Math.round(24 * (1 - ease))}px ${Math.round(50 * (1 - ease))}px rgba(15, 23, 42, ${((1 - ease) * 0.12).toFixed(3)})`;
-
-      const leftOffset = (-180 * (1 - ease)).toFixed(1);
-      const rightOffset = (180 * (1 - ease)).toFixed(1);
-      const splitOpacity = Math.min(1, ease * 1.6).toFixed(2);
-
-      if (headerEl) {
-        headerEl.style.transform = `translateX(${leftOffset}px)`;
-        headerEl.style.opacity = splitOpacity;
-      }
-      if (visualEl) {
-        visualEl.style.transform = `translateX(${rightOffset}px)`;
-        visualEl.style.opacity = splitOpacity;
-      }
-
-      // Trạng thái ảnh lúc vào: Ảnh 1 to tối đa, các ảnh sau 0px
-      if (galleryItems && numItems > 0) {
-        const visualBox = visualEl.getBoundingClientRect();
-        const visualW = visualBox.width > 0 ? visualBox.width : (window.innerWidth - 360);
-        const collapsedW = 40;
-        const gap = 14;
-        const reservedCollapsed = (numItems - 1) * (collapsedW + gap);
-        const initialMaxExpanded = Math.max(540, visualW - reservedCollapsed - 20);
-
-        galleryItems.forEach((it, idx) => {
-          if (idx === 0) {
-            it.style.width = `${Math.round(initialMaxExpanded)}px`;
-            it.style.minWidth = '40px';
-            it.style.maxWidth = `${Math.round(initialMaxExpanded)}px`;
-            it.style.opacity = '1';
-            it.classList.remove('is-collapsed');
-            it.classList.add('is-active');
-          } else {
-            it.style.width = '0px';
-            it.style.minWidth = '0px';
-            it.style.maxWidth = '0px';
-            it.style.opacity = '0';
-            it.classList.remove('is-active', 'is-collapsed');
-          }
-        });
-      }
-    } else if (rect.top <= 0) {
-      // ── GIAI ĐOẠN 2: THẺ ĐÃ DÍNH TOP (STICKY 100% FULL SCREEN) ──
-      // Kéo xuống: Thêm hết ảnh, ảnh di chuyển về bên trái và thu nhỏ max 40px
-      sheetCard.style.transform = 'none';
-      sheetCard.style.borderRadius = '0';
-      sheetCard.style.maxWidth = '100vw';
-      sheetCard.style.width = '100%';
-      sheetCard.style.boxShadow = 'none';
+    if (rect.top <= windowH && galleryItems && numItems > 0) {
+      const visualBox = visualEl.getBoundingClientRect();
+      const visualW = visualBox.width > 0 ? visualBox.width : (window.innerWidth - 380);
+      const collapsedW = 40; // 40px standard slice
+      const gap = 14;
 
       const totalDist = rect.height - windowH;
       const galleryProgress = totalDist > 0 ? Math.min(1, Math.max(0, -rect.top / totalDist)) : 0;
 
-      // Cố định hoàn toàn vị trí chữ và khung ảnh - Không bị trượt lệch hay di chuyển khi kéo cuộn
-      if (headerEl) {
-        headerEl.style.transform = 'none';
-        headerEl.style.opacity = '1';
+      // Các bước chuyển cảnh tự động tính theo số lượng ảnh:
+      const numTransitions = numItems - 1;
+      const startPad = 0.04;
+      const endPad = 0.04;
+      const availableP = 1 - startPad - endPad;
+      const stepSpan = availableP / Math.max(1, numTransitions);
+
+      const steps = [];
+      for (let i = 0; i < numTransitions; i++) {
+        steps.push({
+          from: i,
+          to: i + 1,
+          start: startPad + i * stepSpan,
+          end: startPad + (i + 1) * stepSpan
+        });
       }
-      if (visualEl) {
-        visualEl.style.transform = 'none';
-        visualEl.style.opacity = '1';
-      }
 
-      // Tính toán kích thước co dãn & thu nhỏ về bên trái 40px cho từng ảnh:
-      if (galleryItems && numItems > 0) {
-        const visualBox = visualEl.getBoundingClientRect();
-        const visualW = visualBox.width > 0 ? visualBox.width : (window.innerWidth - 360);
-        const collapsedW = 40; // Chiều rộng thu nhỏ tối đa đúng chuẩn 40px
-        const gap = 14;
-        const reservedCollapsed = (numItems - 1) * (collapsedW + gap);
-        // Mở rộng ảnh to tối đa theo toàn bộ chiều rộng có sẵn của màn hình
-        const maxExpanded = Math.max(540, visualW - reservedCollapsed - 20);
+      const widths = new Array(numItems).fill(0);
 
-        // Các bước chuyển cảnh tự động tính theo số lượng ảnh:
-        const numTransitions = numItems - 1;
-        const startPad = 0.05;
-        const endPad = 0.05;
-        const availableP = 1 - startPad - endPad;
-        const stepSpan = availableP / Math.max(1, numTransitions);
-
-        const steps = [];
-        for (let i = 0; i < numTransitions; i++) {
-          steps.push({
-            from: i,
-            to: i + 1,
-            start: startPad + i * stepSpan,
-            end: startPad + (i + 1) * stepSpan
-          });
+      if (steps.length === 0 || galleryProgress < steps[0].start) {
+        // Trạng thái ban đầu: Ảnh 0 chiếm trọn chiều rộng visualW
+        widths[0] = visualW;
+      } else if (galleryProgress >= steps[steps.length - 1].end) {
+        // Đã cuộn hết: Các ảnh trước thu nhỏ 40px nằm bên trái, ảnh cuối cùng lấp đầy phần còn lại
+        for (let i = 0; i < numItems - 1; i++) {
+          widths[i] = collapsedW;
         }
-
-        // Mặc định ban đầu
-        const widths = new Array(numItems).fill(0);
-
-        if (steps.length === 0 || galleryProgress < steps[0].start) {
-          // Chưa chuyển cảnh: Ảnh 0 to nhất, các ảnh sau chưa xuất hiện
-          widths[0] = maxExpanded;
-        } else if (galleryProgress >= steps[steps.length - 1].end) {
-          // Đã kéo xuống hết: Tất cả ảnh trước đó đã thu nhỏ 40px nằm bên trái, ảnh cuối cùng to nhất
-          for (let i = 0; i < numItems - 1; i++) {
-            widths[i] = collapsedW;
+        const usedLeft = (numItems - 1) * (collapsedW + gap);
+        widths[numItems - 1] = Math.max(40, visualW - usedLeft);
+      } else {
+        // Đang trong quá trình chuyển cảnh giữa step from -> to:
+        let currentStepIdx = 0;
+        for (let s = 0; s < steps.length; s++) {
+          if (galleryProgress >= steps[s].start && galleryProgress < steps[s].end) {
+            currentStepIdx = s;
+            break;
           }
-          widths[numItems - 1] = maxExpanded;
+        }
+        const curStep = steps[currentStepIdx];
+        const rawP = Math.max(0, Math.min(1, (galleryProgress - curStep.start) / (curStep.end - curStep.start)));
+
+        // Easing mượt mà
+        let easeT = 0;
+        if (rawP <= 0.12) {
+          easeT = 0;
+        } else if (rawP >= 0.88) {
+          easeT = 1;
         } else {
-          // Đang trong quá trình kéo cuộn qua các ảnh:
-          let currentStepIdx = 0;
-          for (let s = 0; s < steps.length; s++) {
-            if (galleryProgress >= steps[s].start && galleryProgress < steps[s].end) {
-              currentStepIdx = s;
-              break;
-            }
-          }
-          const curStep = steps[currentStepIdx];
-          const rawP = Math.max(0, Math.min(1, (galleryProgress - curStep.start) / (curStep.end - curStep.start)));
-
-          // Tạo khoảng dừng êm ái (plateau hold) để ảnh đứng yên ổn định, không bị di chuyển giật cục:
-          // 0.00 - 0.15: Giữ nguyên ảnh hiện tại to 100%
-          // 0.15 - 0.85: Chuyển cảnh mượt mà bằng cosine ease nhẹ nhàng
-          // 0.85 - 1.00: Đã chuyển xong, giữ nguyên ảnh mới to 100%
-          let easeT = 0;
-          if (rawP <= 0.15) {
-            easeT = 0;
-          } else if (rawP >= 0.85) {
-            easeT = 1;
-          } else {
-            const normT = (rawP - 0.15) / 0.70;
-            easeT = 0.5 - 0.5 * Math.cos(normT * Math.PI);
-          }
-
-          // Các ảnh trước curStep.from đã thu nhỏ 40px xếp bên trái:
-          for (let i = 0; i < curStep.from; i++) {
-            widths[i] = collapsedW;
-          }
-
-          // Ảnh hiện tại (from) đang thu nhỏ từ maxExpanded về 40px:
-          widths[curStep.from] = maxExpanded - (maxExpanded - collapsedW) * easeT;
-
-          // Ảnh tiếp theo (to) đang mở rộng từ 0 lên maxExpanded:
-          widths[curStep.to] = maxExpanded * easeT;
-
-          // Các ảnh sau curStep.to:
-          for (let i = curStep.to + 1; i < numItems; i++) {
-            widths[i] = 0;
-          }
+          const normT = (rawP - 0.12) / 0.76;
+          easeT = 0.5 - 0.5 * Math.cos(normT * Math.PI);
         }
 
-        // Áp dụng độ rộng và class hiển thị cho từng ảnh:
-        galleryItems.forEach((item, idx) => {
-          const w = widths[idx];
-          const isCollapsed = w <= 45 && w > 0;
-          const isActive = Math.abs(w - maxExpanded) < 30;
+        // 1. Các ảnh trước đó đã thu nhỏ 40px nằm cố định bên trái:
+        for (let i = 0; i < curStep.from; i++) {
+          widths[i] = collapsedW;
+        }
+
+        // 2. Không gian còn lại cho cặp đang chuyển cảnh (from và to):
+        const usedLeft = curStep.from * (collapsedW + gap);
+        const spaceForPair = Math.max(collapsedW + gap + 40, visualW - usedLeft);
+
+        // Ảnh from thu nhỏ dần về 40px:
+        const fromW = spaceForPair - (spaceForPair - collapsedW) * easeT;
+        widths[curStep.from] = fromW;
+
+        // Ảnh to mở rộng chiếm chính xác không gian còn lại (khoá cứng mép phải vào visualW!):
+        const toW = Math.max(0, spaceForPair - fromW - gap);
+        widths[curStep.to] = toW;
+
+        // 3. Các ảnh sau đó chưa xuất hiện:
+        for (let i = curStep.to + 1; i < numItems; i++) {
+          widths[i] = 0;
+        }
+      }
+
+      // Áp dụng độ rộng chuẩn xác cho từng ảnh:
+      galleryItems.forEach((item, idx) => {
+        const w = widths[idx];
+        if (w <= 0) {
+          item.style.display = 'none';
+          item.style.width = '0px';
+          item.style.minWidth = '0px';
+          item.style.maxWidth = '0px';
+          item.style.opacity = '0';
+          item.style.pointerEvents = 'none';
+          item.classList.remove('is-active', 'is-collapsed');
+        } else {
+          item.style.display = 'block';
+          const isCollapsed = w <= 45;
+          const isActive = !isCollapsed;
 
           item.style.width = `${Math.round(w)}px`;
-          item.style.minWidth = isCollapsed ? `${collapsedW}px` : (w > 0 ? '40px' : '0px');
-          item.style.maxWidth = isCollapsed ? `${collapsedW}px` : `${Math.round(maxExpanded)}px`;
-          item.style.opacity = w > 8 ? '1' : '0';
-          item.style.pointerEvents = w > 15 ? 'auto' : 'none';
+          item.style.minWidth = isCollapsed ? `${collapsedW}px` : '40px';
+          item.style.maxWidth = `${Math.round(w)}px`;
+          item.style.opacity = '1';
+          item.style.pointerEvents = 'auto';
 
           item.classList.toggle('is-collapsed', isCollapsed);
           item.classList.toggle('is-active', isActive);
-        });
-      }
-    } else {
-      // Chưa vào màn hình
-      sheetCard.style.transform = 'scale(0.91) rotate(4.2deg)';
-      sheetCard.style.transformOrigin = 'center 15%';
-      sheetCard.style.borderRadius = '32px 32px 0 0';
-      sheetCard.style.maxWidth = '92vw';
-      sheetCard.style.boxShadow = '0 -24px 50px rgba(15, 23, 42, 0.12)';
-
-      if (headerEl) {
-        headerEl.style.transform = 'translateX(-180px)';
-        headerEl.style.opacity = '0';
-      }
-      if (visualEl) {
-        visualEl.style.transform = 'translateX(180px)';
-        visualEl.style.opacity = '0';
-      }
+        }
+      });
     }
   }
 
