@@ -650,12 +650,12 @@ async function initScrollytelling() {
     lastQuyTrinhProgress = progress;
 
     // Sybiosme 5-State Step Mapping:
-    // 0: Intro (0.00 - 0.10)
-    // 1: Bước 01 (0.10 - 0.28) - Milestone: NGÀY 1 (peak 0.19)
-    // 2: Bước 02 (0.28 - 0.46) - Milestone: NGÀY 4 (peak 0.37)
-    // 3: Bước 03 (0.46 - 0.62) - Milestone: NGÀY 7 (peak 0.54)
-    // 4: Phase 2 Text & 3D Perspective Ladder (0.62 - 0.74) - Milestone: NGÀY THỨ 10 (peak 0.67)
-    // -1: Phase 3 Fullscreen Slats (0.74 - 0.84, pure visual cinematic)
+    // 0: Intro (0.00 - 0.10) - "Một quy trình đơn giản trong ba bước."
+    // 1: Bước 01 (0.10 - 0.28) - Milestone: NGÀY 1 (peak 0.18)
+    // 2: Bước 02 (0.28 - 0.46) - Milestone: NGÀY 4 (peak 0.36)
+    // 3: Bước 03 (0.46 - 0.62) - Milestone: NGÀY 7 (peak 0.52)
+    // 4: Phase 2 Editorial & 3D Perspective Ladder (0.62 - 0.74) - Milestone: NGÀY THỨ 10 (peak 0.65)
+    // -1: Phase 3 Fullscreen Slats expansion (0.74 - 0.84, pure visual cinematic)
     // 5: Phase 4 Clean White Screen (0.87 - 1.00, light paper #f2f2f4)
     let activeStep = -1;
     if (progress >= 0.87) {
@@ -738,15 +738,16 @@ async function initScrollytelling() {
     if (slatAlpha <= 0) return;
 
     const isDesktop = w >= 960;
-    const initialCx = isDesktop ? w * 0.38 : (w > 640 ? w * 0.28 : w * 0.22);
+    // Ladder center: on left (w * 0.32) in Phase 2, expanding to center (w * 0.50) in Phase 3
+    const initialCx = isDesktop ? w * 0.32 : (w > 640 ? w * 0.28 : w * 0.22);
     const centerCx = w * 0.50;
 
-    // Morph to centered 3D perspective ladder (0.58 - 0.72)
-    const morphRaw = Math.min(1, Math.max(0, (progress - 0.58) / 0.14));
+    // Morph to 3D perspective ladder (0.58 - 0.62) - Fully active for Step 4 (Ảnh 4)
+    const morphRaw = Math.min(1, Math.max(0, (progress - 0.58) / 0.04));
     const morphT = morphRaw * morphRaw * (3 - 2 * morphRaw);
 
-    // Fullscreen expansion (0.72 - 0.82)
-    const fullRaw = Math.min(1, Math.max(0, (progress - 0.72) / 0.10));
+    // Fullscreen slats expansion (0.74 - 0.84) - Expanding to full screen (Ảnh 5)
+    const fullRaw = Math.min(1, Math.max(0, (progress - 0.74) / 0.09));
     const fullT = fullRaw * fullRaw * (3 - 2 * fullRaw);
 
     ctx.save();
@@ -754,47 +755,47 @@ async function initScrollytelling() {
 
     const dotPitch = 7.2;
 
-    if (morphT < 0.90) {
+    if (morphT < 0.92) {
       // ══════════════════════════════════════════════════════════════════════
-      // PHASE 1: STREAMING DOT RULER DRUM (Chuẩn 100% Ảnh 1 & media_1793148858848_69559470.png)
+      // PHASE 1: STREAMING DOT RULER DRUM (Chuẩn 100% Ảnh 1 & media_1793181988785_69096f44.png)
       // ══════════════════════════════════════════════════════════════════════
       const centerY = h * 0.50;
       const rungSpacing = 26; // Spacing between adjacent rungs
 
       // Piecewise smooth drum continuous offset (scrolls UPWARD as progress increases)
-      // p = 0.19 -> Milestone 0 (NGÀY 1) at center
-      // p = 0.37 -> Milestone 1 (NGÀY 4) at center
-      // p = 0.54 -> Milestone 2 (NGÀY 7) at center
-      // p = 0.67 -> Milestone 3 (NGÀY THỨ 10) at center
+      // p = 0.04 -> Intro (Day -2: THỨ HAI, NGÀY 26 THÁNG 10 near center, matching Ảnh 1)
+      // p = 0.18 -> Milestone 0 (NGÀY 1) at center
+      // p = 0.36 -> Milestone 1 (NGÀY 4) at center
+      // p = 0.52 -> Milestone 2 (NGÀY 7) at center
+      // p = 0.65 -> Milestone 3 (NGÀY THỨ 10) at center
       let drumOffset = 0;
-      if (progress < 0.19) {
-        drumOffset = ((progress - 0.19) / 0.19) * 400;
-      } else if (progress < 0.37) {
-        drumOffset = ((progress - 0.19) / 0.18) * 520;
-      } else if (progress < 0.54) {
-        drumOffset = 520 + ((progress - 0.37) / 0.17) * 520;
-      } else if (progress < 0.67) {
-        drumOffset = 1040 + ((progress - 0.54) / 0.13) * 520;
+      if (progress < 0.18) {
+        drumOffset = -260 + (progress / 0.18) * 260;
+      } else if (progress < 0.36) {
+        drumOffset = ((progress - 0.18) / 0.18) * 520;
+      } else if (progress < 0.52) {
+        drumOffset = 520 + ((progress - 0.36) / 0.16) * 520;
+      } else if (progress < 0.65) {
+        drumOffset = 1040 + ((progress - 0.52) / 0.13) * 520;
       } else {
-        drumOffset = 1560 + ((progress - 0.67) / 0.15) * 600;
+        drumOffset = 1560 + (progress - 0.65) * 2200;
       }
 
-      // Milestones definition:
-      // m = 0: Day 1 (Tape Y = 0)
-      // m = 20: Day 4 (Tape Y = 20 * 26 = 520)
-      // m = 40: Day 7 (Tape Y = 40 * 26 = 1040)
-      // m = 60: Day 10 (Tape Y = 60 * 26 = 1560)
-      const milestones = [
-        { rung: 0,  date: 'THỨ NĂM, NGÀY 29 THÁNG 10', day: 'NGÀY 1',      subDate: 'THỨ SÁU, NGÀY 30 THÁNG 10' },
-        { rung: 20, date: 'THỨ BA, NGÀY 03 THÁNG 11',  day: 'NGÀY 4',      subDate: 'THỨ TƯ, NGÀY 04 THÁNG 11' },
-        { rung: 40, date: 'THỨ SÁU, NGÀY 06 THÁNG 11', day: 'NGÀY 7',      subDate: 'THỨ BẢY, NGÀY 07 THÁNG 11' },
-        { rung: 60, date: 'THỨ NĂM, NGÀY 12 THÁNG 11', day: 'NGÀY THỨ 10', subDate: 'THỨ SÁU, NGÀY 13 THÁNG 11' }
-      ];
+      // Special rungs with dates & extensions (including Intro dates from Image 1)
+      const specialRungs = {
+        '-18': { date: 'THỨ SÁU, NGÀY 23 THÁNG 10', day: '', ext: 0, extRows: 1 },
+        '-10': { date: 'THỨ HAI, NGÀY 26 THÁNG 10', day: '', ext: (isDesktop ? 65 : 40), extRows: 2 },
+        '-4':  { date: 'THỨ BA, NGÀY 27 THÁNG 10',  day: '', ext: (isDesktop ? 90 : 50), extRows: 1 },
+        '0':   { date: 'THỨ NĂM, NGÀY 29 THÁNG 10', day: 'NGÀY 1', ext: (isDesktop ? 220 : 120), extRows: 1, subDate: 'THỨ SÁU, NGÀY 30 THÁNG 10' },
+        '20':  { date: 'THỨ BA, NGÀY 03 THÁNG 11',  day: 'NGÀY 4', ext: (isDesktop ? 220 : 120), extRows: 1, subDate: 'THỨ TƯ, NGÀY 04 THÁNG 11' },
+        '40':  { date: 'THỨ SÁU, NGÀY 06 THÁNG 11', day: 'NGÀY 7', ext: (isDesktop ? 220 : 120), extRows: 1, subDate: 'THỨ BẢY, NGÀY 07 THÁNG 11' },
+        '60':  { date: 'THỨ NĂM, NGÀY 12 THÁNG 11', day: 'NGÀY THỨ 10', ext: (isDesktop ? 220 : 120), extRows: 1, subDate: 'THỨ SÁU, NGÀY 13 THÁNG 11' }
+      };
 
-      const cx = initialCx * (1 - morphT) + centerCx * morphT;
+      const cx = initialCx * (1 - morphT) + initialCx * morphT; // Stays at initialCx (w * 0.32) in Phase 1 & 2!
 
-      // Draw all rungs from tape index -12 to 75
-      for (let j = -12; j <= 75; j++) {
+      // Draw all rungs from tape index -25 to 75
+      for (let j = -25; j <= 75; j++) {
         const flatY = centerY + j * rungSpacing - drumOffset;
         if (flatY < -50 || flatY > h + 50) continue;
 
@@ -803,58 +804,59 @@ async function initScrollytelling() {
         const lensBulge = Math.max(0, 1 - normDist * normDist) * 12;
         const baseHalfW = (isDesktop ? 34 : 24) + lensBulge;
 
-        // Check if this rung is a milestone
-        const mInfo = milestones.find(m => m.rung === j);
-        const isMilestone = !!mInfo;
+        const sInfo = specialRungs[j.toString()];
+        const isMilestone = !!sInfo && !!sInfo.day;
+        const milestoneExtension = sInfo ? sInfo.ext * (1 - morphT) : 0;
+        const milestoneExtRows = sInfo ? sInfo.extRows : 1;
 
-        // Milestone extension: single horizontal line shooting +220px to the right
-        const milestoneExtension = isMilestone ? (isDesktop ? 220 : 120) * (1 - morphT) : 0;
-
-        // Milestone date marker on left
-        if (isMilestone && isDesktop && morphT < 0.65 && flatY >= 35 && flatY <= h - 35) {
+        // Date labels on left (matching Image 1 & Image 2)
+        if (sInfo && isDesktop && morphT < 0.65 && flatY >= 35 && flatY <= h - 35) {
           ctx.save();
-          const labelAlpha = Math.max(0, (1 - morphT * 1.5) * slatAlpha);
+          const isMainMilestone = !!sInfo.day;
+          const labelAlpha = Math.max(0, (1 - morphT * 1.5) * (isMainMilestone ? 0.95 : 0.45) * slatAlpha);
           ctx.globalAlpha = labelAlpha;
 
           // 1. Date string (grey)
           ctx.font = '500 11px monospace';
-          ctx.fillStyle = '#8e929b';
+          ctx.fillStyle = isMainMilestone ? '#8e929b' : '#6b7280';
           ctx.textAlign = 'right';
           const dateRightX = cx - baseHalfW - 80;
-          ctx.fillText(mInfo.date, dateRightX, flatY + 4);
+          ctx.fillText(sInfo.date, dateRightX, flatY + 4);
 
-          // 2. Vertical separator '|'
-          ctx.strokeStyle = 'rgba(255, 255, 255, 0.22)';
-          ctx.lineWidth = 1;
-          ctx.beginPath();
-          ctx.moveTo(dateRightX + 16, flatY - 8);
-          ctx.lineTo(dateRightX + 16, flatY + 8);
-          ctx.stroke();
+          // 2. Vertical separator '|' and Day label (if main milestone)
+          if (isMainMilestone) {
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.22)';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(dateRightX + 16, flatY - 8);
+            ctx.lineTo(dateRightX + 16, flatY + 8);
+            ctx.stroke();
 
-          // 3. Day label (bold white)
-          ctx.font = '700 11px monospace';
-          ctx.fillStyle = '#ffffff';
-          ctx.textAlign = 'left';
-          ctx.fillText(mInfo.day, dateRightX + 28, flatY + 4);
+            ctx.font = '700 11px monospace';
+            ctx.fillStyle = '#ffffff';
+            ctx.textAlign = 'left';
+            ctx.fillText(sInfo.day, dateRightX + 28, flatY + 4);
+          }
 
           ctx.restore();
         }
 
         // Secondary date label 4 rungs below milestone (matching Ảnh 1)
-        const subMInfo = milestones.find(m => m.rung === j - 4);
-        if (subMInfo && isDesktop && morphT < 0.65 && flatY >= 40 && flatY <= h - 40) {
-          ctx.save();
-          const subAlpha = Math.max(0, (1 - morphT * 1.5) * 0.45 * slatAlpha);
-          ctx.globalAlpha = subAlpha;
-          ctx.font = '500 10px monospace';
-          ctx.fillStyle = '#6b7280';
-          ctx.textAlign = 'right';
-          ctx.fillText(subMInfo.subDate, cx - baseHalfW - 80, flatY + 3.5);
-          ctx.restore();
+        if (sInfo && sInfo.subDate && isDesktop && morphT < 0.65) {
+          const subY = flatY + 4 * rungSpacing;
+          if (subY >= 40 && subY <= h - 40) {
+            ctx.save();
+            ctx.globalAlpha = Math.max(0, (1 - morphT * 1.5) * 0.45 * slatAlpha);
+            ctx.font = '500 10px monospace';
+            ctx.fillStyle = '#6b7280';
+            ctx.textAlign = 'right';
+            ctx.fillText(sInfo.subDate, cx - baseHalfW - 80, subY + 3.5);
+            ctx.restore();
+          }
         }
 
         // Rung Dot Configuration:
-        // - Milestone: ALWAYS 1 row of dots (sharp single extended line)
+        // - Milestone extension: exactly 1 row (or extRows)
         // - Center active cluster (<75px from center): 3 rows of bright white dots
         // - Mid rungs (<240px from center): 2 rows of dots
         // - Outer rungs: 1 row of dots
@@ -880,6 +882,10 @@ async function initScrollytelling() {
           rungDotAlpha = Math.max(0.18, 0.55 - (distToCenter - 240) / 280);
         }
 
+        if (sInfo && sInfo.extRows > 1) {
+          numRows = sInfo.extRows;
+        }
+
         ctx.fillStyle = rungDotAlpha >= 0.95 ? '#ffffff' : `rgba(235, 238, 245, ${rungDotAlpha.toFixed(2)})`;
 
         const flatLeft = cx - baseHalfW;
@@ -900,43 +906,61 @@ async function initScrollytelling() {
       }
     } else {
       // ══════════════════════════════════════════════════════════════════════
-      // PHASE 2 & 3: 3D PERSPECTIVE LADDER & FULLWIDTH EXPANSION (Ảnh 2 & Ảnh 3)
+      // PHASE 2 & 3: 3D PERSPECTIVE LADDER & FULLSCREEN SLATS (Ảnh 2, 3, 4, 5)
       // ══════════════════════════════════════════════════════════════════════
-      const cx = centerCx;
-      const ladderTopY = h * 0.22;
+      // In Phase 2: ladder is on the LEFT at initialCx (w * 0.32), matching Ảnh 4!
+      // In Phase 3: slats expand to full screen center (w * 0.50), matching Ảnh 5!
+      const slatCenterCx = initialCx * (1 - fullT) + centerCx * fullT;
+      ctx.fillStyle = '#ffffff';
+
+      const ladderTopY = h * 0.28;
       const ladderBottomY = h * 1.05;
       const rulerH = ladderBottomY - ladderTopY;
 
       const numLadderRungs = 16;
       for (let i = 0; i < numLadderRungs; i++) {
         const frac = i / (numLadderRungs - 1);
-        const depthP = Math.pow(frac, 1.85); // Foreshortened 3D spacing
+        const depthP = Math.pow(frac, 1.9); // Foreshortened 3D perspective spacing
         const currentY = ladderTopY + depthP * rulerH;
 
-        // Ảnh 2 width vs Ảnh 3 full width
-        const topHalfW = 60 + 240 * fullT;
-        const bottomHalfW = (isDesktop ? 340 : 190) + (w * 0.65 - (isDesktop ? 340 : 190)) * fullT;
+        // Ladder width on left (Ảnh 3, 4) vs Fullscreen width (Ảnh 5)
+        const topHalfW = (32 + 30 * depthP) * (1 - fullT) + (w * 0.36) * fullT;
+        const bottomHalfW = (180 + 20 * depthP) * (1 - fullT) + (w * 0.52) * fullT;
         const currentHalfW = topHalfW + (bottomHalfW - topHalfW) * depthP;
 
-        const finalLeft = cx - currentHalfW;
-        const finalRight = cx + currentHalfW;
+        // Number of dot rows per rung:
+        // Top 7 rungs: 1 row
+        // Mid rungs: 2-3 rows
+        // Bottom rungs: 4, 5, 7, 9 rows!
+        // Fullscreen slats: up to 14 rows at bottom!
+        let baseRows = 1;
+        if (frac > 0.90) baseRows = 8;
+        else if (frac > 0.80) baseRows = 6;
+        else if (frac > 0.70) baseRows = 5;
+        else if (frac > 0.60) baseRows = 4;
+        else if (frac > 0.50) baseRows = 3;
+        else if (frac > 0.40) baseRows = 2;
+        else baseRows = 1;
 
-        // Number of dot rows:
-        // Ảnh 2: 1 row at top, 7 rows at bottom
-        // Ảnh 3: up to 14 dense rows of dots at bottom
-        const numRows = Math.round(1 + depthP * 6 + depthP * 7 * fullT);
+        const numRows = Math.round(baseRows * (1 - fullT) + (1 + depthP * 12) * fullT);
+        const dotR = 1.45 + depthP * 0.55 + fullT * 0.3;
+        const rowSpacing = 3.2;
 
-        const dotR = 1.45 + depthP * 0.6 + fullT * 0.3;
-        ctx.fillStyle = depthP > 0.5 ? '#ffffff' : 'rgba(235, 238, 245, 0.85)';
+        for (let rIdx = 0; rIdx < numRows; rIdx++) {
+          const rowOffset = (rIdx - (numRows - 1) / 2) * rowSpacing;
+          const dotY = currentY + rowOffset;
 
-        const dotCount = Math.floor((finalRight - finalLeft) / dotPitch);
-        const rowSpacing = 3.1 + fullT * 0.6;
+          // Trapezoid beveled ends (45-degree slant on both sides - Chuẩn Ảnh 3, 5):
+          // Each row down expands outward by 1 dot pitch
+          const bevelExpand = (rIdx - (numRows - 1) / 2) * dotPitch * 0.95;
+          const rowHalfW = currentHalfW + bevelExpand;
 
-        for (let d = 0; d <= dotCount; d++) {
-          const dotX = finalLeft + d * dotPitch;
-          for (let rIdx = 0; rIdx < numRows; rIdx++) {
-            const rowOffset = (rIdx - (numRows - 1) / 2) * rowSpacing;
-            const dotY = currentY + rowOffset;
+          const rowLeft = slatCenterCx - rowHalfW;
+          const rowRight = slatCenterCx + rowHalfW;
+          const dotCount = Math.floor((rowRight - rowLeft) / dotPitch);
+
+          for (let d = 0; d <= dotCount; d++) {
+            const dotX = rowLeft + d * dotPitch;
             ctx.beginPath();
             ctx.arc(dotX, dotY, dotR, 0, Math.PI * 2);
             ctx.fill();

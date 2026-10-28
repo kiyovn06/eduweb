@@ -3011,3 +3011,10 @@ body {
   background: #18181c !important;
   color: #ffffff !important;
 }
+
+.text-orange-gradient {
+  background: linear-gradient(90deg, #fe4701 0%, #fe4701 40%, #7e381b 95%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
