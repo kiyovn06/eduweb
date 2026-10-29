@@ -929,12 +929,12 @@ async function initScrollytelling() {
       const absNorm = Math.min(1.0, Math.abs(normDy));
       const extraDist = Math.max(0.0, Math.abs(normDy) - 1.0);
 
-      const maxCurveX = isDesktop ? 36 : 22;
-      const curveX = (1.0 - Math.cos(absNorm * Math.PI * 0.5) + extraDist * 0.5) * maxCurveX;
+      const maxCurveX = isDesktop ? 38 : 24;
+      const curveX = (Math.pow(absNorm, 1.35) + extraDist * 0.5) * maxCurveX;
 
       const minWidth = isDesktop ? 58 : 40;
       const maxWidth = isDesktop ? 86 : 60;
-      const widthProfile = Math.cos(absNorm * Math.PI * 0.5);
+      const widthProfile = Math.max(0.0, 1.0 - Math.pow(absNorm, 1.35));
       const drumW = minWidth + (maxWidth - minWidth) * widthProfile;
 
       const slatCx = leftCx + curveX;
@@ -1101,8 +1101,8 @@ async function initScrollytelling() {
             const subNormDy = subDy / (h * 0.44);
             const subAbsNorm = Math.min(1.0, Math.abs(subNormDy));
             const subExtraDist = Math.max(0.0, Math.abs(subNormDy) - 1.0);
-            const subCurveX = (1.0 - Math.cos(subAbsNorm * Math.PI * 0.5) + subExtraDist * 0.5) * maxCurveX;
-            const subWidthProfile = Math.cos(subAbsNorm * Math.PI * 0.5);
+            const subCurveX = (Math.pow(subAbsNorm, 1.35) + subExtraDist * 0.5) * maxCurveX;
+            const subWidthProfile = Math.max(0.0, 1.0 - Math.pow(subAbsNorm, 1.35));
             const subW = minWidth + (maxWidth - minWidth) * subWidthProfile;
             const subLeftX = (leftCx + subCurveX) - subW * 0.5;
             
