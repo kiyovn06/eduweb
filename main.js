@@ -918,7 +918,12 @@ async function initScrollytelling() {
       let rungDotAlpha = 0.75;
       let bevelAmount = 0;
       let baseRows = 1.0;
-      let slatCurveX = 0;
+
+      // 3D Drum Curvature to the Right ("cong cong qua bên phải")
+      // In Sybiosme, the drum on the left curves smoothly to the right as it recedes towards the top of the viewport
+      const normY = Math.min(1, Math.max(0, currentY / h));
+      const drumCurveX = Math.pow(1 - normY, 1.5) * (isDesktop ? 65 : 40);
+      let slatCurveX = drumCurveX * (1 - zoomT);
 
       const sInfo = specialRungs[j.toString()];
       const isMilestone = !!sInfo && !!sInfo.day;
@@ -967,7 +972,9 @@ async function initScrollytelling() {
         // 3D Road Curve to the Right ("cong cong ra bên phải", "ở trên nó sẽ thành kiểu như 1 con đường á")
         // As u approaches 0 (top/horizon), the road centerline curves gracefully to the right:
         const roadCurveX = Math.pow(1 - u, 1.7) * (w * 0.11);
-        slatCurveX = roadCurveX * centerT * (1 - zoomT);
+        
+        // Smoothly blend from Drum Curvature (on the left) to Road Highway Curvature (in the center):
+        slatCurveX = (drumCurveX * (1 - centerT) + roadCurveX * centerT) * (1 - zoomT);
 
         // Slat Width Evolution:
         // On LEFT (Image 4): Top halfW = 20px (~6 dots), Bottom halfW = 135px (~40 dots)
@@ -976,7 +983,7 @@ async function initScrollytelling() {
 
         // In CENTER (3D Road) -> FULLSCREEN EXPANSION ("mới mở rộng qua 2 bên", "phóng to hết màn hình"):
         // At zoomT = 0: roadTopHalfW = 24px (tapered top), bottomHalfW = w * 0.52 (Road perspective)
-        // At zoomT = 1: topHalfW = w * 1.10, bottomHalfW = w * 1.80 (Every slat extends far past screen edges)
+        // At zoomT = 1: topHalfW = w * 1.50, bottomHalfW = w * 2.00 (Every slat extends far past screen edges)
         const roadTopHalfW = isDesktop ? 24 : 18;
         const zoomTopHalfW = (roadTopHalfW) * (1 - zoomT) + (w * 1.50) * zoomT;
         const zoomBottomHalfW = (w * 0.52) * (1 - zoomT) + (w * 2.00) * zoomT;
@@ -1025,7 +1032,7 @@ async function initScrollytelling() {
         ctx.font = '500 11px monospace';
         ctx.fillStyle = isMainMilestone ? '#8e929b' : '#6b7280';
         ctx.textAlign = 'right';
-        const dateRightX = cx - baseHalfW - 80;
+        const dateRightX = (cx + slatCurveX) - baseHalfW - 80;
         ctx.fillText(sInfo.date, dateRightX, flatY + 4);
 
         if (isMainMilestone) {
@@ -1054,7 +1061,9 @@ async function initScrollytelling() {
           ctx.font = '500 10px monospace';
           ctx.fillStyle = '#6b7280';
           ctx.textAlign = 'right';
-          ctx.fillText(sInfo.subDate, cx - baseHalfW - 80, subY + 3.5);
+          const subNormY = Math.min(1, Math.max(0, subY / h));
+          const subCurveX = Math.pow(1 - subNormY, 1.5) * (isDesktop ? 65 : 40);
+          ctx.fillText(sInfo.subDate, (cx + subCurveX) - baseHalfW - 80, subY + 3.5);
           ctx.restore();
         }
       }
