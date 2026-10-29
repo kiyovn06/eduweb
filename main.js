@@ -701,11 +701,11 @@ async function initScrollytelling() {
 
     // ── Continuous Scroll-Scrubbed Text Animation (With Stable Readability Plateaus) ──
     const cardTimeline = [
-      { step: 0, inP: 0.015, peakIn: 0.045, peakOut: 0.075, outP: 0.13 },
-      { step: 1, inP: 0.08,  peakIn: 0.14, peakOut: 0.18, outP: 0.25 }, // Day 1
-      { step: 2, inP: 0.24,  peakIn: 0.30, peakOut: 0.34, outP: 0.41 }, // Day 4
-      { step: 3, inP: 0.40,  peakIn: 0.46, peakOut: 0.50, outP: 0.57 }, // Day 7
-      { step: 4, inP: 0.56,  peakIn: 0.64, peakOut: 0.72, outP: 0.76 }, // Day 10 & 3D Ladder on Left
+      { step: 0, inP: 0.08,  peakIn: 0.13, peakOut: 0.17, outP: 0.23 }, // Step 0 appears as drum glides to left & curves
+      { step: 1, inP: 0.20,  peakIn: 0.26, peakOut: 0.30, outP: 0.37 }, // Day 1
+      { step: 2, inP: 0.34,  peakIn: 0.40, peakOut: 0.44, outP: 0.51 }, // Day 4
+      { step: 3, inP: 0.48,  peakIn: 0.54, peakOut: 0.58, outP: 0.65 }, // Day 7
+      { step: 4, inP: 0.62,  peakIn: 0.68, peakOut: 0.74, outP: 0.78 }, // Day 10 & 3D Ladder
       { step: 5, inP: 0.94,  peakIn: 0.97, peakOut: 1.05, outP: 1.05 }  // Centered Title on pure white (after white bloom)
     ];
 
@@ -809,19 +809,20 @@ async function initScrollytelling() {
     // Phase 1: Intro glide from CENTER to LEFT as text enters (0.015 to 0.07)
     // At start: drum is in MIDDLE ("thanh kéo hiện ở giữa")
     // When text appears: drum glides to LEFT ("chữ xuất hiện đẩy thanh kéo qua bên trái")
-    const introShiftRaw = Math.min(1, Math.max(0, (progress - 0.015) / 0.055));
+    const introShiftRaw = Math.min(1, Math.max(0, (progress - 0.08) / 0.07));
     const introLeftT = smootherstep(introShiftRaw);
+    const curveAmount = introLeftT; // 0.0 when straight in center, smoothly rises to 1.0 when curved on left!
 
     // Morph on the LEFT (Phase 2: 0.62 to 0.74)
-    const leftMorphRaw = Math.min(1, Math.max(0, (progress - 0.62) / 0.12));
+    const leftMorphRaw = Math.min(1, Math.max(0, (progress - 0.70) / 0.07));
     const leftMorphT = smootherstep(leftMorphRaw);
 
     // Glide to CENTER (Phase 3: 0.74 to 0.80)
-    const centerGlideRaw = Math.min(1, Math.max(0, (progress - 0.74) / 0.06));
+    const centerGlideRaw = Math.min(1, Math.max(0, (progress - 0.76) / 0.07));
     const centerT = smootherstep(centerGlideRaw);
 
     // Fullscreen Zoom Expansion (Phase 5: 0.86 to 0.94)
-    const zoomRaw = Math.min(1, Math.max(0, (progress - 0.86) / 0.08));
+    const zoomRaw = Math.min(1, Math.max(0, (progress - 0.82) / 0.10));
     const zoomT = smootherstep(zoomRaw);
 
     // ── 2. AMBIENT HALFTONE LATTICE (Trame de fond - subtle gray dot matrix on white) ──
@@ -858,7 +859,8 @@ async function initScrollytelling() {
     }
 
     ctx.save();
-    const slatAlpha = Math.max(0, 1 - Math.pow(zoomT, 1.5));
+    const fadeZoomRaw = Math.min(1, Math.max(0, (zoomT - 0.78) / 0.22));
+    const slatAlpha = Math.max(0, 1 - Math.pow(fadeZoomRaw, 1.5));
     if (slatAlpha <= 0.005) {
       // Entire canvas is solid white, all slats fully merged - skip 100% of slat loops!
       ctx.restore();
@@ -885,8 +887,6 @@ async function initScrollytelling() {
     const leftBottomY = h * 0.94;
 
     // Y Bounds in CENTER (3D Road & Fullscreen Zoom):
-    const centerTopY = h * 0.10;
-    const centerBottomY = h * 0.95;
 
     for (let j = -25; j <= 75; j++) {
       const flatY = centerY + j * rungSpacing - drumOffset;
@@ -921,7 +921,7 @@ async function initScrollytelling() {
 
       const maxCurveX = isDesktop ? 32 : 18;
       // Flat in center (distToCenter < 60 gives curve < 0.6px), smoothly curving towards top/bottom
-      const curveX = (Math.pow(normDy, 1.65) + extraDist * 0.4) * maxCurveX;
+      const curveX = (Math.pow(normDy, 1.65) + extraDist * 0.4) * maxCurveX * curveAmount;
 
       const numDots = isDesktop ? 17 : 13;
       const drumW = (numDots - 1) * dotPitch;
@@ -962,10 +962,6 @@ async function initScrollytelling() {
         // Target Y on LEFT (Image 4)
         const target3DLeftY = leftTopY + (leftBottomY - leftTopY) * Math.pow(u, 1.55);
 
-        // Target Y in CENTER (3D Road & Fullscreen Zoom Expansion):
-        const zoomTopY = (centerTopY) * (1 - zoomT) + (-h * 0.12) * zoomT;
-        const zoomBottomY = (centerBottomY) * (1 - zoomT) + (h * 1.35) * zoomT;
-        const target3DCenterY = zoomTopY + (zoomBottomY - zoomTopY) * Math.pow(u, 1.72 * (1 - zoomT * 0.45));
 
         // Delay climbs from bottom up
         const delay = (1 - u) * 0.42;
@@ -981,20 +977,25 @@ async function initScrollytelling() {
         const curLeftOnLeft = drumLeftX * (1 - rungMorph) + targetLadderLeftX * rungMorph;
         const curRightOnLeft = drumRightX * (1 - rungMorph) + targetLadderRightX * rungMorph;
 
-        // In CENTER (3D Road) -> FULLSCREEN EXPANSION ("mới mở rộng qua 2 bên", "phóng to hết màn hình"):
-        const roadTopHalfW = isDesktop ? 24 : 18;
-        const zoomTopHalfW = (roadTopHalfW) * (1 - zoomT) + (w * 0.45) * zoomT;
-        const zoomBottomHalfW = (w * 0.52) * (1 - zoomT) + (w * 0.65) * zoomT;
-        const centerHalfW = zoomTopHalfW + (zoomBottomHalfW - zoomTopHalfW) * Math.pow(u, 1.25 * (1 - zoomT * 0.70));
+        // In CENTER (3D Road) -> FULLSCREEN EXPANSION matching Image 3:
+        // 100% Centered and symmetrical ("vẫn hiện canh ở đúng giữa" -> roadCenter = centerCx, zero curve)
+        const roadTopHalfW = isDesktop ? 28 : 20;
+        const maxRoadBottomHalfW = isDesktop ? w * 0.485 : w * 0.48; // Spans 97% of viewport at bottom!
+        const roadBottomHalfW = (w * 0.24) * (1 - zoomT) + maxRoadBottomHalfW * zoomT;
+        const centerHalfW = roadTopHalfW + (roadBottomHalfW - roadTopHalfW) * Math.pow(u, 1.35);
 
-        const roadCurveX = Math.pow(1 - u, 1.7) * (w * 0.11) * (1 - zoomT);
-        const roadCenter = centerCx + roadCurveX;
+        const roadCenter = centerCx; // 100% DEAD CENTER (no curve, perfectly symmetrical like Image 3!)
         const roadLeftX = roadCenter - centerHalfW;
         const roadRightX = roadCenter + centerHalfW;
 
+        // Target Y on 3D Road with perspective depth (closely spaced near horizon, spread near camera)
+        const centerTopY = h * 0.12;
+        const centerBottomY = h * 0.98;
+        const roadTargetY = centerTopY + (centerBottomY - centerTopY) * Math.pow(u, 1.60);
+
         flatLeft = curLeftOnLeft * (1 - centerT) + roadLeftX * centerT;
         flatRight = curRightOnLeft * (1 - centerT) + roadRightX * centerT;
-        currentY = yOnLeft * (1 - centerT) + target3DCenterY * centerT;
+        currentY = yOnLeft * (1 - centerT) + roadTargetY * centerT;
 
         // Continuous Row Count & Gap Closure:
         let targetRowsLeft = 1.0;
@@ -1055,9 +1056,12 @@ async function initScrollytelling() {
         ctx.globalAlpha = baseAlpha * (0.15 + 0.85 * rowCoverage);
 
         if (leftMorphT > 0) {
-          const dotCount = Math.floor((rowRight - rowLeft) / dotPitch);
+          const actualSpan = rowRight - rowLeft;
+          const dotCount = Math.floor(actualSpan / dotPitch);
+          // Centered dot layout for 100% mathematical symmetry about centerCx
+          const startDotX = (rowLeft + rowRight - dotCount * dotPitch) * 0.5;
           for (let d = 0; d <= dotCount; d++) {
-            const dotX = rowLeft + d * dotPitch;
+            const dotX = startDotX + d * dotPitch;
             ctx.beginPath();
             ctx.arc(dotX, dotY, curDotR, 0, Math.PI * 2);
             ctx.fill();
