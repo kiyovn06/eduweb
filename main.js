@@ -704,7 +704,7 @@ async function initScrollytelling() {
       { step: 2, inP: 0.24,  peakIn: 0.30, peakOut: 0.34, outP: 0.41 }, // Day 4
       { step: 3, inP: 0.40,  peakIn: 0.46, peakOut: 0.50, outP: 0.57 }, // Day 7
       { step: 4, inP: 0.56,  peakIn: 0.65, peakOut: 0.72, outP: 0.77 }, // Day 10 & 3D Ladder on Left
-      { step: 5, inP: 0.86,  peakIn: 0.93, peakOut: 1.05, outP: 1.05 }  // Centered Title on pure white
+      { step: 5, inP: 0.94,  peakIn: 0.97, peakOut: 1.05, outP: 1.05 }  // Centered Title on pure white (after white bloom)
     ];
 
     let activeStep = -1;
@@ -787,10 +787,11 @@ async function initScrollytelling() {
     const h = quyTrinhCanvas.height / dpr;
     if (w <= 0 || h <= 0) return;
 
-    // ── 1. BACKGROUND DUAL-TONE & WHITE BLOOM (100% Sybiosme Match) ──
-    // Void #0a0b0e stays solid through Image 1, 2, 3, 4, 5.
-    // Blooms into pure radiant white #ffffff smoothly using smootherstep (0.84 - 0.90)
-    const bgProgress = Math.min(1, Math.max(0, (progress - 0.84) / 0.06));
+    // ── 1. BACKGROUND DUAL-TONE & WHITE BLOOM (100% User Directive) ──
+    // Void #0a0b0e stays solid throughout Drum, 3D Ladder on Left, Center Pyramid,
+    // AND stays black while the pyramid ZOOMS FORWARD TO FILL THE ENTIRE SCREEN ("phóng to hết màn hình")!
+    // Background transitions to pure radiant white #ffffff ONLY AFTER slats fill the whole screen (0.90 - 0.95)!
+    const bgProgress = Math.min(1, Math.max(0, (progress - 0.90) / 0.05));
     const bgEase = smootherstep(bgProgress);
 
     const r = Math.round(10 + (255 - 10) * bgEase);
@@ -836,23 +837,27 @@ async function initScrollytelling() {
     // Ladder center in MIDDLE (Image 5): exactly 50% width
     const centerCx = w * 0.50;
 
-    // ── 3. TIMELINE PHASES MATCHING THE 5 USER IMAGES 100% ──
+    // ── 3. TIMELINE PHASES MATCHING USER DIRECTION 100% ──
     // Phase 1 (0.00 - 0.62): 2D drum on LEFT scrolling dates (Image 1 & Image 2)
-    // Phase 2 (0.62 - 0.69): Image 3: Drum on LEFT locks at NGÀY THỨ 10, bottom rungs thicken fluidly
-    // Phase 3 (0.69 - 0.75): Image 4: 3D perspective ladder forms on LEFT while Step 4 text reveals on RIGHT
-    // Phase 4 (0.74 - 0.84): Image 5: Ladder glides smoothly to CENTER and expands across screen
-    // Phase 5 (0.84 - 0.90): Background blooms into pure white
+    // Phase 2 (0.62 - 0.74): Drum locks at NGÀY THỨ 10, 3D ladder forms on LEFT with Step 4 text (Image 3 & Image 4)
+    // Phase 3 (0.74 - 0.81): Ladder glides to CENTER and forms symmetrical 3D perspective pyramid (Image 5 / User screenshot)
+    // Phase 4 (0.81 - 0.90): "Phóng to hết màn hình" - Pyramid zooms in edge-to-edge covering 100% of the screen
+    // Phase 5 (0.90 - 0.95): "Mới chuyển qua trắng" - Background blooms to white as full-width slats dissolve
+    // Phase 6 (0.92 - 1.00): Centered final headline on pure white background
 
     // Morph on the LEFT (Phase 2 & Phase 3: 0.62 to 0.74)
     const leftMorphRaw = Math.min(1, Math.max(0, (progress - 0.62) / 0.12));
     const leftMorphT = smootherstep(leftMorphRaw);
 
-    // Glide to CENTER and Fullscreen width expansion (Phase 4: 0.74 to 0.84) - 100% unified
-    const centerGlideRaw = Math.min(1, Math.max(0, (progress - 0.74) / 0.10));
+    // Glide to CENTER (Phase 3: 0.74 to 0.81)
+    const centerGlideRaw = Math.min(1, Math.max(0, (progress - 0.74) / 0.07));
     const centerT = smootherstep(centerGlideRaw);
-    const fullT = centerT; // Unified simultaneous glide & expansion
 
-    // Center X position: Stays on LEFT until Step 4 finishes (progress 0.74), then glides seamlessly to CENTER!
+    // Fullscreen Zoom Expansion (Phase 4: 0.81 to 0.90) - "phóng to hết màn hình"
+    const zoomRaw = Math.min(1, Math.max(0, (progress - 0.81) / 0.09));
+    const zoomT = smootherstep(zoomRaw);
+
+    // Center X position: Stays on LEFT until Step 4 finishes (progress 0.74), then glides to CENTER!
     const cx = leftCx * (1 - centerT) + centerCx * centerT;
 
     ctx.save();
@@ -946,8 +951,12 @@ async function initScrollytelling() {
 
         // Target Y on LEFT (Image 4)
         const target3DLeftY = leftTopY + (leftBottomY - leftTopY) * Math.pow(u, 1.55);
-        // Target Y in CENTER (Image 5: more perspective separation towards bottom)
-        const target3DCenterY = centerTopY + (centerBottomY - centerTopY) * Math.pow(u, 1.72);
+
+        // Target Y in CENTER (Image 5 & Fullscreen Zoom Expansion):
+        // As zoomT advances (0.81 -> 0.90), slats plunge down and spread evenly across viewport
+        const zoomTopY = (centerTopY) * (1 - zoomT) + (-h * 0.08) * zoomT;
+        const zoomBottomY = (centerBottomY) * (1 - zoomT) + (h * 1.38) * zoomT;
+        const target3DCenterY = zoomTopY + (zoomBottomY - zoomTopY) * Math.pow(u, 1.72 * (1 - zoomT * 0.45));
 
         // Delay climbs from bottom up (Image 3: bottom rungs thicken first)
         const delay = (1 - u) * 0.42;
@@ -962,33 +971,40 @@ async function initScrollytelling() {
         const leftHalfW = (20 + (135 - 20) * Math.pow(u, 1.15));
         const wOnLeft = baseHalfW * (1 - rungMorph) + leftHalfW * rungMorph;
 
-        // In CENTER (Image 5): Full pyramid perspective expansion!
-        const targetTopHalfW = (w * 0.04) * (1 - fullT) + (w * 0.055) * fullT;
-        const targetBottomHalfW = (w * 0.35) * (1 - fullT) + (w * 0.65) * fullT;
-        const centerHalfW = targetTopHalfW + (targetBottomHalfW - targetTopHalfW) * Math.pow(u, 1.35);
+        // In CENTER (Image 5) -> FULLSCREEN ZOOM EXPANSION ("phóng to hết màn hình"):
+        // At zoomT = 0: topHalfW = w * 0.055, bottomHalfW = w * 0.65 (Centered Pyramid)
+        // At zoomT = 1: topHalfW = w * 0.60, bottomHalfW = w * 1.50 (EVERY slat spans 100%+ of screen width!)
+        const zoomTopHalfW = (w * 0.055) * (1 - zoomT) + (w * 0.60) * zoomT;
+        const zoomBottomHalfW = (w * 0.65) * (1 - zoomT) + (w * 1.50) * zoomT;
+        const centerHalfW = zoomTopHalfW + (zoomBottomHalfW - zoomTopHalfW) * Math.pow(u, 1.35 * (1 - zoomT * 0.65));
 
         currentHalfW = wOnLeft * (1 - centerT) + centerHalfW * centerT;
 
         // Continuous Row Count (No popping):
-        // Top slats: 1 row. Mid slats: 2-3 rows. Bottom slats: 5-7 rows.
         let targetRowsLeft = 1.0;
         if (u > 0.88) targetRowsLeft = 1.0 + 5.5 * Math.pow((u - 0.2) / 0.8, 1.4);
         else if (u > 0.20) targetRowsLeft = 1.0 + 3.8 * Math.pow((u - 0.2) / 0.8, 1.4);
         else targetRowsLeft = 1.0;
 
         let targetRowsCenter = targetRowsLeft;
-        if (fullT > 0) {
-          if (u > 0.80) targetRowsCenter = 7.0 * fullT + targetRowsLeft * (1 - fullT);
-          else if (u > 0.60) targetRowsCenter = 5.0 * fullT + targetRowsLeft * (1 - fullT);
-          else if (u > 0.40) targetRowsCenter = 3.2 * fullT + targetRowsLeft * (1 - fullT);
+        if (centerT > 0) {
+          if (u > 0.80) targetRowsCenter = 7.0 * centerT + targetRowsLeft * (1 - centerT);
+          else if (u > 0.60) targetRowsCenter = 5.0 * centerT + targetRowsLeft * (1 - centerT);
+          else if (u > 0.40) targetRowsCenter = 3.2 * centerT + targetRowsLeft * (1 - centerT);
           else targetRowsCenter = targetRowsLeft;
+        }
+
+        // When zooming in fullscreen, all slats thicken and expand rows:
+        if (zoomT > 0) {
+          const fullscreenRows = 4.0 + u * 4.5;
+          targetRowsCenter = targetRowsCenter * (1 - zoomT) + fullscreenRows * zoomT;
         }
 
         const rowsOnLeft = baseRows * (1 - rungMorph) + targetRowsLeft * rungMorph;
         contRows = Math.max(1.0, rowsOnLeft * (1 - centerT) + targetRowsCenter * centerT);
 
-        dotR = 1.45 + (u * 0.35) * rungMorph + (u * 0.8 + 0.3) * fullT;
-        bevelAmount = Math.max(rungMorph, fullT);
+        dotR = 1.45 + (u * 0.35) * rungMorph + (u * 0.8 + 0.3) * centerT + (0.7 * zoomT);
+        bevelAmount = Math.max(rungMorph, centerT);
         rungDotAlpha = 1.0;
 
         // Extra horizontal dotted line at very bottom rung in Image 3
