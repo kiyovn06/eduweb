@@ -836,7 +836,7 @@ async function initScrollytelling() {
 
     const isDesktop = w >= 960;
     // Ladder center on LEFT:
-    const leftCx = isDesktop ? Math.max(360, Math.round(w * 0.28)) : (w > 640 ? w * 0.25 : w * 0.22);
+    const leftCx = isDesktop ? Math.max(340, Math.round(w * 0.27)) : (w > 640 ? w * 0.25 : w * 0.22);
     // Ladder center in MIDDLE:
     const centerCx = w * 0.50;
 
@@ -901,20 +901,25 @@ async function initScrollytelling() {
       const effectiveVFade = smoothVFade * (1 - leftMorphT) + 1.0 * leftMorphT;
       if (effectiveVFade <= 0.005) continue;
 
-      // ── 100% STRAIGHT RIGHT BASELINE & C-CURVE LEFT ARC (User Directive) ──
-      // All slats aligned 100% on right ("thẳng hàng với nhau 100%"):
-      // Center reaches furthest left ("ở giữa nó sẽ hiện đúng")
-      // Top & bottom stay near right ("dần dần qua 2 bên trên dưới sẽ hiện gần phía chữ bên phải và bên kia nó sẽ hiện xa hơn")
+      // ── DRUM CYLINDER CURVE (Image 2 & User Directives) ──
+      // 1. Equal width & equal dot count across all slats ("tất cả đều bằng nhau 100%, thẳng hàng với nhau 100%")
+      // 2. In center: slats are straight & aligned at base position ("ở giữa nó sẽ hiện đúng")
+      // 3. Towards top & bottom: slats curve smoothly to the right closer to the text ("dần dần qua 2 bên trên dưới sẽ hiện gần phía chữ bên phải và bên kia nó sẽ hiện xa hơn")
+      // 4. Moderate restrained curve ("bị cong quá rồi" -> maxCurveX = 26px desktop, 16px mobile)
       const distToCenter = Math.abs(flatY - centerY);
       const normDy = Math.min(1.0, distToCenter / (h * 0.44));
-      const curveProfile = Math.cos(normDy * Math.PI * 0.5);
+      const extraDist = Math.max(0.0, (distToCenter / (h * 0.44)) - 1.0);
 
-      const minWidth = isDesktop ? 76 : 50;
-      const maxWidth = isDesktop ? 136 : 90;
-      const drumW = minWidth + (maxWidth - minWidth) * curveProfile;
+      const maxCurveX = isDesktop ? 32 : 18;
+      // Flat in center (distToCenter < 60 gives curve < 0.6px), smoothly curving towards top/bottom
+      const curveX = (Math.pow(normDy, 1.65) + extraDist * 0.4) * maxCurveX;
 
-      const drumRightX = isDesktop ? Math.round(w * 0.32) : Math.round(w * 0.42);
-      const drumLeftX = drumRightX - drumW;
+      const numDots = isDesktop ? 17 : 13;
+      const drumW = (numDots - 1) * dotPitch;
+
+      const slatCx = leftCx + curveX;
+      const drumLeftX = slatCx - drumW * 0.5;
+      const drumRightX = slatCx + drumW * 0.5;
 
       let currentY = flatY;
       let flatLeft = drumLeftX;
@@ -1074,9 +1079,9 @@ async function initScrollytelling() {
             ctx.globalAlpha = 0.45 * dateLabelFade * slatAlpha * subVFade;
             const subDistY = Math.abs(subY - centerY);
             const subNormDy = Math.min(1.0, subDistY / (h * 0.44));
-            const subCurveProfile = Math.cos(subNormDy * Math.PI * 0.5);
-            const subW = minWidth + (maxWidth - minWidth) * subCurveProfile;
-            const subLeftX = drumRightX - subW;
+            const subExtraDist = Math.max(0.0, (subDistY / (h * 0.44)) - 1.0);
+            const subCurveX = (Math.pow(subNormDy, 1.65) + subExtraDist * 0.4) * maxCurveX;
+            const subLeftX = (leftCx + subCurveX) - drumW * 0.5;
             
             ctx.font = '700 11px monospace';
             const refDayW = sInfo.day ? ctx.measureText(sInfo.day).width : 45;
@@ -1115,11 +1120,21 @@ async function initScrollytelling() {
         const curDotR = dotR * (0.35 + 0.65 * rowCoverage);
         ctx.globalAlpha = baseAlpha * (0.15 + 0.85 * rowCoverage);
 
-        for (let d = 0; d <= dotCount; d++) {
-          const dotX = rowRight - d * dotPitch;
-          ctx.beginPath();
-          ctx.arc(dotX, dotY, curDotR, 0, Math.PI * 2);
-          ctx.fill();
+        if (leftMorphT > 0) {
+          const dotCount = Math.floor((rowRight - rowLeft) / dotPitch);
+          for (let d = 0; d <= dotCount; d++) {
+            const dotX = rowLeft + d * dotPitch;
+            ctx.beginPath();
+            ctx.arc(dotX, dotY, curDotR, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        } else {
+          for (let d = 0; d < numDots; d++) {
+            const dotX = flatLeft + d * dotPitch;
+            ctx.beginPath();
+            ctx.arc(dotX, dotY, curDotR, 0, Math.PI * 2);
+            ctx.fill();
+          }
         }
       }
       ctx.restore();
