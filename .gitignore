@@ -12,6 +12,7 @@ scrollcraft/lab/
 *.png
 !assets/*.png
 !public/assets/*.png
+scratch_screenshots/
 lab/
 .agents/
 

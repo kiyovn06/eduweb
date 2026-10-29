@@ -144,30 +144,34 @@ async function initScrollytelling() {
 
     // Tiêu đề "Bóc Tách Đề Thi Trong 3 Giây": Hiệu ứng từ bên phải đi vô trước
     if (titleGroup) {
-      const titleProg = Math.min(1, Math.max(0, (shrinkProgress - 0.05) / 0.28));
-      titleGroup.style.opacity = titleProg;
-      titleGroup.style.transform = `translateX(${(1 - titleProg) * 48}px)`;
+      const raw = Math.min(1, Math.max(0, (shrinkProgress - 0.05) / 0.28));
+      const titleProg = smootherstep(raw);
+      titleGroup.style.opacity = titleProg.toFixed(3);
+      titleGroup.style.transform = `translateX(${((1 - titleProg) * 40).toFixed(1)}px)`;
     }
 
     // Thẻ 01: Đi vào kế tiếp sau tiêu đề
     if (cards[0]) {
-      const c0Prog = Math.min(1, Math.max(0, (shrinkProgress - 0.18) / 0.28));
-      cards[0].style.opacity = c0Prog;
-      cards[0].style.transform = `translateX(${(1 - c0Prog) * 48}px)`;
+      const raw = Math.min(1, Math.max(0, (shrinkProgress - 0.18) / 0.28));
+      const c0Prog = smootherstep(raw);
+      cards[0].style.opacity = c0Prog.toFixed(3);
+      cards[0].style.transform = `translateX(${((1 - c0Prog) * 40).toFixed(1)}px)`;
     }
 
     // Thẻ 02: Đi vào kế tiếp sau thẻ 01
     if (cards[1]) {
-      const c1Prog = Math.min(1, Math.max(0, (shrinkProgress - 0.32) / 0.28));
-      cards[1].style.opacity = c1Prog;
-      cards[1].style.transform = `translateX(${(1 - c1Prog) * 48}px)`;
+      const raw = Math.min(1, Math.max(0, (shrinkProgress - 0.32) / 0.28));
+      const c1Prog = smootherstep(raw);
+      cards[1].style.opacity = c1Prog.toFixed(3);
+      cards[1].style.transform = `translateX(${((1 - c1Prog) * 40).toFixed(1)}px)`;
     }
 
     // Thẻ 03: Đi vào kế tiếp sau thẻ 02
     if (cards[2]) {
-      const c2Prog = Math.min(1, Math.max(0, (shrinkProgress - 0.46) / 0.28));
-      cards[2].style.opacity = c2Prog;
-      cards[2].style.transform = `translateX(${(1 - c2Prog) * 48}px)`;
+      const raw = Math.min(1, Math.max(0, (shrinkProgress - 0.46) / 0.28));
+      const c2Prog = smootherstep(raw);
+      cards[2].style.opacity = c2Prog.toFixed(3);
+      cards[2].style.transform = `translateX(${((1 - c2Prog) * 40).toFixed(1)}px)`;
     }
   }
 
@@ -203,21 +207,23 @@ async function initScrollytelling() {
     const targetRot2 = 7.0;
 
     // Phase 1: Left 1 & Right 1 (bắt đầu che nhiều ló ~10px chéo, cuộn xuống xòe rộng ra)
-    const p1 = Math.min(1, Math.max(0, fanProgress / 0.65));
+    const rawP1 = Math.min(1, Math.max(0, fanProgress / 0.65));
+    const p1 = smootherstep(rawP1);
     const dist1 = baseOff1 + (targetOff1 - baseOff1) * p1;
     const rot1 = baseRot1 + (targetRot1 - baseRot1) * p1;
 
     if (fanCardL1) {
-      fanCardL1.style.transform = `translate(calc(-50% - ${dist1}px), -50%) rotate(${-rot1}deg)`;
+      fanCardL1.style.transform = `translate(calc(-50% - ${dist1.toFixed(1)}px), -50%) rotate(${(-rot1).toFixed(2)}deg)`;
       fanCardL1.style.opacity = '1';
     }
     if (fanCardR1) {
-      fanCardR1.style.transform = `translate(calc(-50% + ${dist1}px), -50%) rotate(${rot1}deg)`;
+      fanCardR1.style.transform = `translate(calc(-50% + ${dist1.toFixed(1)}px), -50%) rotate(${rot1.toFixed(2)}deg)`;
       fanCardR1.style.opacity = '1';
     }
 
     // Phase 2: Left 2 & Right 2 (bắt đầu che nhiều ló ~10px chéo, cuộn xuống xòe xa nhất)
-    const p2 = Math.min(1, Math.max(0, (fanProgress - 0.12) / 0.72));
+    const rawP2 = Math.min(1, Math.max(0, (fanProgress - 0.12) / 0.72));
+    const p2 = smootherstep(rawP2);
     const dist2 = baseOff2 + (targetOff2 - baseOff2) * p2;
     const rot2 = baseRot2 + (targetRot2 - baseRot2) * p2;
 
@@ -638,6 +644,48 @@ async function initScrollytelling() {
     renderQuyTrinhCanvas(lastQuyTrinhProgress, lastActiveQuyTrinhStep);
   }
 
+  // Smootherstep helper: C2 continuous zero acceleration jerk at boundaries
+  function smootherstep(t) {
+    const c = Math.max(0, Math.min(1, t));
+    return c * c * c * (c * (c * 6 - 15) + 10);
+  }
+
+  // Continuous Monotonic Hermite Spline: non-zero, steady glide velocity across milestones
+  function getSmoothDrumOffset(p) {
+    if (p <= 0) return -260;
+    if (p >= 0.62) return 1560; // Locked at NGÀY THỨ 10
+
+    const points = [
+      { p: 0.00, y: -260.0 },
+      { p: 0.16, y: 0.0 },    // NGÀY 1
+      { p: 0.32, y: 520.0 },  // NGÀY 4
+      { p: 0.48, y: 1040.0 }, // NGÀY 7
+      { p: 0.62, y: 1560.0 }  // NGÀY THỨ 10
+    ];
+    const tangents = [1625.0, 3250.0, 3250.0, 3400.0, 0.0];
+
+    for (let i = 0; i < points.length - 1; i++) {
+      const p0 = points[i].p;
+      const y0 = points[i].y;
+      const p1 = points[i+1].p;
+      const y1 = points[i+1].y;
+      if (p >= p0 && p <= p1) {
+        const h = p1 - p0;
+        const t = (p - p0) / h;
+        const t2 = t * t;
+        const t3 = t2 * t;
+        const h00 = 2 * t3 - 3 * t2 + 1;
+        const h10 = t3 - 2 * t2 + t;
+        const h01 = -2 * t3 + 3 * t2;
+        const h11 = t3 - t2;
+        const m0 = tangents[i] * h;
+        const m1 = tangents[i+1] * h;
+        return h00 * y0 + h10 * m0 + h01 * y1 + h11 * m1;
+      }
+    }
+    return 1560;
+  }
+
   function updateQuyTrinhScrolly() {
     if (!quyTrinhTrack) return;
     const rect = quyTrinhTrack.getBoundingClientRect();
@@ -649,20 +697,19 @@ async function initScrollytelling() {
     const progress = Math.min(1, Math.max(0, -rect.top / totalDist));
     lastQuyTrinhProgress = progress;
 
-    // ── Continuous Scroll-Scrubbed Text Animation (Zero Jitter, Zero Overlap, Sybiosme-Standard) ──
-    // Clean discrete handoffs: outgoing step glides up and exits BEFORE incoming step rises from below
+    // ── Continuous Scroll-Scrubbed Text Animation (With Stable Readability Plateaus) ──
     const cardTimeline = [
-      { step: 0, inP: -0.05, peak: 0.04, outP: 0.12 },
-      { step: 1, inP: 0.13,  peak: 0.21, outP: 0.28 },
-      { step: 2, inP: 0.30,  peak: 0.38, outP: 0.46 },
-      { step: 3, inP: 0.48,  peak: 0.55, outP: 0.61 },
-      { step: 4, inP: 0.62,  peak: 0.70, outP: 0.77 },
-      { step: 5, inP: 0.88,  peak: 0.93, outP: 1.05 }
+      { step: 0, inP: -0.05, peakIn: 0.02, peakOut: 0.05, outP: 0.12 },
+      { step: 1, inP: 0.08,  peakIn: 0.14, peakOut: 0.18, outP: 0.25 }, // Day 1
+      { step: 2, inP: 0.24,  peakIn: 0.30, peakOut: 0.34, outP: 0.41 }, // Day 4
+      { step: 3, inP: 0.40,  peakIn: 0.46, peakOut: 0.50, outP: 0.57 }, // Day 7
+      { step: 4, inP: 0.56,  peakIn: 0.65, peakOut: 0.72, outP: 0.77 }, // Day 10 & 3D Ladder on Left
+      { step: 5, inP: 0.86,  peakIn: 0.93, peakOut: 1.05, outP: 1.05 }  // Centered Title on pure white
     ];
 
     let activeStep = -1;
 
-    cardTimeline.forEach(({ step, inP, peak, outP }) => {
+    cardTimeline.forEach(({ step, inP, peakIn, peakOut, outP }) => {
       const view = quyTrinhStepViews.find(v => parseInt(v.getAttribute('data-step'), 10) === step);
       if (!view) return;
 
@@ -676,14 +723,17 @@ async function initScrollytelling() {
       let alpha = 0;
       let offset = 0;
 
-      if (progress <= peak) {
-        const t = Math.min(1, Math.max(0, (progress - inP) / (peak - inP)));
-        alpha = t * t * (3 - 2 * t);
-        offset = (1 - alpha) * 40; // rises into center from +40px below
+      if (progress < peakIn) {
+        const t = Math.min(1, Math.max(0, (progress - inP) / (peakIn - inP)));
+        alpha = smootherstep(t);
+        offset = (1 - alpha) * 24; // gentle 24px rise into center
+      } else if (progress <= peakOut) {
+        alpha = 1.0;
+        offset = 0; // solid centered dwell plateau
       } else {
-        const t = Math.min(1, Math.max(0, (progress - peak) / (outP - peak)));
-        alpha = 1 - t * t * (3 - 2 * t);
-        offset = -(1 - alpha) * 40; // glides up to -40px as it leaves
+        const t = Math.min(1, Math.max(0, (progress - peakOut) / (outP - peakOut)));
+        alpha = 1 - smootherstep(t);
+        offset = -(1 - alpha) * 24; // gentle 24px glide up as it leaves
       }
 
       if (alpha > 0.45) {
@@ -695,8 +745,27 @@ async function initScrollytelling() {
       view.style.pointerEvents = alpha > 0.5 ? 'auto' : 'none';
 
       if (step === 4) {
-        view.classList.toggle('is-lit', progress >= 0.685);
+        // Continuous analog spotlight lighting reveal (starts at 0.64, fully lit by 0.68)
+        const lightRaw = Math.min(1, Math.max(0, (progress - 0.64) / 0.04));
+        const lightT = smootherstep(lightRaw);
+        view.classList.toggle('is-lit', lightT >= 0.5);
+
+        const faintEls = view.querySelectorAll('.step4-faint');
+        faintEls.forEach(el => {
+          el.style.opacity = (0.26 + 0.74 * lightT).toFixed(3);
+        });
+
+        const accentEls = view.querySelectorAll('.step4-accent');
+        accentEls.forEach(el => {
+          const r = Math.round(255 + (254 - 255) * lightT);
+          const g = Math.round(255 + (71 - 255) * lightT);
+          const b = Math.round(255 + (1 - 255) * lightT);
+          const a = (0.26 + 0.74 * lightT).toFixed(3);
+          el.style.setProperty('color', `rgb(${r}, ${g}, ${b})`, 'important');
+          el.style.opacity = a;
+        });
       }
+
       if (step === 5) {
         view.style.transform = `translateY(${offset.toFixed(1)}px)`;
       } else {
@@ -706,7 +775,7 @@ async function initScrollytelling() {
 
     lastActiveQuyTrinhStep = activeStep;
 
-    // Render Procedural Halftone Dot Canvas
+    // Render Procedural Halftone Dot Canvas directly in sync with smooth scroll
     renderQuyTrinhCanvas(progress, activeStep);
   }
 
@@ -720,9 +789,9 @@ async function initScrollytelling() {
 
     // ── 1. BACKGROUND DUAL-TONE & WHITE BLOOM (100% Sybiosme Match) ──
     // Void #0a0b0e stays solid through Image 1, 2, 3, 4, 5.
-    // Blooms into pure radiant white #ffffff only at final transition (0.85 - 0.90)
-    const bgProgress = Math.min(1, Math.max(0, (progress - 0.85) / 0.05));
-    const bgEase = bgProgress * bgProgress * (3 - 2 * bgProgress);
+    // Blooms into pure radiant white #ffffff smoothly using smootherstep (0.84 - 0.90)
+    const bgProgress = Math.min(1, Math.max(0, (progress - 0.84) / 0.06));
+    const bgEase = smootherstep(bgProgress);
 
     const r = Math.round(10 + (255 - 10) * bgEase);
     const g = Math.round(11 + (255 - 11) * bgEase);
@@ -769,24 +838,21 @@ async function initScrollytelling() {
 
     // ── 3. TIMELINE PHASES MATCHING THE 5 USER IMAGES 100% ──
     // Phase 1 (0.00 - 0.62): 2D drum on LEFT scrolling dates (Image 1 & Image 2)
-    // Phase 2 (0.62 - 0.70): Image 3: Drum on LEFT locks at NGÀY THỨ 10, bottom rungs thicken ("ở dưới to dần dần lên")
-    // Phase 3 (0.70 - 0.77): Image 4: 3D perspective ladder forms on LEFT while Step 4 text highlights in orange on RIGHT
-    // Phase 4 (0.77 - 0.85): Image 5: Ladder glides to CENTER and expands to FULL SCREEN ("hiện full màn hình")
-    // Phase 5 (0.85 - 0.90): Slats swell huge and background blooms into pure white ("thành nền trắng nhé")
+    // Phase 2 (0.62 - 0.69): Image 3: Drum on LEFT locks at NGÀY THỨ 10, bottom rungs thicken fluidly
+    // Phase 3 (0.69 - 0.75): Image 4: 3D perspective ladder forms on LEFT while Step 4 text reveals on RIGHT
+    // Phase 4 (0.74 - 0.84): Image 5: Ladder glides smoothly to CENTER and expands across screen
+    // Phase 5 (0.84 - 0.90): Background blooms into pure white
 
-    // Morph on the LEFT (Phase 2 & Phase 3: 0.62 to 0.75)
-    const leftMorphRaw = Math.min(1, Math.max(0, (progress - 0.62) / 0.11));
-    const leftMorphT = leftMorphRaw * leftMorphRaw * (3 - 2 * leftMorphRaw);
+    // Morph on the LEFT (Phase 2 & Phase 3: 0.62 to 0.74)
+    const leftMorphRaw = Math.min(1, Math.max(0, (progress - 0.62) / 0.12));
+    const leftMorphT = smootherstep(leftMorphRaw);
 
-    // Glide to CENTER (Phase 4: 0.75 to 0.80)
-    const centerGlideRaw = Math.min(1, Math.max(0, (progress - 0.75) / 0.05));
-    const centerT = centerGlideRaw * centerGlideRaw * (3 - 2 * centerGlideRaw);
+    // Glide to CENTER and Fullscreen width expansion (Phase 4: 0.74 to 0.84) - 100% unified
+    const centerGlideRaw = Math.min(1, Math.max(0, (progress - 0.74) / 0.10));
+    const centerT = smootherstep(centerGlideRaw);
+    const fullT = centerT; // Unified simultaneous glide & expansion
 
-    // Fullscreen width expansion (Phase 4: 0.76 to 0.85)
-    const fullRaw = Math.min(1, Math.max(0, (progress - 0.76) / 0.08));
-    const fullT = fullRaw * fullRaw * (3 - 2 * fullRaw);
-
-    // Center X position: Stays on LEFT until Step 4 finishes (progress 0.77), then glides to CENTER!
+    // Center X position: Stays on LEFT until Step 4 finishes (progress 0.74), then glides seamlessly to CENTER!
     const cx = leftCx * (1 - centerT) + centerCx * centerT;
 
     ctx.save();
@@ -797,18 +863,8 @@ async function initScrollytelling() {
     const centerY = h * 0.50;
     const rungSpacing = isDesktop ? 26 : 22;
 
-    let drumOffset = 0;
-    if (progress < 0.18) {
-      drumOffset = -260 + (progress / 0.18) * 260;
-    } else if (progress < 0.35) {
-      drumOffset = ((progress - 0.18) / 0.17) * 520;
-    } else if (progress < 0.52) {
-      drumOffset = 520 + ((progress - 0.35) / 0.17) * 520;
-    } else if (progress < 0.68) {
-      drumOffset = 1040 + ((progress - 0.52) / 0.16) * 520;
-    } else {
-      drumOffset = 1560; // Locked at NGÀY THỨ 10
-    }
+    // Smooth continuous drum offset with zero acceleration jerk
+    const drumOffset = getSmoothDrumOffset(progress);
 
     const specialRungs = {
       '-22': { date: 'THỨ NĂM, NGÀY 22 THÁNG 10', day: '', ext: (isDesktop ? 70 : 40), extRows: 1 },
@@ -839,7 +895,7 @@ async function initScrollytelling() {
       if (flatY < -150 || flatY > h + 150) continue;
 
       const isVisibleOnScreen = j >= visibleMinJ && j <= visibleMaxJ;
-      const outsideFade = isVisibleOnScreen ? 1.0 : Math.max(0, 1 - leftMorphT * 3.5);
+      const outsideFade = isVisibleOnScreen ? 1.0 : Math.max(0, 1 - leftMorphT * 1.5);
       if (outsideFade <= 0) continue;
 
       const distToCenter = Math.abs(flatY - centerY);
@@ -849,37 +905,39 @@ async function initScrollytelling() {
 
       let currentY = flatY;
       let currentHalfW = baseHalfW;
-      let numRows = 1;
       let dotR = 1.45;
       let rungDotAlpha = 0.75;
       let bevelAmount = 0;
       let extraRightExt = 0;
+      let baseRows = 1.0;
 
       const sInfo = specialRungs[j.toString()];
       const isMilestone = !!sInfo && !!sInfo.day;
       const milestoneExtension = (sInfo && leftMorphT < 0.80) ? sInfo.ext * (1 - Math.max(0, leftMorphT - 0.4) * 2.0) : 0;
 
       if (isMilestone) {
-        numRows = 1;
+        baseRows = 1.0;
         dotR = 1.5;
         rungDotAlpha = 1.0;
       } else if (distToCenter < 75) {
-        numRows = 3;
+        baseRows = 3.0;
         dotR = 1.6;
         rungDotAlpha = 1.0;
       } else if (distToCenter < 240) {
-        numRows = 2;
+        baseRows = 2.0;
         dotR = 1.45;
         rungDotAlpha = 0.80;
       } else {
-        numRows = 1;
+        baseRows = 1.0;
         dotR = 1.35;
         rungDotAlpha = Math.max(0.18, 0.55 - (distToCenter - 240) / 280);
       }
 
       if (sInfo && sInfo.extRows > 1) {
-        numRows = sInfo.extRows;
+        baseRows = sInfo.extRows;
       }
+
+      let contRows = baseRows;
 
       // ── "ở dưới to dần dần lên": Multi-Phase Slat Evolution ──
       if (isVisibleOnScreen) {
@@ -892,9 +950,9 @@ async function initScrollytelling() {
         const target3DCenterY = centerTopY + (centerBottomY - centerTopY) * Math.pow(u, 1.72);
 
         // Delay climbs from bottom up (Image 3: bottom rungs thicken first)
-        const delay = (1 - u) * 0.45;
-        const rungMorphRaw = Math.min(1, Math.max(0, (leftMorphT - delay) / (1 - delay)));
-        const rungMorph = rungMorphRaw * rungMorphRaw * (3 - 2 * rungMorphRaw);
+        const delay = (1 - u) * 0.42;
+        const rungMorphRaw = Math.min(1, Math.max(0, (leftMorphT - delay) / 0.58));
+        const rungMorph = smootherstep(rungMorphRaw);
 
         const yOnLeft = flatY * (1 - rungMorph) + target3DLeftY * rungMorph;
         currentY = yOnLeft * (1 - centerT) + target3DCenterY * centerT;
@@ -911,26 +969,23 @@ async function initScrollytelling() {
 
         currentHalfW = wOnLeft * (1 - centerT) + centerHalfW * centerT;
 
-        // Row Count (Thickness):
-        // Top slats: 1 row. Mid slats: 2-3 rows. Bottom slats: 5-8 rows.
-        let targetRowsLeft = 1;
-        if (u > 0.88) targetRowsLeft = 8;
-        else if (u > 0.72) targetRowsLeft = 6;
-        else if (u > 0.55) targetRowsLeft = 4;
-        else if (u > 0.38) targetRowsLeft = 3;
-        else if (u > 0.20) targetRowsLeft = 2;
-        else targetRowsLeft = 1;
+        // Continuous Row Count (No popping):
+        // Top slats: 1 row. Mid slats: 2-3 rows. Bottom slats: 5-7 rows.
+        let targetRowsLeft = 1.0;
+        if (u > 0.88) targetRowsLeft = 1.0 + 5.5 * Math.pow((u - 0.2) / 0.8, 1.4);
+        else if (u > 0.20) targetRowsLeft = 1.0 + 3.8 * Math.pow((u - 0.2) / 0.8, 1.4);
+        else targetRowsLeft = 1.0;
 
         let targetRowsCenter = targetRowsLeft;
         if (fullT > 0) {
-          if (u > 0.80) targetRowsCenter = Math.round(7 * fullT + targetRowsLeft * (1 - fullT));
-          else if (u > 0.60) targetRowsCenter = Math.round(5 * fullT + targetRowsLeft * (1 - fullT));
-          else if (u > 0.40) targetRowsCenter = Math.round(3 * fullT + targetRowsLeft * (1 - fullT));
+          if (u > 0.80) targetRowsCenter = 7.0 * fullT + targetRowsLeft * (1 - fullT);
+          else if (u > 0.60) targetRowsCenter = 5.0 * fullT + targetRowsLeft * (1 - fullT);
+          else if (u > 0.40) targetRowsCenter = 3.2 * fullT + targetRowsLeft * (1 - fullT);
           else targetRowsCenter = targetRowsLeft;
         }
 
-        const rowsOnLeft = Math.max(1, Math.round(numRows * (1 - rungMorph) + targetRowsLeft * rungMorph));
-        numRows = Math.max(1, Math.round(rowsOnLeft * (1 - centerT) + targetRowsCenter * centerT));
+        const rowsOnLeft = baseRows * (1 - rungMorph) + targetRowsLeft * rungMorph;
+        contRows = Math.max(1.0, rowsOnLeft * (1 - centerT) + targetRowsCenter * centerT);
 
         dotR = 1.45 + (u * 0.35) * rungMorph + (u * 0.8 + 0.3) * fullT;
         bevelAmount = Math.max(rungMorph, fullT);
@@ -942,11 +997,12 @@ async function initScrollytelling() {
         }
       }
 
-      // Date labels on left (Image 1 & Image 2)
-      if (sInfo && isDesktop && leftMorphT < 0.05 && flatY >= 35 && flatY <= h - 35) {
+      // Date labels on left (Image 1 & Image 2) - fade smoothly
+      const dateLabelFade = Math.max(0, 1 - leftMorphRaw * 5.0);
+      if (sInfo && isDesktop && dateLabelFade > 0 && flatY >= 35 && flatY <= h - 35) {
         ctx.save();
         const isMainMilestone = !!sInfo.day;
-        const labelAlpha = (isMainMilestone ? 0.95 : 0.45) * Math.max(0, 1 - leftMorphT * 3.0);
+        const labelAlpha = (isMainMilestone ? 0.95 : 0.45) * dateLabelFade;
         ctx.globalAlpha = labelAlpha * slatAlpha;
 
         ctx.font = '500 11px monospace';
@@ -973,11 +1029,11 @@ async function initScrollytelling() {
       }
 
       // Secondary date label 4 rungs below milestone
-      if (sInfo && sInfo.subDate && isDesktop && leftMorphT < 0.05) {
+      if (sInfo && sInfo.subDate && isDesktop && dateLabelFade > 0) {
         const subY = flatY + 4 * rungSpacing;
         if (subY >= 40 && subY <= h - 40) {
           ctx.save();
-          ctx.globalAlpha = 0.45 * Math.max(0, 1 - leftMorphT * 3.0) * slatAlpha;
+          ctx.globalAlpha = 0.45 * dateLabelFade * slatAlpha;
           ctx.font = '500 10px monospace';
           ctx.fillStyle = '#6b7280';
           ctx.textAlign = 'right';
@@ -986,17 +1042,22 @@ async function initScrollytelling() {
         }
       }
 
-      // Render the slat dots with crisp, beveled trapezoid ends
+      // Render the slat dots with crisp, beveled trapezoid ends & continuous growth
       ctx.save();
-      ctx.globalAlpha = ctx.globalAlpha * rungDotAlpha * outsideFade;
+      const baseAlpha = ctx.globalAlpha * rungDotAlpha * outsideFade;
       ctx.fillStyle = '#ffffff';
 
       const flatLeft = cx - currentHalfW;
       const flatRight = cx + currentHalfW + milestoneExtension + extraRightExt;
       const rowSpacing = dotPitch;
 
-      for (let rIdx = 0; rIdx < numRows; rIdx++) {
-        const rowNorm = (rIdx - (numRows - 1) / 2);
+      const totalRowsCount = Math.ceil(contRows);
+      for (let rIdx = 0; rIdx < totalRowsCount; rIdx++) {
+        // Continuous row weight: 1.0 for fully active rows, fractional for nascent outer rows
+        const rowCoverage = Math.max(0, Math.min(1, contRows - rIdx));
+        if (rowCoverage <= 0.02) continue;
+
+        const rowNorm = (rIdx - (contRows - 1) / 2);
         const dotY = currentY + rowNorm * rowSpacing;
 
         // Trapezoid stair-step bevel matching Sybiosme 100%
@@ -1005,10 +1066,14 @@ async function initScrollytelling() {
         const rowRight = flatRight + rowBevel;
         const dotCount = Math.floor((rowRight - rowLeft) / dotPitch);
 
+        // Smooth growth: dots in nascent rows grow smoothly from 0.4 radius to full radius
+        const curDotR = dotR * (0.35 + 0.65 * rowCoverage);
+        ctx.globalAlpha = baseAlpha * (0.15 + 0.85 * rowCoverage);
+
         for (let d = 0; d <= dotCount; d++) {
           const dotX = rowLeft + d * dotPitch;
           ctx.beginPath();
-          ctx.arc(dotX, dotY, dotR, 0, Math.PI * 2);
+          ctx.arc(dotX, dotY, curDotR, 0, Math.PI * 2);
           ctx.fill();
         }
       }

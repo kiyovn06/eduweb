@@ -2241,13 +2241,13 @@ body {
 
 .quy-trinh-step-view[data-step="4"] .step4-faint {
   opacity: 0.26;
-  transition: opacity 0.3s ease;
+  transition: none !important;
 }
 
 .quy-trinh-step-view[data-step="4"] .step4-accent {
-  color: #ffffff !important;
+  color: #ffffff;
   opacity: 0.26;
-  transition: color 0.3s ease, opacity 0.3s ease;
+  transition: none !important;
 }
 
 .quy-trinh-step-view[data-step="4"].is-lit .step4-faint {
@@ -2255,7 +2255,7 @@ body {
 }
 
 .quy-trinh-step-view[data-step="4"].is-lit .step4-accent {
-  color: #fe4701 !important;
+  color: #fe4701;
   opacity: 1;
 }
 
@@ -2303,12 +2303,7 @@ body {
   will-change: opacity, transform;
 }
 
-.quy-trinh-step-view.step-final-centered.is-active {
-  opacity: 1 !important;
-  visibility: visible !important;
-  pointer-events: auto !important;
-  transform: translateY(0) !important;
-}
+/* step-final-centered opacity and transform smoothly scrubbed by JS */
 
 .step-ultimate-title {
   font-family: var(--font-display, 'Plus Jakarta Sans', sans-serif);
