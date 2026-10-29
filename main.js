@@ -703,7 +703,7 @@ async function initScrollytelling() {
       { step: 1, inP: 0.08,  peakIn: 0.14, peakOut: 0.18, outP: 0.25 }, // Day 1
       { step: 2, inP: 0.24,  peakIn: 0.30, peakOut: 0.34, outP: 0.41 }, // Day 4
       { step: 3, inP: 0.40,  peakIn: 0.46, peakOut: 0.50, outP: 0.57 }, // Day 7
-      { step: 4, inP: 0.56,  peakIn: 0.65, peakOut: 0.72, outP: 0.77 }, // Day 10 & 3D Ladder on Left
+      { step: 4, inP: 0.56,  peakIn: 0.64, peakOut: 0.72, outP: 0.76 }, // Day 10 & 3D Ladder on Left
       { step: 5, inP: 0.94,  peakIn: 0.97, peakOut: 1.05, outP: 1.05 }  // Centered Title on pure white (after white bloom)
     ];
 
@@ -788,10 +788,10 @@ async function initScrollytelling() {
     if (w <= 0 || h <= 0) return;
 
     // ── 1. BACKGROUND DUAL-TONE & WHITE BLOOM (100% User Directive) ──
-    // Void #0a0b0e stays solid throughout Drum, 3D Ladder on Left, Center Pyramid,
-    // AND stays black while the pyramid ZOOMS FORWARD TO FILL THE ENTIRE SCREEN ("phóng to hết màn hình")!
-    // Background transitions to pure radiant white #ffffff ONLY AFTER slats fill the whole screen (0.90 - 0.95)!
-    const bgProgress = Math.min(1, Math.max(0, (progress - 0.90) / 0.05));
+    // Void #0a0b0e stays solid throughout Drum, 3D Ladder on Left, Center Road,
+    // AND stays black while the road ZOOMS FORWARD TO FILL THE ENTIRE SCREEN ("phóng to hết màn hình")!
+    // Background transitions to pure radiant white #ffffff ONLY AFTER slats fill the whole screen (0.94 - 0.98)!
+    const bgProgress = Math.min(1, Math.max(0, (progress - 0.94) / 0.04));
     const bgEase = smootherstep(bgProgress);
 
     const r = Math.round(10 + (255 - 10) * bgEase);
@@ -813,17 +813,19 @@ async function initScrollytelling() {
     }
 
     // ── 2. AMBIENT HALFTONE LATTICE (Trame de fond - Sybiosme Signature 12px matrix) ──
-    if (bgEase < 0.95) {
+    if (bgEase < 0.98) {
       const gridPitch = 12;
-      const ambientAlpha = (1 - bgEase) * 0.08;
-      ctx.fillStyle = `rgba(255, 255, 255, ${ambientAlpha})`;
-      const cols = Math.ceil(w / gridPitch);
-      const rows = Math.ceil(h / gridPitch);
-      for (let c = 0; c < cols; c++) {
-        const gx = c * gridPitch + 6;
-        for (let ro = 0; ro < rows; ro++) {
-          const gy = ro * gridPitch + 6;
-          ctx.fillRect(gx, gy, 1.2, 1.2);
+      const ambientAlpha = (1 - bgEase) * (1 - Math.min(1, Math.max(0, (progress - 0.86) / 0.08)) * 0.9) * 0.08;
+      if (ambientAlpha > 0.002) {
+        ctx.fillStyle = `rgba(255, 255, 255, ${ambientAlpha})`;
+        const cols = Math.ceil(w / gridPitch);
+        const rows = Math.ceil(h / gridPitch);
+        for (let c = 0; c < cols; c++) {
+          const gx = c * gridPitch + 6;
+          for (let ro = 0; ro < rows; ro++) {
+            const gy = ro * gridPitch + 6;
+            ctx.fillRect(gx, gy, 1.2, 1.2);
+          }
         }
       }
     }
@@ -838,23 +840,24 @@ async function initScrollytelling() {
     const centerCx = w * 0.50;
 
     // ── 3. TIMELINE PHASES MATCHING USER DIRECTION 100% ──
-    // Phase 1 (0.00 - 0.62): 2D drum on LEFT scrolling dates (Image 1 & Image 2)
-    // Phase 2 (0.62 - 0.74): Drum locks at NGÀY THỨ 10, 3D ladder forms on LEFT with Step 4 text (Image 3 & Image 4)
-    // Phase 3 (0.74 - 0.81): Ladder glides to CENTER and forms symmetrical 3D perspective pyramid (Image 5 / User screenshot)
-    // Phase 4 (0.81 - 0.90): "Phóng to hết màn hình" - Pyramid zooms in edge-to-edge covering 100% of the screen
-    // Phase 5 (0.90 - 0.95): "Mới chuyển qua trắng" - Background blooms to white as full-width slats dissolve
-    // Phase 6 (0.92 - 1.00): Centered final headline on pure white background
+    // Phase 1 (0.00 - 0.62): 2D drum on LEFT scrolling dates (All slats 100% equal width!)
+    // Phase 2 (0.62 - 0.74): Drum locks at NGÀY THỨ 10, 3D ladder forms on LEFT with Step 4 text
+    // Phase 3 (0.74 - 0.80): Ladder glides to CENTER and forms 3D perspective curved road
+    // Phase 4 (0.80 - 0.86): "kéo 1 lúc nữa" - Road dwell, top of road curves gently to the right like a receding highway
+    // Phase 5 (0.86 - 0.94): "mới mở rộng qua 2 bên" & "phóng to hết màn hình" - Slats expand and merge to become solid white background
+    // Phase 6 (0.94 - 0.98): Background blooms to white behind merged slats
+    // Phase 7 (0.95 - 1.00+): Step 5 headline on pure white background
 
-    // Morph on the LEFT (Phase 2 & Phase 3: 0.62 to 0.74)
+    // Morph on the LEFT (Phase 2: 0.62 to 0.74)
     const leftMorphRaw = Math.min(1, Math.max(0, (progress - 0.62) / 0.12));
     const leftMorphT = smootherstep(leftMorphRaw);
 
-    // Glide to CENTER (Phase 3: 0.74 to 0.81)
-    const centerGlideRaw = Math.min(1, Math.max(0, (progress - 0.74) / 0.07));
+    // Glide to CENTER (Phase 3: 0.74 to 0.80)
+    const centerGlideRaw = Math.min(1, Math.max(0, (progress - 0.74) / 0.06));
     const centerT = smootherstep(centerGlideRaw);
 
-    // Fullscreen Zoom Expansion (Phase 4: 0.81 to 0.90) - "phóng to hết màn hình"
-    const zoomRaw = Math.min(1, Math.max(0, (progress - 0.81) / 0.09));
+    // Fullscreen Zoom Expansion (Phase 5: 0.86 to 0.94) - "kéo 1 lúc nữa mới mở rộng qua 2 bên"
+    const zoomRaw = Math.min(1, Math.max(0, (progress - 0.86) / 0.08));
     const zoomT = smootherstep(zoomRaw);
 
     // Center X position: Stays on LEFT until Step 4 finishes (progress 0.74), then glides to CENTER!
@@ -871,15 +874,16 @@ async function initScrollytelling() {
     // Smooth continuous drum offset with zero acceleration jerk
     const drumOffset = getSmoothDrumOffset(progress);
 
+    // 100% Equal Width across all drum slats (user directive: xóa mấy cái thanh thẳng quá dài đi tất cả đều bằng nhau 100%)
     const specialRungs = {
-      '-22': { date: 'THỨ NĂM, NGÀY 22 THÁNG 10', day: '', ext: (isDesktop ? 70 : 40), extRows: 1 },
-      '-18': { date: 'THỨ SÁU, NGÀY 23 THÁNG 10', day: '', ext: (isDesktop ? 70 : 40), extRows: 1 },
-      '-10': { date: 'THỨ HAI, NGÀY 26 THÁNG 10', day: '', ext: (isDesktop ? 65 : 40), extRows: 2 },
-      '-4':  { date: 'THỨ BA, NGÀY 27 THÁNG 10',  day: '', ext: (isDesktop ? 90 : 50), extRows: 1 },
-      '0':   { date: 'THỨ NĂM, NGÀY 29 THÁNG 10', day: 'NGÀY 1', ext: (isDesktop ? 220 : 120), extRows: 1, subDate: 'THỨ SÁU, NGÀY 30 THÁNG 10' },
-      '20':  { date: 'THỨ BA, NGÀY 03 THÁNG 11',  day: 'NGÀY 4', ext: (isDesktop ? 220 : 120), extRows: 1, subDate: 'THỨ TƯ, NGÀY 04 THÁNG 11' },
-      '40':  { date: 'THỨ SÁU, NGÀY 06 THÁNG 11', day: 'NGÀY 7', ext: (isDesktop ? 220 : 120), extRows: 1, subDate: 'THỨ BẢY, NGÀY 07 THÁNG 11' },
-      '60':  { date: 'THỨ NĂM, NGÀY 12 THÁNG 11', day: 'NGÀY THỨ 10', ext: (isDesktop ? 220 : 120), extRows: 1, subDate: 'THỨ SÁU, NGÀY 13 THÁNG 11' }
+      '-22': { date: 'THỨ NĂM, NGÀY 22 THÁNG 10', day: '' },
+      '-18': { date: 'THỨ SÁU, NGÀY 23 THÁNG 10', day: '' },
+      '-10': { date: 'THỨ HAI, NGÀY 26 THÁNG 10', day: '' },
+      '-4':  { date: 'THỨ BA, NGÀY 27 THÁNG 10',  day: '' },
+      '0':   { date: 'THỨ NĂM, NGÀY 29 THÁNG 10', day: 'NGÀY 1', subDate: 'THỨ SÁU, NGÀY 30 THÁNG 10' },
+      '20':  { date: 'THỨ BA, NGÀY 03 THÁNG 11',  day: 'NGÀY 4', subDate: 'THỨ TƯ, NGÀY 04 THÁNG 11' },
+      '40':  { date: 'THỨ SÁU, NGÀY 06 THÁNG 11', day: 'NGÀY 7', subDate: 'THỨ BẢY, NGÀY 07 THÁNG 11' },
+      '60':  { date: 'THỨ NĂM, NGÀY 12 THÁNG 11', day: 'NGÀY THỨ 10', subDate: 'THỨ SÁU, NGÀY 13 THÁNG 11' }
     };
 
     // 22 rungs on screen
@@ -891,7 +895,7 @@ async function initScrollytelling() {
     const leftTopY = h * 0.14;
     const leftBottomY = h * 0.94;
 
-    // Y Bounds in CENTER (Image 5):
+    // Y Bounds in CENTER (3D Road & Fullscreen Zoom):
     const centerTopY = h * 0.10;
     const centerBottomY = h * 0.95;
 
@@ -913,12 +917,11 @@ async function initScrollytelling() {
       let dotR = 1.45;
       let rungDotAlpha = 0.75;
       let bevelAmount = 0;
-      let extraRightExt = 0;
       let baseRows = 1.0;
+      let slatCurveX = 0;
 
       const sInfo = specialRungs[j.toString()];
       const isMilestone = !!sInfo && !!sInfo.day;
-      const milestoneExtension = (sInfo && leftMorphT < 0.80) ? sInfo.ext * (1 - Math.max(0, leftMorphT - 0.4) * 2.0) : 0;
 
       if (isMilestone) {
         baseRows = 1.0;
@@ -938,24 +941,19 @@ async function initScrollytelling() {
         rungDotAlpha = Math.max(0.18, 0.55 - (distToCenter - 240) / 280);
       }
 
-      if (sInfo && sInfo.extRows > 1) {
-        baseRows = sInfo.extRows;
-      }
-
       let contRows = baseRows;
 
-      // ── "ở dưới to dần dần lên": Multi-Phase Slat Evolution ──
+      // ── "ở dưới to dần dần lên" & 3D Curved Road Evolution ──
       if (isVisibleOnScreen) {
         const slatIdx = j - visibleMinJ;
-        const u = slatIdx / totalSlats; // 0.0 at top slat, 1.0 at bottom slat
+        const u = slatIdx / totalSlats; // 0.0 at top slat (horizon), 1.0 at bottom slat (camera)
 
         // Target Y on LEFT (Image 4)
         const target3DLeftY = leftTopY + (leftBottomY - leftTopY) * Math.pow(u, 1.55);
 
-        // Target Y in CENTER (Image 5 & Fullscreen Zoom Expansion):
-        // As zoomT advances (0.81 -> 0.90), slats plunge down and spread evenly across viewport
-        const zoomTopY = (centerTopY) * (1 - zoomT) + (-h * 0.08) * zoomT;
-        const zoomBottomY = (centerBottomY) * (1 - zoomT) + (h * 1.38) * zoomT;
+        // Target Y in CENTER (3D Road & Fullscreen Zoom Expansion):
+        const zoomTopY = (centerTopY) * (1 - zoomT) + (-h * 0.12) * zoomT;
+        const zoomBottomY = (centerBottomY) * (1 - zoomT) + (h * 1.35) * zoomT;
         const target3DCenterY = zoomTopY + (zoomBottomY - zoomTopY) * Math.pow(u, 1.72 * (1 - zoomT * 0.45));
 
         // Delay climbs from bottom up (Image 3: bottom rungs thicken first)
@@ -966,21 +964,27 @@ async function initScrollytelling() {
         const yOnLeft = flatY * (1 - rungMorph) + target3DLeftY * rungMorph;
         currentY = yOnLeft * (1 - centerT) + target3DCenterY * centerT;
 
+        // 3D Road Curve to the Right ("cong cong ra bên phải", "ở trên nó sẽ thành kiểu như 1 con đường á")
+        // As u approaches 0 (top/horizon), the road centerline curves gracefully to the right:
+        const roadCurveX = Math.pow(1 - u, 1.7) * (w * 0.11);
+        slatCurveX = roadCurveX * centerT * (1 - zoomT);
+
         // Slat Width Evolution:
         // On LEFT (Image 4): Top halfW = 20px (~6 dots), Bottom halfW = 135px (~40 dots)
         const leftHalfW = (20 + (135 - 20) * Math.pow(u, 1.15));
         const wOnLeft = baseHalfW * (1 - rungMorph) + leftHalfW * rungMorph;
 
-        // In CENTER (Image 5) -> FULLSCREEN ZOOM EXPANSION ("phóng to hết màn hình"):
-        // At zoomT = 0: topHalfW = w * 0.055, bottomHalfW = w * 0.65 (Centered Pyramid)
-        // At zoomT = 1: topHalfW = w * 0.60, bottomHalfW = w * 1.50 (EVERY slat spans 100%+ of screen width!)
-        const zoomTopHalfW = (w * 0.055) * (1 - zoomT) + (w * 0.60) * zoomT;
-        const zoomBottomHalfW = (w * 0.65) * (1 - zoomT) + (w * 1.50) * zoomT;
-        const centerHalfW = zoomTopHalfW + (zoomBottomHalfW - zoomTopHalfW) * Math.pow(u, 1.35 * (1 - zoomT * 0.65));
+        // In CENTER (3D Road) -> FULLSCREEN EXPANSION ("mới mở rộng qua 2 bên", "phóng to hết màn hình"):
+        // At zoomT = 0: roadTopHalfW = 24px (tapered top), bottomHalfW = w * 0.52 (Road perspective)
+        // At zoomT = 1: topHalfW = w * 1.10, bottomHalfW = w * 1.80 (Every slat extends far past screen edges)
+        const roadTopHalfW = isDesktop ? 24 : 18;
+        const zoomTopHalfW = (roadTopHalfW) * (1 - zoomT) + (w * 1.50) * zoomT;
+        const zoomBottomHalfW = (w * 0.52) * (1 - zoomT) + (w * 2.00) * zoomT;
+        const centerHalfW = zoomTopHalfW + (zoomBottomHalfW - zoomTopHalfW) * Math.pow(u, 1.25 * (1 - zoomT * 0.70));
 
         currentHalfW = wOnLeft * (1 - centerT) + centerHalfW * centerT;
 
-        // Continuous Row Count (No popping):
+        // Continuous Row Count & Gap Closure:
         let targetRowsLeft = 1.0;
         if (u > 0.88) targetRowsLeft = 1.0 + 5.5 * Math.pow((u - 0.2) / 0.8, 1.4);
         else if (u > 0.20) targetRowsLeft = 1.0 + 3.8 * Math.pow((u - 0.2) / 0.8, 1.4);
@@ -990,27 +994,24 @@ async function initScrollytelling() {
         if (centerT > 0) {
           if (u > 0.80) targetRowsCenter = 7.0 * centerT + targetRowsLeft * (1 - centerT);
           else if (u > 0.60) targetRowsCenter = 5.0 * centerT + targetRowsLeft * (1 - centerT);
-          else if (u > 0.40) targetRowsCenter = 3.2 * centerT + targetRowsLeft * (1 - centerT);
-          else targetRowsCenter = targetRowsLeft;
+          else if (u > 0.35) targetRowsCenter = 3.0 * centerT + targetRowsLeft * (1 - centerT);
+          else if (u > 0.18) targetRowsCenter = 2.0 * centerT + targetRowsLeft * (1 - centerT);
+          else targetRowsCenter = 1.0 * centerT + targetRowsLeft * (1 - centerT);
         }
 
-        // When zooming in fullscreen, all slats thicken and expand rows:
+        // When zooming in fullscreen, slats expand row count to merge and become the white background ("lấy cái đó làm nền trắng luôn"):
         if (zoomT > 0) {
-          const fullscreenRows = 4.0 + u * 4.5;
+          const fullscreenRows = 14.0 + u * 12.0;
           targetRowsCenter = targetRowsCenter * (1 - zoomT) + fullscreenRows * zoomT;
         }
 
         const rowsOnLeft = baseRows * (1 - rungMorph) + targetRowsLeft * rungMorph;
         contRows = Math.max(1.0, rowsOnLeft * (1 - centerT) + targetRowsCenter * centerT);
 
-        dotR = 1.45 + (u * 0.35) * rungMorph + (u * 0.8 + 0.3) * centerT + (0.7 * zoomT);
+        // Dot radius grows during zoom so dots merge horizontally and vertically into solid white
+        dotR = 1.45 + (u * 0.35) * rungMorph + (u * 0.8 + 0.3) * centerT + (2.6 * zoomT);
         bevelAmount = Math.max(rungMorph, centerT);
         rungDotAlpha = 1.0;
-
-        // Extra horizontal dotted line at very bottom rung in Image 3
-        if (u > 0.95 && leftMorphT > 0.05 && leftMorphT < 0.85) {
-          extraRightExt = (1 - Math.max(0, leftMorphT - 0.3) * 1.5) * (isDesktop ? 130 : 65);
-        }
       }
 
       // Date labels on left (Image 1 & Image 2) - fade smoothly
@@ -1063,8 +1064,11 @@ async function initScrollytelling() {
       const baseAlpha = ctx.globalAlpha * rungDotAlpha * outsideFade;
       ctx.fillStyle = '#ffffff';
 
-      const flatLeft = cx - currentHalfW;
-      const flatRight = cx + currentHalfW + milestoneExtension + extraRightExt;
+      // Center of this specific slat (with gentle road curvature to the right):
+      const slatCx = cx + slatCurveX;
+      // 100% equal width, NO long lines sticking out anywhere:
+      const flatLeft = slatCx - currentHalfW;
+      const flatRight = slatCx + currentHalfW;
       const rowSpacing = dotPitch;
 
       const totalRowsCount = Math.ceil(contRows);
@@ -1094,6 +1098,15 @@ async function initScrollytelling() {
         }
       }
       ctx.restore();
+    }
+
+    // Seamless Solid White Transition ("nó sẽ làm lấy cái đó làm nền trắng luôn nhé"):
+    // As zoomT finishes (0.85 -> 1.0), smoothly bridge any micro interstitial crevices so
+    // the expanding slats physically become 100% solid white before the background color switch!
+    if (zoomT > 0.85) {
+      const mergeWhiteAlpha = Math.min(1, (zoomT - 0.85) / 0.15);
+      ctx.fillStyle = `rgba(255, 255, 255, ${mergeWhiteAlpha})`;
+      ctx.fillRect(0, 0, w, h);
     }
 
     ctx.restore();
