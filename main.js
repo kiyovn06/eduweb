@@ -715,15 +715,14 @@ async function initScrollytelling() {
     const h = quyTrinhCanvas.height / dpr;
     if (w <= 0 || h <= 0) return;
 
-    // ── 1. BACKGROUND COLOR BLEND (Hermite curve to #f2f2f4 Clean Light Paper) ──
-    // 0.00 - 0.82: Deep Void #0a0b0e
-    // 0.82 - 0.87: Smooth Hermite transition to #f2f2f4
-    // 0.87 - 1.00: 100% Solid Clean Light Paper
-    const bgProg = Math.min(1, Math.max(0, (progress - 0.82) / 0.05));
+    // ── 1. BACKGROUND COLOR BLEND (Hermite curve to Pure Clean White #ffffff) ──
+    // "hiện to lên thành nền trắng nhé"
+    // Background brightens smoothly to pure white #ffffff as the slats swell and engulf the viewport
+    const bgProg = Math.min(1, Math.max(0, (progress - 0.79) / 0.07));
     const bgEase = bgProg * bgProg * (3 - 2 * bgProg);
-    const r = Math.round(10 + (242 - 10) * bgEase);
-    const g = Math.round(11 + (242 - 11) * bgEase);
-    const b = Math.round(14 + (244 - 14) * bgEase);
+    const r = Math.round(10 + (255 - 10) * bgEase);
+    const g = Math.round(11 + (255 - 11) * bgEase);
+    const b = Math.round(14 + (255 - 14) * bgEase);
     ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
     ctx.fillRect(0, 0, w, h);
 
@@ -762,21 +761,24 @@ async function initScrollytelling() {
     const initialCx = isDesktop ? w * 0.30 : (w > 640 ? w * 0.24 : w * 0.20);
     const centerCx = w * 0.50;
 
-    // ── UNIFIED CONTINUOUS RULER-TO-3D-SLATS MORPH (Matching Sybiosme 100%) ──
-    // "thanh này phải ở dưới to dần dần lên và hiện full màn hình chứ không tạo 1 thanh mới"
-    // The exact ruler bar on screen widens progressively from the bottom upward, glides to center,
-    // and expands to full screen width with zero secondary elements spawned.
+    // ── UNIFIED CONTINUOUS RULER-TO-3D-SLATS MORPH & WHITE EXPANSION ──
+    // "hiện to lên thành nền trắng nhé"
+    // Phase 1 (0.72 - 0.78): Ruler bar widens from bottom-up and glides to center into 3D ladder
+    // Phase 2 (0.78 - 0.86): 3D ladder swells huge ("to lên"), rungs expand and flood into pure white background ("thành nền trắng")
 
-    const morphRaw = Math.min(1, Math.max(0, (progress - 0.72) / 0.10));
+    const morphRaw = Math.min(1, Math.max(0, (progress - 0.72) / 0.07));
     const morphT = morphRaw * morphRaw * (3 - 2 * morphRaw);
 
-    const fullRaw = Math.min(1, Math.max(0, (progress - 0.78) / 0.06));
-    const fullT = fullRaw * fullRaw * (3 - 2 * fullRaw);
+    // Zoom & White expansion factor ("hiện to lên thành nền trắng")
+    const zoomRaw = Math.min(1, Math.max(0, (progress - 0.78) / 0.08));
+    const zoomT = zoomRaw * zoomRaw * (3 - 2 * zoomRaw);
 
     ctx.save();
-    ctx.globalAlpha = slatAlpha;
+    // Fade slats out gently as they merge into the pure white background
+    const slatAlphaVal = Math.max(0, 1 - Math.pow(bgEase, 1.4));
+    ctx.globalAlpha = slatAlpha * slatAlphaVal;
 
-    const dotPitch = 7.2;
+    const dotPitch = 7.2 + zoomT * 3.5;
     const centerY = h * 0.50;
     const rungSpacing = 26;
 
@@ -808,10 +810,13 @@ async function initScrollytelling() {
     // Glides smoothly from left drum position to exact screen center
     const cx = initialCx * (1 - morphT) + centerCx * morphT;
 
-    const ladderTopY = h * 0.22;
-    const ladderBottomY = h * 0.98;
+    // As zoomT advances, ladder bounds expand outward (rungs fly past camera)
+    const baseTopY = h * 0.22;
+    const baseBottomY = h * 0.98;
+    const ladderTopY = baseTopY * (1 - zoomT) + (-h * 0.35) * zoomT;
+    const ladderBottomY = baseBottomY * (1 - zoomT) + (h * 1.55) * zoomT;
     const rulerH = ladderBottomY - ladderTopY;
-    const depthPower = 1.0 + 0.85 * morphT;
+    const depthPower = 1.0 + 0.85 * morphT + 0.35 * zoomT;
 
     // In 2D ruler at NGÀY THỨ 10, rungs 50 to 74 span from top (y~200) to bottom (y~860) of screen
     const visibleMinJ = 50;
@@ -819,7 +824,7 @@ async function initScrollytelling() {
 
     for (let j = -25; j <= 75; j++) {
       const flatY = centerY + j * rungSpacing - drumOffset;
-      if (flatY < -100 || flatY > h + 100) continue;
+      if (flatY < -150 || flatY > h + 150) continue;
 
       const isVisibleOnScreen = j >= visibleMinJ && j <= visibleMaxJ;
       const outsideFade = isVisibleOnScreen ? 1.0 : Math.max(0, 1 - morphT * 3.5);
@@ -867,7 +872,7 @@ async function initScrollytelling() {
       // ── "ở dưới to dần dần lên": Continuous bottom-up morphing of this exact bar ──
       if (isVisibleOnScreen) {
         // Vertical fraction in viewport: 0.0 at top (~y=200), 1.0 at bottom (~y=860)
-        const v = Math.min(1, Math.max(0, (flatY - ladderTopY) / rulerH));
+        const v = Math.min(1, Math.max(0, (flatY - baseTopY) / (baseBottomY - baseTopY)));
         const depthP = Math.pow(v, depthPower);
         const target3DY = ladderTopY + depthP * rulerH;
 
@@ -878,14 +883,16 @@ async function initScrollytelling() {
         const rungMorphRaw = Math.min(1, Math.max(0, (morphT - delay) / (1 - delay)));
         const rungMorph = rungMorphRaw * rungMorphRaw * (3 - 2 * rungMorphRaw);
 
-        // Sybiosme 3D width: top ~15% w, bottom ~46% w, expanding to full screen (~54% w) in Phase 3
-        const targetTopHalfW = (w * 0.15) * (1 - fullT) + (w * 0.22) * fullT;
-        const targetBottomHalfW = (w * 0.46) * (1 - fullT) + (w * 0.54) * fullT; // 54% = full screen width!
+        // "hiện to lên thành nền trắng":
+        // Base 3D width: top ~15% w, bottom ~46% w
+        // Zooming huge: top expands to 75% w, bottom expands to 135% w (huge full bleed!)
+        const targetTopHalfW = (w * 0.15) * (1 - zoomT) + (w * 0.75) * zoomT;
+        const targetBottomHalfW = (w * 0.46) * (1 - zoomT) + (w * 1.35) * zoomT;
         const target3DHalfW = targetTopHalfW + (targetBottomHalfW - targetTopHalfW) * depthP;
 
         currentHalfW = baseHalfW * (1 - rungMorph) + target3DHalfW * rungMorph;
 
-        // Multi-row dots for perspective thickness (up to 10-12 rows at bottom)
+        // Multi-row dots: increases from 1-2 rows at top up to 10 rows, and swells with zoomT to 14 rows
         let target3DRows = 1;
         if (v > 0.90) target3DRows = 10;
         else if (v > 0.80) target3DRows = 8;
@@ -896,13 +903,14 @@ async function initScrollytelling() {
         else if (v > 0.18) target3DRows = 2;
         else target3DRows = 1;
 
-        if (fullT > 0) {
-          target3DRows = Math.round(target3DRows * (1 - fullT) + (target3DRows + 2) * fullT);
+        if (zoomT > 0) {
+          target3DRows = Math.round(target3DRows * (1 - zoomT) + (target3DRows + 6) * zoomT);
         }
 
         numRows = Math.max(1, Math.round(numRows * (1 - rungMorph) + target3DRows * rungMorph));
-        dotR = 1.45 + (depthP * 0.5) * rungMorph;
-        bevelFactor = rungMorph;
+        // Dots expand in size as they zoom towards camera (from 1.5px up to 4.5px)
+        dotR = 1.45 + (depthP * 0.5) * rungMorph + (depthP * 2.2 + 0.8) * zoomT;
+        bevelFactor = Math.max(rungMorph, zoomT);
         rungDotAlpha = 1.0;
       }
 
@@ -952,12 +960,12 @@ async function initScrollytelling() {
 
       // Render the rung dots
       ctx.save();
-      ctx.globalAlpha = slatAlpha * rungDotAlpha * outsideFade;
+      ctx.globalAlpha = ctx.globalAlpha * rungDotAlpha * outsideFade;
       ctx.fillStyle = '#ffffff';
 
       const flatLeft = cx - currentHalfW;
       const flatRight = cx + currentHalfW + milestoneExtension;
-      const rowSpacing = 3.2;
+      const rowSpacing = 3.2 + zoomT * 3.0;
 
       for (let rIdx = 0; rIdx < numRows; rIdx++) {
         const rowOffset = (rIdx - (numRows - 1) / 2) * rowSpacing;
