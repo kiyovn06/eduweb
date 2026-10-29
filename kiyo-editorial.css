@@ -2100,8 +2100,8 @@ body {
    ══════════════════════════════════════════════════════════════════════════ */
 .stage-quy-trinh-dark {
   position: relative;
-  background-color: #0a0b0e !important;
-  color: #ffffff !important;
+  background-color: #ffffff !important;
+  color: #0f172a !important;
   padding: 0 !important;
   min-height: 560vh;
 }
@@ -2120,8 +2120,38 @@ body {
   height: 100vh;
   overflow: hidden;
   display: flex;
-  background: #0a0b0e;
+  background: #ffffff;
   transition: background-color 0.5s ease;
+}
+
+.stage-quy-trinh-dark .step-hero-title {
+  color: #0f172a !important;
+}
+
+.stage-quy-trinh-dark .step-hero-desc {
+  color: #475569 !important;
+}
+
+.stage-quy-trinh-dark .story-eyebrow {
+  color: #64748b !important;
+}
+
+.stage-quy-trinh-dark .step4-faint {
+  opacity: 0.35 !important;
+  color: #64748b !important;
+}
+
+.stage-quy-trinh-dark .step4-accent {
+  color: #fe4701 !important;
+}
+
+.stage-quy-trinh-dark .quy-trinh-step-view[data-step="4"].is-lit .step4-faint {
+  opacity: 1 !important;
+  color: #0f172a !important;
+}
+
+.stage-quy-trinh-dark .quy-trinh-step-view[data-step="4"].is-lit .step4-accent {
+  color: #fe4701 !important;
 }
 
 /* Fullscreen Canvas for Solid Black Bars & Perspective Ladder & Fullwidth Expansion */

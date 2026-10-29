@@ -787,67 +787,23 @@ async function initScrollytelling() {
     const h = quyTrinhCanvas.height / dpr;
     if (w <= 0 || h <= 0) return;
 
-    // ── 1. BACKGROUND DUAL-TONE & WHITE BLOOM (100% User Directive) ──
-    // Void #0a0b0e stays solid throughout Drum, 3D Ladder on Left, Center Road,
-    // AND stays black while the road ZOOMS FORWARD TO FILL THE ENTIRE SCREEN ("phóng to hết màn hình")!
-    // Background transitions to pure radiant white #ffffff ONLY AFTER slats fill the whole screen (0.94 - 0.98)!
-    const bgProgress = Math.min(1, Math.max(0, (progress - 0.94) / 0.04));
-    const bgEase = smootherstep(bgProgress);
-
-    const r = Math.round(10 + (255 - 10) * bgEase);
-    const g = Math.round(11 + (255 - 11) * bgEase);
-    const b = Math.round(14 + (255 - 14) * bgEase);
-    ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+    // ── 1. BACKGROUND & FLOATING HEADER (100% Minimalist White Theme) ──
+    ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, w, h);
 
     // Sync sticky viewport background
     const viewportEl = document.getElementById('quy-trinh-viewport');
     if (viewportEl) {
-      viewportEl.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+      viewportEl.style.backgroundColor = '#ffffff';
     }
 
-    // Toggle header light mode (Logo and buttons turn dark on light background)
+    // Always keep floating header in light mode (dark logo & buttons on white bg)
     const headerEl = document.querySelector('.sybios-floating-header');
     if (headerEl) {
-      headerEl.classList.toggle('is-light', bgEase > 0.5);
+      headerEl.classList.add('is-light');
     }
-
-    // ── 2. AMBIENT HALFTONE LATTICE (Trame de fond - Sybiosme Signature 12px matrix) ──
-    if (bgEase < 0.98) {
-      const gridPitch = 12;
-      const ambientAlpha = (1 - bgEase) * (1 - Math.min(1, Math.max(0, (progress - 0.86) / 0.08)) * 0.9) * 0.08;
-      if (ambientAlpha > 0.002) {
-        ctx.fillStyle = `rgba(255, 255, 255, ${ambientAlpha})`;
-        const cols = Math.ceil(w / gridPitch);
-        const rows = Math.ceil(h / gridPitch);
-        for (let c = 0; c < cols; c++) {
-          const gx = c * gridPitch + 6;
-          for (let ro = 0; ro < rows; ro++) {
-            const gy = ro * gridPitch + 6;
-            ctx.fillRect(gx, gy, 1.2, 1.2);
-          }
-        }
-      }
-    }
-
-    // When background is 100% pure white, slats have dissolved into paper
-    if (bgEase >= 1.0) return;
-
-    const isDesktop = w >= 960;
-    // Ladder center on LEFT (Image 1, 2, 3, 4): exactly 26.5% width on desktop
-    const leftCx = isDesktop ? Math.max(340, Math.round(w * 0.27)) : (w > 640 ? w * 0.24 : w * 0.22);
-    // Ladder center in MIDDLE (Image 5): exactly 50% width
-    const centerCx = w * 0.50;
 
     // ── 3. TIMELINE PHASES MATCHING USER DIRECTION 100% ──
-    // Phase 1 (0.00 - 0.62): 2D drum on LEFT scrolling dates (All slats 100% equal width!)
-    // Phase 2 (0.62 - 0.74): Drum locks at NGÀY THỨ 10, 3D ladder forms on LEFT with Step 4 text
-    // Phase 3 (0.74 - 0.80): Ladder glides to CENTER and forms 3D perspective curved road
-    // Phase 4 (0.80 - 0.86): "kéo 1 lúc nữa" - Road dwell, top of road curves gently to the right like a receding highway
-    // Phase 5 (0.86 - 0.94): "mới mở rộng qua 2 bên" & "phóng to hết màn hình" - Slats expand and merge to become solid white background
-    // Phase 6 (0.94 - 0.98): Background blooms to white behind merged slats
-    // Phase 7 (0.95 - 1.00+): Step 5 headline on pure white background
-
     // Morph on the LEFT (Phase 2: 0.62 to 0.74)
     const leftMorphRaw = Math.min(1, Math.max(0, (progress - 0.62) / 0.12));
     const leftMorphT = smootherstep(leftMorphRaw);
@@ -856,20 +812,44 @@ async function initScrollytelling() {
     const centerGlideRaw = Math.min(1, Math.max(0, (progress - 0.74) / 0.06));
     const centerT = smootherstep(centerGlideRaw);
 
-    // Fullscreen Zoom Expansion (Phase 5: 0.86 to 0.94) - "kéo 1 lúc nữa mới mở rộng qua 2 bên"
+    // Fullscreen Zoom Expansion (Phase 5: 0.86 to 0.94)
     const zoomRaw = Math.min(1, Math.max(0, (progress - 0.86) / 0.08));
     const zoomT = smootherstep(zoomRaw);
+
+    // ── 2. AMBIENT HALFTONE LATTICE (Trame de fond - subtle gray dot matrix on white) ──
+    const gridPitch = 12;
+    const ambientAlpha = 0.045 * Math.max(0, 1 - zoomT);
+    if (ambientAlpha > 0.002) {
+      ctx.fillStyle = `rgba(15, 23, 42, ${ambientAlpha})`;
+      const cols = Math.ceil(w / gridPitch);
+      const rows = Math.ceil(h / gridPitch);
+      for (let c = 0; c < cols; c++) {
+        const gx = c * gridPitch + 6;
+        for (let ro = 0; ro < rows; ro++) {
+          const gy = ro * gridPitch + 6;
+          ctx.fillRect(gx, gy, 1.2, 1.2);
+        }
+      }
+    }
+
+    const bgEase = Math.min(1, Math.max(0, (progress - 0.94) / 0.04));
+
+    const isDesktop = w >= 960;
+    // Ladder center on LEFT:
+    const leftCx = isDesktop ? Math.max(360, Math.round(w * 0.28)) : (w > 640 ? w * 0.25 : w * 0.22);
+    // Ladder center in MIDDLE:
+    const centerCx = w * 0.50;
 
     // Center X position: Stays on LEFT until Step 4 finishes (progress 0.74), then glides to CENTER!
     const cx = leftCx * (1 - centerT) + centerCx * centerT;
 
     ctx.save();
-    const slatAlpha = Math.max(0, 1 - Math.pow(bgEase, 1.5));
+    const slatAlpha = Math.max(0, 1 - Math.pow(zoomT, 1.5));
     ctx.globalAlpha = slatAlpha;
 
-    const dotPitch = isDesktop ? 6.8 : 5.6;
+    const dotPitch = isDesktop ? 7.6 : 6.0;
     const centerY = h * 0.50;
-    const rungSpacing = isDesktop ? 26 : 22;
+    const rungSpacing = isDesktop ? 29 : 23;
 
     // Smooth continuous drum offset with zero acceleration jerk
     const drumOffset = getSmoothDrumOffset(progress);
@@ -921,25 +901,20 @@ async function initScrollytelling() {
       const effectiveVFade = smoothVFade * (1 - leftMorphT) + 1.0 * leftMorphT;
       if (effectiveVFade <= 0.005) continue;
 
-      // ── 3D DRUM CYLINDER CURVE (Image 2 & User direction) ──
-      // Elegant, restrained curve to the right ("cong vừa phải, cong đều")
+      // ── 100% STRAIGHT RIGHT BASELINE & C-CURVE LEFT ARC (User Directive) ──
+      // All slats aligned 100% on right ("thẳng hàng với nhau 100%"):
+      // Center reaches furthest left ("ở giữa nó sẽ hiện đúng")
+      // Top & bottom stay near right ("dần dần qua 2 bên trên dưới sẽ hiện gần phía chữ bên phải và bên kia nó sẽ hiện xa hơn")
       const distToCenter = Math.abs(flatY - centerY);
-      const dy = flatY - centerY;
-      const normDy = dy / (h * 0.44);
-      const absNorm = Math.min(1.0, Math.abs(normDy));
-      const extraDist = Math.max(0.0, Math.abs(normDy) - 1.0);
+      const normDy = Math.min(1.0, distToCenter / (h * 0.44));
+      const curveProfile = Math.cos(normDy * Math.PI * 0.5);
 
-      const maxCurveX = isDesktop ? 38 : 24;
-      const curveX = (Math.pow(absNorm, 1.35) + extraDist * 0.5) * maxCurveX;
+      const minWidth = isDesktop ? 76 : 50;
+      const maxWidth = isDesktop ? 136 : 90;
+      const drumW = minWidth + (maxWidth - minWidth) * curveProfile;
 
-      const minWidth = isDesktop ? 58 : 40;
-      const maxWidth = isDesktop ? 86 : 60;
-      const widthProfile = Math.max(0.0, 1.0 - Math.pow(absNorm, 1.35));
-      const drumW = minWidth + (maxWidth - minWidth) * widthProfile;
-
-      const slatCx = leftCx + curveX;
-      const drumLeftX = slatCx - drumW * 0.5;
-      const drumRightX = slatCx + drumW * 0.5;
+      const drumRightX = isDesktop ? Math.round(w * 0.32) : Math.round(w * 0.42);
+      const drumLeftX = drumRightX - drumW;
 
       let currentY = flatY;
       let flatLeft = drumLeftX;
@@ -954,19 +929,19 @@ async function initScrollytelling() {
 
       if (isMilestone) {
         baseRows = 1.0;
-        dotR = 1.5;
+        dotR = 1.8;
         rungDotAlpha = 1.0;
       } else if (distToCenter < 75) {
         baseRows = 3.0;
-        dotR = 1.6;
+        dotR = 1.85;
         rungDotAlpha = 1.0;
       } else if (distToCenter < 200) {
         baseRows = 2.0;
-        dotR = 1.45;
+        dotR = 1.65;
         rungDotAlpha = 0.85;
       } else {
         baseRows = 1.0;
-        dotR = 1.35;
+        dotR = 1.5;
         rungDotAlpha = Math.max(0.18, 0.55 - (distToCenter - 200) / 280);
       }
 
@@ -1058,12 +1033,12 @@ async function initScrollytelling() {
           const dayRightX = flatLeft - 20;
           const dayLeftX = dayRightX - dayWidth;
 
-          ctx.fillStyle = '#ffffff';
+          ctx.fillStyle = '#0f172a';
           ctx.textAlign = 'left';
           ctx.fillText(sInfo.day, dayLeftX, flatY + 4);
 
           const dividerX = dayLeftX - 12;
-          ctx.strokeStyle = 'rgba(255, 255, 255, 0.22)';
+          ctx.strokeStyle = 'rgba(15, 23, 42, 0.22)';
           ctx.lineWidth = 1;
           ctx.beginPath();
           ctx.moveTo(dividerX, flatY - 8);
@@ -1071,12 +1046,12 @@ async function initScrollytelling() {
           ctx.stroke();
 
           ctx.font = '500 11px monospace';
-          ctx.fillStyle = '#8e929b';
+          ctx.fillStyle = '#475569';
           ctx.textAlign = 'right';
           ctx.fillText(sInfo.date, dividerX - 12, flatY + 4);
         } else {
           ctx.font = '500 11px monospace';
-          ctx.fillStyle = '#6b7280';
+          ctx.fillStyle = '#94a3b8';
           ctx.textAlign = 'right';
           ctx.fillText(sInfo.date, flatLeft - 20, flatY + 4);
         }
@@ -1097,20 +1072,17 @@ async function initScrollytelling() {
           if (subVFade > 0.005) {
             ctx.save();
             ctx.globalAlpha = 0.45 * dateLabelFade * slatAlpha * subVFade;
-            const subDy = subY - centerY;
-            const subNormDy = subDy / (h * 0.44);
-            const subAbsNorm = Math.min(1.0, Math.abs(subNormDy));
-            const subExtraDist = Math.max(0.0, Math.abs(subNormDy) - 1.0);
-            const subCurveX = (Math.pow(subAbsNorm, 1.35) + subExtraDist * 0.5) * maxCurveX;
-            const subWidthProfile = Math.max(0.0, 1.0 - Math.pow(subAbsNorm, 1.35));
-            const subW = minWidth + (maxWidth - minWidth) * subWidthProfile;
-            const subLeftX = (leftCx + subCurveX) - subW * 0.5;
+            const subDistY = Math.abs(subY - centerY);
+            const subNormDy = Math.min(1.0, subDistY / (h * 0.44));
+            const subCurveProfile = Math.cos(subNormDy * Math.PI * 0.5);
+            const subW = minWidth + (maxWidth - minWidth) * subCurveProfile;
+            const subLeftX = drumRightX - subW;
             
             ctx.font = '700 11px monospace';
             const refDayW = sInfo.day ? ctx.measureText(sInfo.day).width : 45;
             const subOffset = 20 + refDayW + 24;
             ctx.font = '500 10px monospace';
-            ctx.fillStyle = '#6b7280';
+            ctx.fillStyle = '#94a3b8';
             ctx.textAlign = 'right';
             ctx.fillText(sInfo.subDate, subLeftX - subOffset, subY + 3.5);
             ctx.restore();
@@ -1120,7 +1092,7 @@ async function initScrollytelling() {
       // Render the slat dots with crisp, beveled trapezoid ends & continuous growth
       ctx.save();
       const baseAlpha = ctx.globalAlpha * rungDotAlpha * outsideFade * effectiveVFade;
-      ctx.fillStyle = '#ffffff';
+      ctx.fillStyle = '#0f172a';
 
       const rowSpacing = dotPitch;
 
@@ -1144,7 +1116,7 @@ async function initScrollytelling() {
         ctx.globalAlpha = baseAlpha * (0.15 + 0.85 * rowCoverage);
 
         for (let d = 0; d <= dotCount; d++) {
-          const dotX = rowLeft + d * dotPitch;
+          const dotX = rowRight - d * dotPitch;
           ctx.beginPath();
           ctx.arc(dotX, dotY, curDotR, 0, Math.PI * 2);
           ctx.fill();
