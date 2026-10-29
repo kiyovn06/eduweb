@@ -762,223 +762,217 @@ async function initScrollytelling() {
     const initialCx = isDesktop ? w * 0.30 : (w > 640 ? w * 0.24 : w * 0.20);
     const centerCx = w * 0.50;
 
-    // Morph to 3D perspective ladder / centered slats (starts after Step 4 text exits)
-    // Matching Sybiosme 1:1: Drum on left during Step 4, then cleanly transitions to centered 3D slats
-    const drumAlphaFade = progress < 0.73 ? 1.0 : Math.max(0, 1 - (progress - 0.73) / 0.015);
-    const slatAlphaFade = progress < 0.74 ? 0.0 : Math.min(1, (progress - 0.74) / 0.02);
+    // ── UNIFIED CONTINUOUS RULER-TO-3D-SLATS MORPH (Matching Sybiosme 100%) ──
+    // "thanh này phải ở dưới to dần dần lên và hiện full màn hình chứ không tạo 1 thanh mới"
+    // The exact ruler bar on screen widens progressively from the bottom upward, glides to center,
+    // and expands to full screen width with zero secondary elements spawned.
+
+    const morphRaw = Math.min(1, Math.max(0, (progress - 0.72) / 0.10));
+    const morphT = morphRaw * morphRaw * (3 - 2 * morphRaw);
+
+    const fullRaw = Math.min(1, Math.max(0, (progress - 0.78) / 0.06));
+    const fullT = fullRaw * fullRaw * (3 - 2 * fullRaw);
 
     ctx.save();
     ctx.globalAlpha = slatAlpha;
 
     const dotPitch = 7.2;
+    const centerY = h * 0.50;
+    const rungSpacing = 26;
 
-    // ══════════════════════════════════════════════════════════════════════
-    // LAYER 1: STREAMING DOT RULER DRUM (Active when progress < 0.745)
-    // ══════════════════════════════════════════════════════════════════════
-    if (drumAlphaFade > 0.0) {
-      const drumAlpha = drumAlphaFade * slatAlpha;
-
-      const centerY = h * 0.50;
-      const rungSpacing = 26; // Spacing between adjacent rungs
-
-      let rawDrumOffset = 0;
-      if (progress < 0.18) {
-        rawDrumOffset = -260 + (progress / 0.18) * 260;
-      } else if (progress < 0.35) {
-        rawDrumOffset = ((progress - 0.18) / 0.17) * 520;
-      } else if (progress < 0.52) {
-        rawDrumOffset = 520 + ((progress - 0.35) / 0.17) * 520;
-      } else if (progress < 0.68) {
-        rawDrumOffset = 1040 + ((progress - 0.52) / 0.16) * 520;
-      } else {
-        rawDrumOffset = 1560; // Decelerated lock at NGÀY THỨ 10 while Step 4 is active
-      }
-
-      const drumOffset = rawDrumOffset;
-
-      const specialRungs = {
-        '-18': { date: 'THỨ SÁU, NGÀY 23 THÁNG 10', day: '', ext: 0, extRows: 1 },
-        '-10': { date: 'THỨ HAI, NGÀY 26 THÁNG 10', day: '', ext: (isDesktop ? 65 : 40), extRows: 2 },
-        '-4':  { date: 'THỨ BA, NGÀY 27 THÁNG 10',  day: '', ext: (isDesktop ? 90 : 50), extRows: 1 },
-        '0':   { date: 'THỨ NĂM, NGÀY 29 THÁNG 10', day: 'NGÀY 1', ext: (isDesktop ? 220 : 120), extRows: 1, subDate: 'THỨ SÁU, NGÀY 30 THÁNG 10' },
-        '20':  { date: 'THỨ BA, NGÀY 03 THÁNG 11',  day: 'NGÀY 4', ext: (isDesktop ? 220 : 120), extRows: 1, subDate: 'THỨ TƯ, NGÀY 04 THÁNG 11' },
-        '40':  { date: 'THỨ SÁU, NGÀY 06 THÁNG 11', day: 'NGÀY 7', ext: (isDesktop ? 220 : 120), extRows: 1, subDate: 'THỨ BẢY, NGÀY 07 THÁNG 11' },
-        '60':  { date: 'THỨ NĂM, NGÀY 12 THÁNG 11', day: 'NGÀY THỨ 10', ext: (isDesktop ? 220 : 120), extRows: 1, subDate: 'THỨ SÁU, NGÀY 13 THÁNG 11' }
-      };
-
-      const cx = initialCx;
-
-      for (let j = -25; j <= 75; j++) {
-        const flatY = centerY + j * rungSpacing - drumOffset;
-        if (flatY < -50 || flatY > h + 50) continue;
-
-        const distToCenter = Math.abs(flatY - centerY);
-        const normDist = Math.min(1, distToCenter / (h * 0.48));
-        const lensBulge = Math.max(0, 1 - normDist * normDist) * 12;
-        const baseHalfW = (isDesktop ? 34 : 24) + lensBulge;
-
-        const sInfo = specialRungs[j.toString()];
-        const isMilestone = !!sInfo && !!sInfo.day;
-        const milestoneExtension = sInfo ? sInfo.ext : 0;
-        const milestoneExtRows = sInfo ? sInfo.extRows : 1;
-
-        // Date labels on left (matching Image 1 & Image 2)
-        if (sInfo && isDesktop && flatY >= 35 && flatY <= h - 35) {
-          ctx.save();
-          const isMainMilestone = !!sInfo.day;
-          const labelAlpha = (isMainMilestone ? 0.95 : 0.45) * drumAlpha;
-          ctx.globalAlpha = labelAlpha;
-
-          // 1. Date string (grey)
-          ctx.font = '500 11px monospace';
-          ctx.fillStyle = isMainMilestone ? '#8e929b' : '#6b7280';
-          ctx.textAlign = 'right';
-          const dateRightX = cx - baseHalfW - 80;
-          ctx.fillText(sInfo.date, dateRightX, flatY + 4);
-
-          // 2. Vertical separator '|' and Day label (if main milestone)
-          if (isMainMilestone) {
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.22)';
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(dateRightX + 16, flatY - 8);
-            ctx.lineTo(dateRightX + 16, flatY + 8);
-            ctx.stroke();
-
-            ctx.font = '700 11px monospace';
-            ctx.fillStyle = '#ffffff';
-            ctx.textAlign = 'left';
-            ctx.fillText(sInfo.day, dateRightX + 28, flatY + 4);
-          }
-
-          ctx.restore();
-        }
-
-        // Secondary date label 4 rungs below milestone (matching Ảnh 1)
-        if (sInfo && sInfo.subDate && isDesktop) {
-          const subY = flatY + 4 * rungSpacing;
-          if (subY >= 40 && subY <= h - 40) {
-            ctx.save();
-            ctx.globalAlpha = 0.45 * drumAlpha;
-            ctx.font = '500 10px monospace';
-            ctx.fillStyle = '#6b7280';
-            ctx.textAlign = 'right';
-            ctx.fillText(sInfo.subDate, cx - baseHalfW - 80, subY + 3.5);
-            ctx.restore();
-          }
-        }
-
-        let numRows = 1;
-        let dotR = 1.45;
-        let rungDotAlpha = 0.75;
-
-        if (isMilestone) {
-          numRows = 1;
-          dotR = 1.5;
-          rungDotAlpha = 1.0;
-        } else if (distToCenter < 75) {
-          numRows = 3;
-          dotR = 1.6;
-          rungDotAlpha = 1.0;
-        } else if (distToCenter < 240) {
-          numRows = 2;
-          dotR = 1.45;
-          rungDotAlpha = 0.80;
-        } else {
-          numRows = 1;
-          dotR = 1.35;
-          rungDotAlpha = Math.max(0.18, 0.55 - (distToCenter - 240) / 280);
-        }
-
-        if (sInfo && sInfo.extRows > 1) {
-          numRows = sInfo.extRows;
-        }
-
-        ctx.save();
-        ctx.globalAlpha = drumAlpha * rungDotAlpha;
-        ctx.fillStyle = '#ffffff';
-
-        const flatLeft = cx - baseHalfW;
-        const flatRight = cx + baseHalfW + milestoneExtension;
-        const dotCount = Math.floor((flatRight - flatLeft) / dotPitch);
-        const rowSpacing = 3.2;
-
-        for (let d = 0; d <= dotCount; d++) {
-          const dotX = flatLeft + d * dotPitch;
-          for (let rIdx = 0; rIdx < numRows; rIdx++) {
-            const rowOffset = (rIdx - (numRows - 1) / 2) * rowSpacing;
-            const dotY = flatY + rowOffset;
-            ctx.beginPath();
-            ctx.arc(dotX, dotY, dotR, 0, Math.PI * 2);
-            ctx.fill();
-          }
-        }
-        ctx.restore();
-      }
+    let rawDrumOffset = 0;
+    if (progress < 0.18) {
+      rawDrumOffset = -260 + (progress / 0.18) * 260;
+    } else if (progress < 0.35) {
+      rawDrumOffset = ((progress - 0.18) / 0.17) * 520;
+    } else if (progress < 0.52) {
+      rawDrumOffset = 520 + ((progress - 0.35) / 0.17) * 520;
+    } else if (progress < 0.68) {
+      rawDrumOffset = 1040 + ((progress - 0.52) / 0.16) * 520;
+    } else {
+      rawDrumOffset = 1560; // Decelerated lock at NGÀY THỨ 10 while Step 4 is active
     }
 
-    // ══════════════════════════════════════════════════════════════════════
-    // LAYER 2: 3D PERSPECTIVE LADDER & CENTERED SLATS (Active when progress >= 0.74)
-    // ══════════════════════════════════════════════════════════════════════
-    if (slatAlphaFade > 0.0) {
-      const ladderAlpha = slatAlphaFade * slatAlpha;
-      ctx.save();
-      ctx.globalAlpha = ladderAlpha;
+    const drumOffset = rawDrumOffset;
 
-      const slatCenterCx = centerCx; // Symmetrical center of screen matching 04_slats_sybiosme.png
+    const specialRungs = {
+      '-18': { date: 'THỨ SÁU, NGÀY 23 THÁNG 10', day: '', ext: 0, extRows: 1 },
+      '-10': { date: 'THỨ HAI, NGÀY 26 THÁNG 10', day: '', ext: (isDesktop ? 65 : 40), extRows: 2 },
+      '-4':  { date: 'THỨ BA, NGÀY 27 THÁNG 10',  day: '', ext: (isDesktop ? 90 : 50), extRows: 1 },
+      '0':   { date: 'THỨ NĂM, NGÀY 29 THÁNG 10', day: 'NGÀY 1', ext: (isDesktop ? 220 : 120), extRows: 1, subDate: 'THỨ SÁU, NGÀY 30 THÁNG 10' },
+      '20':  { date: 'THỨ BA, NGÀY 03 THÁNG 11',  day: 'NGÀY 4', ext: (isDesktop ? 220 : 120), extRows: 1, subDate: 'THỨ TƯ, NGÀY 04 THÁNG 11' },
+      '40':  { date: 'THỨ SÁU, NGÀY 06 THÁNG 11', day: 'NGÀY 7', ext: (isDesktop ? 220 : 120), extRows: 1, subDate: 'THỨ BẢY, NGÀY 07 THÁNG 11' },
+      '60':  { date: 'THỨ NĂM, NGÀY 12 THÁNG 11', day: 'NGÀY THỨ 10', ext: (isDesktop ? 220 : 120), extRows: 1, subDate: 'THỨ SÁU, NGÀY 13 THÁNG 11' }
+    };
+
+    // Glides smoothly from left drum position to exact screen center
+    const cx = initialCx * (1 - morphT) + centerCx * morphT;
+
+    const ladderTopY = h * 0.22;
+    const ladderBottomY = h * 0.98;
+    const rulerH = ladderBottomY - ladderTopY;
+    const depthPower = 1.0 + 0.85 * morphT;
+
+    // In 2D ruler at NGÀY THỨ 10, rungs 50 to 74 span from top (y~200) to bottom (y~860) of screen
+    const visibleMinJ = 50;
+    const visibleMaxJ = 74;
+
+    for (let j = -25; j <= 75; j++) {
+      const flatY = centerY + j * rungSpacing - drumOffset;
+      if (flatY < -100 || flatY > h + 100) continue;
+
+      const isVisibleOnScreen = j >= visibleMinJ && j <= visibleMaxJ;
+      const outsideFade = isVisibleOnScreen ? 1.0 : Math.max(0, 1 - morphT * 3.5);
+      if (outsideFade <= 0) continue;
+
+      const distToCenter = Math.abs(flatY - centerY);
+      const normDist = Math.min(1, distToCenter / (h * 0.48));
+      const lensBulge = Math.max(0, 1 - normDist * normDist) * 12;
+      const baseHalfW = (isDesktop ? 34 : 24) + lensBulge;
+
+      let currentY = flatY;
+      let currentHalfW = baseHalfW;
+      let numRows = 1;
+      let bevelFactor = 0;
+      let dotR = 1.45;
+      let rungDotAlpha = 0.75;
+
+      const sInfo = specialRungs[j.toString()];
+      const isMilestone = !!sInfo && !!sInfo.day;
+      const milestoneExtension = (sInfo && morphT < 0.35) ? sInfo.ext * (1 - morphT * 3.0) : 0;
+      const milestoneExtRows = sInfo ? sInfo.extRows : 1;
+
+      if (isMilestone) {
+        numRows = 1;
+        dotR = 1.5;
+        rungDotAlpha = 1.0;
+      } else if (distToCenter < 75) {
+        numRows = 3;
+        dotR = 1.6;
+        rungDotAlpha = 1.0;
+      } else if (distToCenter < 240) {
+        numRows = 2;
+        dotR = 1.45;
+        rungDotAlpha = 0.80;
+      } else {
+        numRows = 1;
+        dotR = 1.35;
+        rungDotAlpha = Math.max(0.18, 0.55 - (distToCenter - 240) / 280);
+      }
+
+      if (sInfo && sInfo.extRows > 1) {
+        numRows = sInfo.extRows;
+      }
+
+      // ── "ở dưới to dần dần lên": Continuous bottom-up morphing of this exact bar ──
+      if (isVisibleOnScreen) {
+        // Vertical fraction in viewport: 0.0 at top (~y=200), 1.0 at bottom (~y=860)
+        const v = Math.min(1, Math.max(0, (flatY - ladderTopY) / rulerH));
+        const depthP = Math.pow(v, depthPower);
+        const target3DY = ladderTopY + depthP * rulerH;
+
+        currentY = flatY * (1 - morphT) + target3DY * morphT;
+
+        // Bottom rungs (v=1) expand outward first; delay climbs to top rungs (v=0)
+        const delay = (1 - v) * 0.42;
+        const rungMorphRaw = Math.min(1, Math.max(0, (morphT - delay) / (1 - delay)));
+        const rungMorph = rungMorphRaw * rungMorphRaw * (3 - 2 * rungMorphRaw);
+
+        // Sybiosme 3D width: top ~15% w, bottom ~46% w, expanding to full screen (~54% w) in Phase 3
+        const targetTopHalfW = (w * 0.15) * (1 - fullT) + (w * 0.22) * fullT;
+        const targetBottomHalfW = (w * 0.46) * (1 - fullT) + (w * 0.54) * fullT; // 54% = full screen width!
+        const target3DHalfW = targetTopHalfW + (targetBottomHalfW - targetTopHalfW) * depthP;
+
+        currentHalfW = baseHalfW * (1 - rungMorph) + target3DHalfW * rungMorph;
+
+        // Multi-row dots for perspective thickness (up to 10-12 rows at bottom)
+        let target3DRows = 1;
+        if (v > 0.90) target3DRows = 10;
+        else if (v > 0.80) target3DRows = 8;
+        else if (v > 0.70) target3DRows = 6;
+        else if (v > 0.58) target3DRows = 5;
+        else if (v > 0.45) target3DRows = 4;
+        else if (v > 0.32) target3DRows = 3;
+        else if (v > 0.18) target3DRows = 2;
+        else target3DRows = 1;
+
+        if (fullT > 0) {
+          target3DRows = Math.round(target3DRows * (1 - fullT) + (target3DRows + 2) * fullT);
+        }
+
+        numRows = Math.max(1, Math.round(numRows * (1 - rungMorph) + target3DRows * rungMorph));
+        dotR = 1.45 + (depthP * 0.5) * rungMorph;
+        bevelFactor = rungMorph;
+        rungDotAlpha = 1.0;
+      }
+
+      // Date labels on left (fade out quickly once morph begins)
+      if (sInfo && isDesktop && morphT < 0.35 && flatY >= 35 && flatY <= h - 35) {
+        ctx.save();
+        const isMainMilestone = !!sInfo.day;
+        const labelAlpha = (isMainMilestone ? 0.95 : 0.45) * Math.max(0, 1 - morphT * 3.0);
+        ctx.globalAlpha = labelAlpha * slatAlpha;
+
+        ctx.font = '500 11px monospace';
+        ctx.fillStyle = isMainMilestone ? '#8e929b' : '#6b7280';
+        ctx.textAlign = 'right';
+        const dateRightX = cx - baseHalfW - 80;
+        ctx.fillText(sInfo.date, dateRightX, flatY + 4);
+
+        if (isMainMilestone) {
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.22)';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(dateRightX + 16, flatY - 8);
+          ctx.lineTo(dateRightX + 16, flatY + 8);
+          ctx.stroke();
+
+          ctx.font = '700 11px monospace';
+          ctx.fillStyle = '#ffffff';
+          ctx.textAlign = 'left';
+          ctx.fillText(sInfo.day, dateRightX + 28, flatY + 4);
+        }
+
+        ctx.restore();
+      }
+
+      // Secondary date label 4 rungs below milestone
+      if (sInfo && sInfo.subDate && isDesktop && morphT < 0.35) {
+        const subY = flatY + 4 * rungSpacing;
+        if (subY >= 40 && subY <= h - 40) {
+          ctx.save();
+          ctx.globalAlpha = 0.45 * Math.max(0, 1 - morphT * 3.0) * slatAlpha;
+          ctx.font = '500 10px monospace';
+          ctx.fillStyle = '#6b7280';
+          ctx.textAlign = 'right';
+          ctx.fillText(sInfo.subDate, cx - baseHalfW - 80, subY + 3.5);
+          ctx.restore();
+        }
+      }
+
+      // Render the rung dots
+      ctx.save();
+      ctx.globalAlpha = slatAlpha * rungDotAlpha * outsideFade;
       ctx.fillStyle = '#ffffff';
 
-      const ladderTopY = h * 0.22;
-      const ladderBottomY = h * 0.98;
-      const rulerH = ladderBottomY - ladderTopY;
+      const flatLeft = cx - currentHalfW;
+      const flatRight = cx + currentHalfW + milestoneExtension;
+      const rowSpacing = 3.2;
 
-      const numLadderRungs = 14;
-      const depthPower = 1.85;
+      for (let rIdx = 0; rIdx < numRows; rIdx++) {
+        const rowOffset = (rIdx - (numRows - 1) / 2) * rowSpacing;
+        const dotY = currentY + rowOffset;
 
-      for (let i = 0; i < numLadderRungs; i++) {
-        const frac = i / (numLadderRungs - 1);
-        const depthP = Math.pow(frac, depthPower);
-        const currentY = ladderTopY + depthP * rulerH;
+        const bevelExpand = (rIdx - (numRows - 1) / 2) * dotPitch * 0.95 * bevelFactor;
+        const rowLeft = flatLeft - bevelExpand;
+        const rowRight = flatRight + bevelExpand;
+        const dotCount = Math.floor((rowRight - rowLeft) / dotPitch);
 
-        // Sybiosme centered slats width: top ~15% w, bottom ~46% w
-        const topHalfW = w * 0.15;
-        const bottomHalfW = w * 0.46;
-        const currentHalfW = topHalfW + (bottomHalfW - topHalfW) * depthP;
-
-        // Number of dot rows per rung (matching Sybiosme slats):
-        // Top rungs: 1-2 rows, Mid rungs: 3-5 rows, Bottom rungs: 7-10 rows!
-        let targetRows = 1;
-        if (frac > 0.90) targetRows = 10;
-        else if (frac > 0.80) targetRows = 8;
-        else if (frac > 0.70) targetRows = 6;
-        else if (frac > 0.58) targetRows = 5;
-        else if (frac > 0.45) targetRows = 4;
-        else if (frac > 0.32) targetRows = 3;
-        else if (frac > 0.18) targetRows = 2;
-        else targetRows = 1;
-
-        const numRows = targetRows;
-        const dotR = 1.45 + (depthP * 0.5);
-        const rowSpacing = 3.2;
-        const bevelFactor = 1.0;
-
-        for (let rIdx = 0; rIdx < numRows; rIdx++) {
-          const rowOffset = (rIdx - (numRows - 1) / 2) * rowSpacing;
-          const dotY = currentY + rowOffset;
-
-          const bevelExpand = (rIdx - (numRows - 1) / 2) * dotPitch * 0.95 * bevelFactor;
-          const rowHalfW = currentHalfW + bevelExpand;
-
-          const rowLeft = slatCenterCx - rowHalfW;
-          const rowRight = slatCenterCx + rowHalfW;
-          const dotCount = Math.floor((rowRight - rowLeft) / dotPitch);
-
-          for (let d = 0; d <= dotCount; d++) {
-            const dotX = rowLeft + d * dotPitch;
-            ctx.beginPath();
-            ctx.arc(dotX, dotY, dotR, 0, Math.PI * 2);
-            ctx.fill();
-          }
+        for (let d = 0; d <= dotCount; d++) {
+          const dotX = rowLeft + d * dotPitch;
+          ctx.beginPath();
+          ctx.arc(dotX, dotY, dotR, 0, Math.PI * 2);
+          ctx.fill();
         }
       }
       ctx.restore();
