@@ -2182,7 +2182,7 @@ body {
   cursor: grabbing !important;
 }
 
-/* Overlay Stage: Left Milestones & Right Text Column */
+/* Overlay Stage: Right Text Column with generous left spacing for dynamic drum */
 .quy-trinh-overlay-stage {
   position: relative;
   z-index: 5;
@@ -2190,39 +2190,17 @@ body {
   height: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 clamp(24px, 5vw, 72px);
+  justify-content: flex-end;
+  padding: 0 clamp(24px, 5vw, 80px);
   max-width: 1440px;
   margin: 0 auto;
 }
 
-/* Left Milestones: Date labels matching Ảnh 1 */
-.quy-trinh-left-milestones {
-  position: absolute;
-  left: clamp(24px, 5vw, 64px);
-  top: 15%;
-  bottom: 15%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  pointer-events: none;
-  z-index: 4;
-}
-
-.milestone-date-item {
-  font-family: var(--font-mono, 'JetBrains Mono', monospace);
-  font-size: 0.72rem;
-  font-weight: 600;
-  color: #888888;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-/* Right Content Column: Minimalist Typography (Zero creative fluff) */
+/* Right Content Column: Minimalist Typography safely positioned on the right */
 .quy-trinh-text-col {
   position: relative;
   margin-left: auto;
-  width: clamp(320px, 55vw, 780px);
+  width: clamp(320px, 45vw, 620px);
   height: 100%;
   display: flex;
   align-items: center;

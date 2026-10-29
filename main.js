@@ -701,11 +701,11 @@ async function initScrollytelling() {
 
     // ── Continuous Scroll-Scrubbed Text Animation (With Stable Readability Plateaus) ──
     const cardTimeline = [
-      { step: 0, inP: 0.08,  peakIn: 0.13, peakOut: 0.17, outP: 0.23 }, // Step 0 appears as drum glides to left & curves
-      { step: 1, inP: 0.20,  peakIn: 0.26, peakOut: 0.30, outP: 0.37 }, // Day 1
-      { step: 2, inP: 0.34,  peakIn: 0.40, peakOut: 0.44, outP: 0.51 }, // Day 4
-      { step: 3, inP: 0.48,  peakIn: 0.54, peakOut: 0.58, outP: 0.65 }, // Day 7
-      { step: 4, inP: 0.62,  peakIn: 0.68, peakOut: 0.74, outP: 0.78 }, // Day 10 & 3D Ladder
+      { step: 0, inP: 0.11,  peakIn: 0.15, peakOut: 0.20, outP: 0.26 }, // Step 0 appears ONLY after drum has safely reached the left!
+      { step: 1, inP: 0.24,  peakIn: 0.29, peakOut: 0.33, outP: 0.40 }, // Step 1
+      { step: 2, inP: 0.38,  peakIn: 0.43, peakOut: 0.47, outP: 0.54 }, // Step 2
+      { step: 3, inP: 0.52,  peakIn: 0.57, peakOut: 0.61, outP: 0.68 }, // Step 3
+      { step: 4, inP: 0.65,  peakIn: 0.70, peakOut: 0.75, outP: 0.78 }, // Step 4 (3D Ladder)
       { step: 5, inP: 0.94,  peakIn: 0.97, peakOut: 1.05, outP: 1.05 }  // Centered Title on pure white (after white bloom)
     ];
 
@@ -806,23 +806,23 @@ async function initScrollytelling() {
     }
 
     // ── 3. TIMELINE PHASES MATCHING USER DIRECTION 100% ──
-    // Phase 1: Intro glide from CENTER to LEFT as text enters (0.015 to 0.07)
-    // At start: drum is in MIDDLE ("thanh kéo hiện ở giữa")
-    // When text appears: drum glides to LEFT ("chữ xuất hiện đẩy thanh kéo qua bên trái")
-    const introShiftRaw = Math.min(1, Math.max(0, (progress - 0.08) / 0.07));
+    // Phase 1: Intro glide from CENTER to LEFT (0.05 to 0.11)
+    // At start (progress <= 0.05): drum is in MIDDLE ("thanh kéo hiện ở giữa"), 100% straight vertical
+    // When scrolling past 0.05: drum glides safely to LEFT BEFORE text appears ("không bị đè lên chữ")
+    const introShiftRaw = Math.min(1, Math.max(0, (progress - 0.05) / 0.06));
     const introLeftT = smootherstep(introShiftRaw);
     const curveAmount = introLeftT; // 0.0 when straight in center, smoothly rises to 1.0 when curved on left!
 
-    // Morph on the LEFT (Phase 2: 0.62 to 0.74)
-    const leftMorphRaw = Math.min(1, Math.max(0, (progress - 0.70) / 0.07));
+    // Morph on the LEFT (Phase 2: 0.67 to 0.74)
+    const leftMorphRaw = Math.min(1, Math.max(0, (progress - 0.67) / 0.07));
     const leftMorphT = smootherstep(leftMorphRaw);
 
-    // Glide to CENTER (Phase 3: 0.74 to 0.80)
-    const centerGlideRaw = Math.min(1, Math.max(0, (progress - 0.76) / 0.07));
+    // Glide to CENTER (Phase 3: 0.77 to 0.83) - only starts AFTER Step 4 text has finished fading out!
+    const centerGlideRaw = Math.min(1, Math.max(0, (progress - 0.77) / 0.06));
     const centerT = smootherstep(centerGlideRaw);
 
-    // Fullscreen Zoom Expansion (Phase 5: 0.86 to 0.94)
-    const zoomRaw = Math.min(1, Math.max(0, (progress - 0.82) / 0.10));
+    // Fullscreen Zoom Expansion (Phase 5: 0.83 to 0.93)
+    const zoomRaw = Math.min(1, Math.max(0, (progress - 0.83) / 0.10));
     const zoomT = smootherstep(zoomRaw);
 
     // ── 2. AMBIENT HALFTONE LATTICE (Trame de fond - subtle gray dot matrix on white) ──
@@ -845,7 +845,10 @@ async function initScrollytelling() {
 
     const isDesktop = w >= 960;
     // Ladder center on LEFT:
-    const leftCx = isDesktop ? Math.max(340, Math.round(w * 0.27)) : (w > 640 ? w * 0.25 : w * 0.22);
+    // Safely positioned in the left third of viewport (never pushing rightwards towards text)
+    const leftCx = isDesktop 
+      ? Math.min(Math.max(160, Math.round(w * 0.18)), 250) 
+      : (w > 640 ? Math.round(w * 0.18) : Math.round(w * 0.16));
     // Ladder center in MIDDLE:
     const centerCx = w * 0.50;
 
@@ -855,7 +858,9 @@ async function initScrollytelling() {
 
     // Keep interactive ruler handle in sync with drum base position
     if (quyTrinhRulerHandle) {
-      quyTrinhRulerHandle.style.left = `${currentBaseCx - (isDesktop ? 80 : 50)}px`;
+      const handleHalfW = isDesktop ? 60 : 40;
+      quyTrinhRulerHandle.style.left = `${Math.round(currentBaseCx - handleHalfW)}px`;
+      quyTrinhRulerHandle.style.width = `${handleHalfW * 2}px`;
     }
 
     ctx.save();
@@ -919,7 +924,7 @@ async function initScrollytelling() {
       const normDy = Math.min(1.0, distToCenter / (h * 0.44));
       const extraDist = Math.max(0.0, (distToCenter / (h * 0.44)) - 1.0);
 
-      const maxCurveX = isDesktop ? 32 : 18;
+      const maxCurveX = isDesktop ? 22 : 14;
       // Flat in center (distToCenter < 60 gives curve < 0.6px), smoothly curving towards top/bottom
       const curveX = (Math.pow(normDy, 1.65) + extraDist * 0.4) * maxCurveX * curveAmount;
 
@@ -969,7 +974,8 @@ async function initScrollytelling() {
         const rungMorph = smootherstep(rungMorphRaw);
 
         // Position on LEFT (Ladder mode)
-        const leftHalfW = (20 + (135 - 20) * Math.pow(u, 1.15));
+        const maxLadderHalfW = isDesktop ? Math.min(95, Math.round(w * 0.075)) : 65;
+        const leftHalfW = (18 + (maxLadderHalfW - 18) * Math.pow(u, 1.15));
         const targetLadderLeftX = leftCx - leftHalfW;
         const targetLadderRightX = leftCx + leftHalfW;
 
