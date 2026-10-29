@@ -835,7 +835,7 @@ async function initScrollytelling() {
 
     const isDesktop = w >= 960;
     // Ladder center on LEFT (Image 1, 2, 3, 4): exactly 26.5% width on desktop
-    const leftCx = isDesktop ? w * 0.265 : (w > 640 ? w * 0.24 : w * 0.22);
+    const leftCx = isDesktop ? Math.max(340, Math.round(w * 0.27)) : (w > 640 ? w * 0.24 : w * 0.22);
     // Ladder center in MIDDLE (Image 5): exactly 50% width
     const centerCx = w * 0.50;
 
@@ -907,25 +907,27 @@ async function initScrollytelling() {
       const outsideFade = isVisibleOnScreen ? 1.0 : Math.max(0, 1 - leftMorphT * 1.5);
       if (outsideFade <= 0) continue;
 
+      // ── DRUM ARC MATCHING SYBIOSME (Image 2) ──
+      // The right edge is a constant vertical baseline.
+      // The left edge forms a smooth, continuous, perfectly even circular arc:
       const distToCenter = Math.abs(flatY - centerY);
-      const normDist = Math.min(1, distToCenter / (h * 0.48));
-      const lensBulge = Math.max(0, 1 - normDist * normDist) * 12;
-      const baseHalfW = (isDesktop ? 34 : 24) + lensBulge;
+      const normDist = Math.min(1.0, distToCenter / (h * 0.45));
+      const curveProfile = Math.sqrt(Math.max(0.0, 1.0 - normDist * normDist));
+
+      const minWidth = isDesktop ? 40 : 28; // ~6 dots
+      const maxWidth = isDesktop ? 96 : 68; // ~14 dots
+      const drumW = minWidth + (maxWidth - minWidth) * curveProfile;
+
+      const drumRightX = leftCx + (isDesktop ? 36 : 24);
+      const drumLeftX = drumRightX - drumW;
 
       let currentY = flatY;
-      let currentHalfW = baseHalfW;
+      let flatLeft = drumLeftX;
+      let flatRight = drumRightX;
       let dotR = 1.45;
       let rungDotAlpha = 0.75;
       let bevelAmount = 0;
       let baseRows = 1.0;
-
-      // 3D Drum Curvature to the Right ("ở dưới cũng cong", "cong cong qua bên phải")
-      // In Sybiosme, both the top and bottom of the cylindrical drum recede and curve smoothly to the right
-      const normDistY = (currentY - centerY) / (h * 0.48);
-      const absNormDistY = Math.min(1.2, Math.abs(normDistY));
-      const curveFactor = normDistY < 0 ? (isDesktop ? 65 : 40) : (isDesktop ? 55 : 35);
-      const drumCurveX = Math.pow(absNormDistY, 1.5) * curveFactor;
-      let slatCurveX = drumCurveX * (1 - zoomT);
 
       const sInfo = specialRungs[j.toString()];
       const isMilestone = !!sInfo && !!sInfo.day;
@@ -938,14 +940,14 @@ async function initScrollytelling() {
         baseRows = 3.0;
         dotR = 1.6;
         rungDotAlpha = 1.0;
-      } else if (distToCenter < 240) {
+      } else if (distToCenter < 200) {
         baseRows = 2.0;
         dotR = 1.45;
-        rungDotAlpha = 0.80;
+        rungDotAlpha = 0.85;
       } else {
         baseRows = 1.0;
         dotR = 1.35;
-        rungDotAlpha = Math.max(0.18, 0.55 - (distToCenter - 240) / 280);
+        rungDotAlpha = Math.max(0.18, 0.55 - (distToCenter - 200) / 280);
       }
 
       let contRows = baseRows;
@@ -963,35 +965,34 @@ async function initScrollytelling() {
         const zoomBottomY = (centerBottomY) * (1 - zoomT) + (h * 1.35) * zoomT;
         const target3DCenterY = zoomTopY + (zoomBottomY - zoomTopY) * Math.pow(u, 1.72 * (1 - zoomT * 0.45));
 
-        // Delay climbs from bottom up (Image 3: bottom rungs thicken first)
+        // Delay climbs from bottom up
         const delay = (1 - u) * 0.42;
         const rungMorphRaw = Math.min(1, Math.max(0, (leftMorphT - delay) / 0.58));
         const rungMorph = smootherstep(rungMorphRaw);
 
-        const yOnLeft = flatY * (1 - rungMorph) + target3DLeftY * rungMorph;
-        currentY = yOnLeft * (1 - centerT) + target3DCenterY * centerT;
-
-        // 3D Road Curve to the Right ("cong cong ra bên phải", "ở trên nó sẽ thành kiểu như 1 con đường á")
-        // As u approaches 0 (top/horizon), the road centerline curves gracefully to the right:
-        const roadCurveX = Math.pow(1 - u, 1.7) * (w * 0.11);
-        
-        // Smoothly blend from Drum Curvature (on the left) to Road Highway Curvature (in the center):
-        slatCurveX = (drumCurveX * (1 - centerT) + roadCurveX * centerT) * (1 - zoomT);
-
-        // Slat Width Evolution:
-        // On LEFT (Image 4): Top halfW = 20px (~6 dots), Bottom halfW = 135px (~40 dots)
+        // Position on LEFT (Ladder mode)
         const leftHalfW = (20 + (135 - 20) * Math.pow(u, 1.15));
-        const wOnLeft = baseHalfW * (1 - rungMorph) + leftHalfW * rungMorph;
+        const targetLadderLeftX = leftCx - leftHalfW;
+        const targetLadderRightX = leftCx + leftHalfW;
+
+        const yOnLeft = flatY * (1 - rungMorph) + target3DLeftY * rungMorph;
+        const curLeftOnLeft = drumLeftX * (1 - rungMorph) + targetLadderLeftX * rungMorph;
+        const curRightOnLeft = drumRightX * (1 - rungMorph) + targetLadderRightX * rungMorph;
 
         // In CENTER (3D Road) -> FULLSCREEN EXPANSION ("mới mở rộng qua 2 bên", "phóng to hết màn hình"):
-        // At zoomT = 0: roadTopHalfW = 24px (tapered top), bottomHalfW = w * 0.52 (Road perspective)
-        // At zoomT = 1: topHalfW = w * 1.50, bottomHalfW = w * 2.00 (Every slat extends far past screen edges)
         const roadTopHalfW = isDesktop ? 24 : 18;
         const zoomTopHalfW = (roadTopHalfW) * (1 - zoomT) + (w * 1.50) * zoomT;
         const zoomBottomHalfW = (w * 0.52) * (1 - zoomT) + (w * 2.00) * zoomT;
         const centerHalfW = zoomTopHalfW + (zoomBottomHalfW - zoomTopHalfW) * Math.pow(u, 1.25 * (1 - zoomT * 0.70));
 
-        currentHalfW = wOnLeft * (1 - centerT) + centerHalfW * centerT;
+        const roadCurveX = Math.pow(1 - u, 1.7) * (w * 0.11) * (1 - zoomT);
+        const roadCenter = centerCx + roadCurveX;
+        const roadLeftX = roadCenter - centerHalfW;
+        const roadRightX = roadCenter + centerHalfW;
+
+        flatLeft = curLeftOnLeft * (1 - centerT) + roadLeftX * centerT;
+        flatRight = curRightOnLeft * (1 - centerT) + roadRightX * centerT;
+        currentY = yOnLeft * (1 - centerT) + target3DCenterY * centerT;
 
         // Continuous Row Count & Gap Closure:
         let targetRowsLeft = 1.0;
@@ -1008,7 +1009,7 @@ async function initScrollytelling() {
           else targetRowsCenter = 1.0 * centerT + targetRowsLeft * (1 - centerT);
         }
 
-        // When zooming in fullscreen, slats expand row count to merge and become the white background ("lấy cái đó làm nền trắng luôn"):
+        // When zooming in fullscreen, slats expand row count to merge and become the white background:
         if (zoomT > 0) {
           const fullscreenRows = 14.0 + u * 12.0;
           targetRowsCenter = targetRowsCenter * (1 - zoomT) + fullscreenRows * zoomT;
@@ -1031,24 +1032,33 @@ async function initScrollytelling() {
         const labelAlpha = (isMainMilestone ? 0.95 : 0.45) * dateLabelFade;
         ctx.globalAlpha = labelAlpha * slatAlpha;
 
-        ctx.font = '500 11px monospace';
-        ctx.fillStyle = isMainMilestone ? '#8e929b' : '#6b7280';
-        ctx.textAlign = 'right';
-        const dateRightX = (cx + slatCurveX) - baseHalfW - 80;
-        ctx.fillText(sInfo.date, dateRightX, flatY + 4);
-
         if (isMainMilestone) {
+          ctx.font = '700 11px monospace';
+          const dayWidth = ctx.measureText(sInfo.day).width;
+          const dayRightX = flatLeft - 20;
+          const dayLeftX = dayRightX - dayWidth;
+
+          ctx.fillStyle = '#ffffff';
+          ctx.textAlign = 'left';
+          ctx.fillText(sInfo.day, dayLeftX, flatY + 4);
+
+          const dividerX = dayLeftX - 12;
           ctx.strokeStyle = 'rgba(255, 255, 255, 0.22)';
           ctx.lineWidth = 1;
           ctx.beginPath();
-          ctx.moveTo(dateRightX + 16, flatY - 8);
-          ctx.lineTo(dateRightX + 16, flatY + 8);
+          ctx.moveTo(dividerX, flatY - 8);
+          ctx.lineTo(dividerX, flatY + 8);
           ctx.stroke();
 
-          ctx.font = '700 11px monospace';
-          ctx.fillStyle = '#ffffff';
-          ctx.textAlign = 'left';
-          ctx.fillText(sInfo.day, dateRightX + 28, flatY + 4);
+          ctx.font = '500 11px monospace';
+          ctx.fillStyle = '#8e929b';
+          ctx.textAlign = 'right';
+          ctx.fillText(sInfo.date, dividerX - 12, flatY + 4);
+        } else {
+          ctx.font = '500 11px monospace';
+          ctx.fillStyle = '#6b7280';
+          ctx.textAlign = 'right';
+          ctx.fillText(sInfo.date, flatLeft - 20, flatY + 4);
         }
 
         ctx.restore();
@@ -1060,28 +1070,27 @@ async function initScrollytelling() {
         if (subY >= 40 && subY <= h - 40) {
           ctx.save();
           ctx.globalAlpha = 0.45 * dateLabelFade * slatAlpha;
+          const subDistY = Math.abs(subY - centerY);
+          const subNormDist = Math.min(1.0, subDistY / (h * 0.45));
+          const subCurveProfile = Math.sqrt(Math.max(0.0, 1.0 - subNormDist * subNormDist));
+          const subW = minWidth + (maxWidth - minWidth) * subCurveProfile;
+          const subLeftX = drumRightX - subW;
+          
+          ctx.font = '700 11px monospace';
+          const refDayW = sInfo.day ? ctx.measureText(sInfo.day).width : 45;
+          const subOffset = 20 + refDayW + 24;
           ctx.font = '500 10px monospace';
           ctx.fillStyle = '#6b7280';
           ctx.textAlign = 'right';
-          const subNormDistY = (subY - centerY) / (h * 0.48);
-          const subAbsNorm = Math.min(1.2, Math.abs(subNormDistY));
-          const subCurveFactor = subNormDistY < 0 ? (isDesktop ? 65 : 40) : (isDesktop ? 55 : 35);
-          const subCurveX = Math.pow(subAbsNorm, 1.5) * subCurveFactor;
-          ctx.fillText(sInfo.subDate, (cx + subCurveX) - baseHalfW - 80, subY + 3.5);
+          ctx.fillText(sInfo.subDate, subLeftX - subOffset, subY + 3.5);
           ctx.restore();
         }
       }
-
       // Render the slat dots with crisp, beveled trapezoid ends & continuous growth
       ctx.save();
       const baseAlpha = ctx.globalAlpha * rungDotAlpha * outsideFade;
       ctx.fillStyle = '#ffffff';
 
-      // Center of this specific slat (with gentle road curvature to the right):
-      const slatCx = cx + slatCurveX;
-      // 100% equal width, NO long lines sticking out anywhere:
-      const flatLeft = slatCx - currentHalfW;
-      const flatRight = slatCx + currentHalfW;
       const rowSpacing = dotPitch;
 
       const totalRowsCount = Math.ceil(contRows);
