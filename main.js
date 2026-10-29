@@ -706,7 +706,7 @@ async function initScrollytelling() {
       { step: 2, inP: 0.36,  peakIn: 0.41, peakOut: 0.45, outP: 0.51 }, // Step 2
       { step: 3, inP: 0.49,  peakIn: 0.54, peakOut: 0.58, outP: 0.64 }, // Step 3
       { step: 4, inP: 0.62,  peakIn: 0.67, peakOut: 0.71, outP: 0.74 }, // Step 4 (fades out by 0.74)
-      { step: 5, inP: 0.93,  peakIn: 0.96, peakOut: 1.05, outP: 1.05 }  // Step 5 (Takes over as particles complete forming text)
+      { step: 5, inP: 0.88,  peakIn: 0.93, peakOut: 1.05, outP: 1.05 }  // Step 5: Pure crisp vector typography on white
     ];
 
     let activeStep = -1;
@@ -782,64 +782,7 @@ async function initScrollytelling() {
   }
 
 
-  let cachedTextTargets = null;
-  let cachedTargetW = 0, cachedTargetH = 0;
 
-  function getTextTargetPoints(w, h) {
-    if (cachedTextTargets && cachedTargetW === w && cachedTargetH === h) {
-      return cachedTextTargets;
-    }
-    const off = document.createElement('canvas');
-    off.width = w;
-    off.height = h;
-    const octx = off.getContext('2d');
-    if (!octx) return [];
-
-    const isDesktop = w >= 960;
-    const remPx = 16;
-    const targetPx = Math.min(Math.max(2.6 * remPx, w * 0.045), 4.2 * remPx);
-    const fontSize = Math.round(targetPx);
-
-    octx.font = `700 ${fontSize}px "Plus Jakarta Sans", sans-serif`;
-    octx.fillStyle = '#0f172a';
-    octx.textAlign = 'center';
-    octx.textBaseline = 'middle';
-
-    const lines = [
-      "Được làm",
-      "riêng cho bạn.",
-      "Không giới hạn ."
-    ];
-    const lineHeight = fontSize * 1.25;
-    const startY = h * 0.50 - ((lines.length - 1) * lineHeight) / 2;
-
-    lines.forEach((line, i) => {
-      octx.fillText(line, w * 0.50, startY + i * lineHeight);
-    });
-
-    const imgData = octx.getImageData(0, 0, w, h);
-    const data = imgData.data;
-    const points = [];
-    const pitch = isDesktop ? 3.8 : 3.0;
-
-    for (let y = Math.floor(startY - fontSize); y < Math.ceil(startY + lines.length * lineHeight); y += pitch) {
-      const yInt = Math.floor(y);
-      if (yInt < 0 || yInt >= h) continue;
-      for (let x = Math.floor(w * 0.15); x < Math.ceil(w * 0.85); x += pitch) {
-        const xInt = Math.floor(x);
-        const idx = (yInt * w + xInt) * 4;
-        if (data[idx + 3] > 110) {
-          points.push({ x: xInt, y: yInt });
-        }
-      }
-    }
-
-    points.sort((a, b) => (a.y === b.y ? a.x - b.x : a.y - b.y));
-    cachedTextTargets = points;
-    cachedTargetW = w;
-    cachedTargetH = h;
-    return points;
-  }
 
   function renderQuyTrinhCanvas(progress, activeStep) {
     if (!quyTrinhCanvasCtx || !quyTrinhCanvas) return;
@@ -873,10 +816,11 @@ async function initScrollytelling() {
     const roadRaw = Math.min(1, Math.max(0, (progress - 0.74) / 0.08));
     const roadT = smootherstep(roadRaw);
 
-    // Phase 3: Particle Text Morph (0.84 to 0.94)
-    // "mấy cái hạt như ảnh 2 sẽ biến thành chữ hết cho tôi nhé"
-    const textMorphRaw = Math.min(1, Math.max(0, (progress - 0.84) / 0.10));
-    const textMorphT = smootherstep(textMorphRaw);
+    // Phase 3: Seamless fade from 3D Pyramid into Pure Vector Typography (0.86 to 0.93)
+    // Eliminates all ugly fuzzy dot artifacts - text is 100% crisp, sharp, and pristine!
+    const roadFadeRaw = Math.min(1, Math.max(0, (progress - 0.86) / 0.07));
+    const roadFade = smootherstep(roadFadeRaw);
+    const slatAlpha = Math.max(0, 1 - roadFade);
 
     // ── 2. AMBIENT HALFTONE LATTICE (Trame de fond - subtle gray dot matrix on white) ──
     const gridPitch = 12;
@@ -914,6 +858,10 @@ async function initScrollytelling() {
       quyTrinhRulerHandle.style.width = `${handleHalfW * 2}px`;
     }
 
+    if (slatAlpha <= 0.005) {
+      return; // Fullscreen clean white background for Step 5 text
+    }
+
     ctx.save();
 
     const dotPitch = isDesktop ? 7.6 : 6.0;
@@ -933,10 +881,6 @@ async function initScrollytelling() {
     const centerBottomY = h * 0.98;
     const roadTopHalfW = isDesktop ? 28 : 20;
     const maxRoadBottomHalfW = isDesktop ? w * 0.485 : w * 0.48; // Spans 97% of viewport at bottom!
-
-    // Text target points for particle morph ("mấy cái hạt như ảnh 2 sẽ biến thành chữ hết cho tôi nhé")
-    const textTargetPoints = textMorphT > 0 ? getTextTargetPoints(w, h) : null;
-    let globalDotCounter = 0;
 
     for (let j = -25; j <= 75; j++) {
       const flatY = centerY + j * rungSpacing - drumOffset;
@@ -1017,7 +961,7 @@ async function initScrollytelling() {
         rungDotAlpha = rungDotAlpha * (1 - roadT) + 1.0 * roadT;
       }
 
-      const baseAlpha = rungDotAlpha * outsideFade * effectiveVFade;
+      const baseAlpha = rungDotAlpha * outsideFade * effectiveVFade * slatAlpha;
       if (baseAlpha <= 0.005) continue;
 
       ctx.save();
@@ -1048,34 +992,10 @@ async function initScrollytelling() {
 
           for (let d = 0; d <= dotCount; d++) {
             const dotX = startDotX + d * dotPitch;
-            let drawX = dotX;
-            let drawY = dotY;
-            let drawR = curDotR;
-            let drawAlpha = rowAlpha;
-
-            // ── Particle Text Morph ("mấy cái hạt như ảnh 2 sẽ biến thành chữ hết cho tôi nhé") ──
-            if (textMorphT > 0 && textTargetPoints && textTargetPoints.length > 0) {
-              const dotIdx = globalDotCounter++;
-              if (dotIdx < textTargetPoints.length) {
-                const target = textTargetPoints[dotIdx];
-                // Smooth organic ease into letter positions
-                const dotProgress = smootherstep(textMorphT);
-                drawX = dotX + (target.x - dotX) * dotProgress;
-                drawY = dotY + (target.y - dotY) * dotProgress;
-                drawR = curDotR * (1 - dotProgress) + 1.85 * dotProgress;
-                drawAlpha = rowAlpha;
-              } else {
-                // Surplus dots fade away gracefully as text forms
-                drawAlpha = rowAlpha * Math.max(0, 1 - textMorphT * 1.6);
-              }
-            }
-
-            if (drawAlpha > 0.005) {
-              ctx.globalAlpha = drawAlpha;
-              ctx.beginPath();
-              ctx.arc(drawX, drawY, drawR, 0, Math.PI * 2);
-              ctx.fill();
-            }
+            ctx.globalAlpha = rowAlpha;
+            ctx.beginPath();
+            ctx.arc(dotX, dotY, curDotR, 0, Math.PI * 2);
+            ctx.fill();
           }
         } else {
           for (let d = 0; d < numDots; d++) {
