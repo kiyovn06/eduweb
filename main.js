@@ -855,16 +855,6 @@ async function initScrollytelling() {
     const drumOffset = getSmoothDrumOffset(progress);
 
     // 100% Equal Width across all drum slats (user directive: xóa mấy cái thanh thẳng quá dài đi tất cả đều bằng nhau 100%)
-    const specialRungs = {
-      '-22': { date: 'THỨ NĂM, NGÀY 22 THÁNG 10', day: '' },
-      '-18': { date: 'THỨ SÁU, NGÀY 23 THÁNG 10', day: '' },
-      '-10': { date: 'THỨ HAI, NGÀY 26 THÁNG 10', day: '' },
-      '-4':  { date: 'THỨ BA, NGÀY 27 THÁNG 10',  day: '' },
-      '0':   { date: 'THỨ NĂM, NGÀY 29 THÁNG 10', day: 'NGÀY 1', subDate: 'THỨ SÁU, NGÀY 30 THÁNG 10' },
-      '20':  { date: 'THỨ BA, NGÀY 03 THÁNG 11',  day: 'NGÀY 4', subDate: 'THỨ TƯ, NGÀY 04 THÁNG 11' },
-      '40':  { date: 'THỨ SÁU, NGÀY 06 THÁNG 11', day: 'NGÀY 7', subDate: 'THỨ BẢY, NGÀY 07 THÁNG 11' },
-      '60':  { date: 'THỨ NĂM, NGÀY 12 THÁNG 11', day: 'NGÀY THỨ 10', subDate: 'THỨ SÁU, NGÀY 13 THÁNG 11' }
-    };
 
     // 22 rungs on screen
     const visibleMinJ = 50;
@@ -929,14 +919,7 @@ async function initScrollytelling() {
       let bevelAmount = 0;
       let baseRows = 1.0;
 
-      const sInfo = specialRungs[j.toString()];
-      const isMilestone = !!sInfo && !!sInfo.day;
-
-      if (isMilestone) {
-        baseRows = 1.0;
-        dotR = 1.8;
-        rungDotAlpha = 1.0;
-      } else if (distToCenter < 75) {
+      if (distToCenter < 75) {
         baseRows = 3.0;
         dotR = 1.85;
         rungDotAlpha = 1.0;
@@ -1024,76 +1007,6 @@ async function initScrollytelling() {
         rungDotAlpha = 1.0;
       }
 
-      // Date labels on left (Image 1 & Image 2) - fade smoothly
-      const dateLabelFade = Math.max(0, 1 - leftMorphRaw * 5.0);
-      if (sInfo && isDesktop && dateLabelFade > 0 && flatY >= 35 && flatY <= h - 35) {
-        ctx.save();
-        const isMainMilestone = !!sInfo.day;
-        const labelAlpha = (isMainMilestone ? 0.95 : 0.45) * dateLabelFade * effectiveVFade;
-        ctx.globalAlpha = labelAlpha * slatAlpha;
-
-        if (isMainMilestone) {
-          ctx.font = '700 11px monospace';
-          const dayWidth = ctx.measureText(sInfo.day).width;
-          const dayRightX = flatLeft - 20;
-          const dayLeftX = dayRightX - dayWidth;
-
-          ctx.fillStyle = '#0f172a';
-          ctx.textAlign = 'left';
-          ctx.fillText(sInfo.day, dayLeftX, flatY + 4);
-
-          const dividerX = dayLeftX - 12;
-          ctx.strokeStyle = 'rgba(15, 23, 42, 0.22)';
-          ctx.lineWidth = 1;
-          ctx.beginPath();
-          ctx.moveTo(dividerX, flatY - 8);
-          ctx.lineTo(dividerX, flatY + 8);
-          ctx.stroke();
-
-          ctx.font = '500 11px monospace';
-          ctx.fillStyle = '#475569';
-          ctx.textAlign = 'right';
-          ctx.fillText(sInfo.date, dividerX - 12, flatY + 4);
-        } else {
-          ctx.font = '500 11px monospace';
-          ctx.fillStyle = '#94a3b8';
-          ctx.textAlign = 'right';
-          ctx.fillText(sInfo.date, flatLeft - 20, flatY + 4);
-        }
-
-        ctx.restore();
-      }
-
-      // Secondary date label 4 rungs below milestone
-      if (sInfo && sInfo.subDate && isDesktop && dateLabelFade > 0) {
-        const subY = flatY + 4 * rungSpacing;
-        if (subY >= 40 && subY <= h - 40) {
-          const subTopLimit = h * 0.16;
-          const subBottomLimit = h * 0.84;
-          let subVFade = 1.0;
-          if (subY < subTopLimit + fadeMargin) subVFade = Math.max(0, (subY - subTopLimit) / fadeMargin);
-          else if (subY > subBottomLimit - fadeMargin) subVFade = Math.max(0, (subBottomLimit - subY) / fadeMargin);
-          subVFade = subVFade * subVFade * (3 - 2 * subVFade);
-          if (subVFade > 0.005) {
-            ctx.save();
-            ctx.globalAlpha = 0.45 * dateLabelFade * slatAlpha * subVFade;
-            const subDistY = Math.abs(subY - centerY);
-            const subNormDy = Math.min(1.0, subDistY / (h * 0.44));
-            const subExtraDist = Math.max(0.0, (subDistY / (h * 0.44)) - 1.0);
-            const subCurveX = (Math.pow(subNormDy, 1.65) + subExtraDist * 0.4) * maxCurveX;
-            const subLeftX = (leftCx + subCurveX) - drumW * 0.5;
-            
-            ctx.font = '700 11px monospace';
-            const refDayW = sInfo.day ? ctx.measureText(sInfo.day).width : 45;
-            const subOffset = 20 + refDayW + 24;
-            ctx.font = '500 10px monospace';
-            ctx.fillStyle = '#94a3b8';
-            ctx.textAlign = 'right';
-            ctx.fillText(sInfo.subDate, subLeftX - subOffset, subY + 3.5);
-            ctx.restore();
-          }
-        }
-      }
       // Render the slat dots with crisp, beveled trapezoid ends & continuous growth
       ctx.save();
       const baseAlpha = ctx.globalAlpha * rungDotAlpha * outsideFade * effectiveVFade;
