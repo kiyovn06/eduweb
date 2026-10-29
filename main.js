@@ -907,19 +907,33 @@ async function initScrollytelling() {
       const outsideFade = isVisibleOnScreen ? 1.0 : Math.max(0, 1 - leftMorphT * 1.5);
       if (outsideFade <= 0) continue;
 
+      // Vertical fade to hide slats near top and bottom ("ẩn gần ở trên và dưới")
+      const topLimit = h * 0.16;
+      const bottomLimit = h * 0.84;
+      const fadeMargin = h * 0.10;
+      let rawVFade = 1.0;
+      if (flatY < topLimit + fadeMargin) {
+        rawVFade = Math.max(0, (flatY - topLimit) / fadeMargin);
+      } else if (flatY > bottomLimit - fadeMargin) {
+        rawVFade = Math.max(0, (bottomLimit - flatY) / fadeMargin);
+      }
+      const smoothVFade = rawVFade * rawVFade * (3 - 2 * rawVFade);
+      const effectiveVFade = smoothVFade * (1 - leftMorphT) + 1.0 * leftMorphT;
+      if (effectiveVFade <= 0.005) continue;
+
       // ── 3D DRUM CYLINDER CURVE (Image 2 & User direction) ──
-      // Both top and bottom curve smoothly and prominently to the right ("cong cong qua bên phải", "ở dưới cũng cong", "cong đều")
+      // Elegant, restrained curve to the right ("cong vừa phải, cong đều")
       const distToCenter = Math.abs(flatY - centerY);
       const dy = flatY - centerY;
       const normDy = dy / (h * 0.44);
       const absNorm = Math.min(1.0, Math.abs(normDy));
       const extraDist = Math.max(0.0, Math.abs(normDy) - 1.0);
 
-      const maxCurveX = isDesktop ? 75 : 48;
+      const maxCurveX = isDesktop ? 36 : 22;
       const curveX = (1.0 - Math.cos(absNorm * Math.PI * 0.5) + extraDist * 0.5) * maxCurveX;
 
-      const minWidth = isDesktop ? 64 : 44;
-      const maxWidth = isDesktop ? 96 : 68;
+      const minWidth = isDesktop ? 58 : 40;
+      const maxWidth = isDesktop ? 86 : 60;
       const widthProfile = Math.cos(absNorm * Math.PI * 0.5);
       const drumW = minWidth + (maxWidth - minWidth) * widthProfile;
 
@@ -1035,7 +1049,7 @@ async function initScrollytelling() {
       if (sInfo && isDesktop && dateLabelFade > 0 && flatY >= 35 && flatY <= h - 35) {
         ctx.save();
         const isMainMilestone = !!sInfo.day;
-        const labelAlpha = (isMainMilestone ? 0.95 : 0.45) * dateLabelFade;
+        const labelAlpha = (isMainMilestone ? 0.95 : 0.45) * dateLabelFade * effectiveVFade;
         ctx.globalAlpha = labelAlpha * slatAlpha;
 
         if (isMainMilestone) {
@@ -1074,30 +1088,38 @@ async function initScrollytelling() {
       if (sInfo && sInfo.subDate && isDesktop && dateLabelFade > 0) {
         const subY = flatY + 4 * rungSpacing;
         if (subY >= 40 && subY <= h - 40) {
-          ctx.save();
-          ctx.globalAlpha = 0.45 * dateLabelFade * slatAlpha;
-          const subDy = subY - centerY;
-          const subNormDy = subDy / (h * 0.44);
-          const subAbsNorm = Math.min(1.0, Math.abs(subNormDy));
-          const subExtraDist = Math.max(0.0, Math.abs(subNormDy) - 1.0);
-          const subCurveX = (1.0 - Math.cos(subAbsNorm * Math.PI * 0.5) + subExtraDist * 0.5) * maxCurveX;
-          const subWidthProfile = Math.cos(subAbsNorm * Math.PI * 0.5);
-          const subW = minWidth + (maxWidth - minWidth) * subWidthProfile;
-          const subLeftX = (leftCx + subCurveX) - subW * 0.5;
-          
-          ctx.font = '700 11px monospace';
-          const refDayW = sInfo.day ? ctx.measureText(sInfo.day).width : 45;
-          const subOffset = 20 + refDayW + 24;
-          ctx.font = '500 10px monospace';
-          ctx.fillStyle = '#6b7280';
-          ctx.textAlign = 'right';
-          ctx.fillText(sInfo.subDate, subLeftX - subOffset, subY + 3.5);
-          ctx.restore();
+          const subTopLimit = h * 0.16;
+          const subBottomLimit = h * 0.84;
+          let subVFade = 1.0;
+          if (subY < subTopLimit + fadeMargin) subVFade = Math.max(0, (subY - subTopLimit) / fadeMargin);
+          else if (subY > subBottomLimit - fadeMargin) subVFade = Math.max(0, (subBottomLimit - subY) / fadeMargin);
+          subVFade = subVFade * subVFade * (3 - 2 * subVFade);
+          if (subVFade > 0.005) {
+            ctx.save();
+            ctx.globalAlpha = 0.45 * dateLabelFade * slatAlpha * subVFade;
+            const subDy = subY - centerY;
+            const subNormDy = subDy / (h * 0.44);
+            const subAbsNorm = Math.min(1.0, Math.abs(subNormDy));
+            const subExtraDist = Math.max(0.0, Math.abs(subNormDy) - 1.0);
+            const subCurveX = (1.0 - Math.cos(subAbsNorm * Math.PI * 0.5) + subExtraDist * 0.5) * maxCurveX;
+            const subWidthProfile = Math.cos(subAbsNorm * Math.PI * 0.5);
+            const subW = minWidth + (maxWidth - minWidth) * subWidthProfile;
+            const subLeftX = (leftCx + subCurveX) - subW * 0.5;
+            
+            ctx.font = '700 11px monospace';
+            const refDayW = sInfo.day ? ctx.measureText(sInfo.day).width : 45;
+            const subOffset = 20 + refDayW + 24;
+            ctx.font = '500 10px monospace';
+            ctx.fillStyle = '#6b7280';
+            ctx.textAlign = 'right';
+            ctx.fillText(sInfo.subDate, subLeftX - subOffset, subY + 3.5);
+            ctx.restore();
+          }
         }
       }
       // Render the slat dots with crisp, beveled trapezoid ends & continuous growth
       ctx.save();
-      const baseAlpha = ctx.globalAlpha * rungDotAlpha * outsideFade;
+      const baseAlpha = ctx.globalAlpha * rungDotAlpha * outsideFade * effectiveVFade;
       ctx.fillStyle = '#ffffff';
 
       const rowSpacing = dotPitch;
