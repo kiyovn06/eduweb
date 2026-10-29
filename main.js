@@ -919,10 +919,12 @@ async function initScrollytelling() {
       let bevelAmount = 0;
       let baseRows = 1.0;
 
-      // 3D Drum Curvature to the Right ("cong cong qua bên phải")
-      // In Sybiosme, the drum on the left curves smoothly to the right as it recedes towards the top of the viewport
-      const normY = Math.min(1, Math.max(0, currentY / h));
-      const drumCurveX = Math.pow(1 - normY, 1.5) * (isDesktop ? 65 : 40);
+      // 3D Drum Curvature to the Right ("ở dưới cũng cong", "cong cong qua bên phải")
+      // In Sybiosme, both the top and bottom of the cylindrical drum recede and curve smoothly to the right
+      const normDistY = (currentY - centerY) / (h * 0.48);
+      const absNormDistY = Math.min(1.2, Math.abs(normDistY));
+      const curveFactor = normDistY < 0 ? (isDesktop ? 65 : 40) : (isDesktop ? 55 : 35);
+      const drumCurveX = Math.pow(absNormDistY, 1.5) * curveFactor;
       let slatCurveX = drumCurveX * (1 - zoomT);
 
       const sInfo = specialRungs[j.toString()];
@@ -1061,8 +1063,10 @@ async function initScrollytelling() {
           ctx.font = '500 10px monospace';
           ctx.fillStyle = '#6b7280';
           ctx.textAlign = 'right';
-          const subNormY = Math.min(1, Math.max(0, subY / h));
-          const subCurveX = Math.pow(1 - subNormY, 1.5) * (isDesktop ? 65 : 40);
+          const subNormDistY = (subY - centerY) / (h * 0.48);
+          const subAbsNorm = Math.min(1.2, Math.abs(subNormDistY));
+          const subCurveFactor = subNormDistY < 0 ? (isDesktop ? 65 : 40) : (isDesktop ? 55 : 35);
+          const subCurveX = Math.pow(subAbsNorm, 1.5) * subCurveFactor;
           ctx.fillText(sInfo.subDate, (cx + subCurveX) - baseHalfW - 80, subY + 3.5);
           ctx.restore();
         }
