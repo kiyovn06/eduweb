@@ -701,12 +701,12 @@ async function initScrollytelling() {
 
     // ── Continuous Scroll-Scrubbed Text Animation (With Stable Readability Plateaus) ──
     const cardTimeline = [
-      { step: 0, inP: 0.11,  peakIn: 0.15, peakOut: 0.20, outP: 0.26 }, // Step 0 appears ONLY after drum has safely reached the left!
-      { step: 1, inP: 0.24,  peakIn: 0.29, peakOut: 0.33, outP: 0.40 }, // Step 1
-      { step: 2, inP: 0.38,  peakIn: 0.43, peakOut: 0.47, outP: 0.54 }, // Step 2
-      { step: 3, inP: 0.52,  peakIn: 0.57, peakOut: 0.61, outP: 0.68 }, // Step 3
-      { step: 4, inP: 0.65,  peakIn: 0.70, peakOut: 0.75, outP: 0.78 }, // Step 4 (3D Ladder)
-      { step: 5, inP: 0.94,  peakIn: 0.97, peakOut: 1.05, outP: 1.05 }  // Centered Title on pure white (after white bloom)
+      { step: 0, inP: 0.11,  peakIn: 0.15, peakOut: 0.20, outP: 0.25 }, // Step 0
+      { step: 1, inP: 0.23,  peakIn: 0.28, peakOut: 0.32, outP: 0.38 }, // Step 1
+      { step: 2, inP: 0.36,  peakIn: 0.41, peakOut: 0.45, outP: 0.51 }, // Step 2
+      { step: 3, inP: 0.49,  peakIn: 0.54, peakOut: 0.58, outP: 0.64 }, // Step 3
+      { step: 4, inP: 0.62,  peakIn: 0.67, peakOut: 0.71, outP: 0.74 }, // Step 4 (fades out by 0.74)
+      { step: 5, inP: 0.93,  peakIn: 0.96, peakOut: 1.05, outP: 1.05 }  // Step 5 (Takes over as particles complete forming text)
     ];
 
     let activeStep = -1;
@@ -781,6 +781,66 @@ async function initScrollytelling() {
     renderQuyTrinhCanvas(progress, activeStep);
   }
 
+
+  let cachedTextTargets = null;
+  let cachedTargetW = 0, cachedTargetH = 0;
+
+  function getTextTargetPoints(w, h) {
+    if (cachedTextTargets && cachedTargetW === w && cachedTargetH === h) {
+      return cachedTextTargets;
+    }
+    const off = document.createElement('canvas');
+    off.width = w;
+    off.height = h;
+    const octx = off.getContext('2d');
+    if (!octx) return [];
+
+    const isDesktop = w >= 960;
+    const remPx = 16;
+    const targetPx = Math.min(Math.max(2.6 * remPx, w * 0.045), 4.2 * remPx);
+    const fontSize = Math.round(targetPx);
+
+    octx.font = `700 ${fontSize}px "Plus Jakarta Sans", sans-serif`;
+    octx.fillStyle = '#0f172a';
+    octx.textAlign = 'center';
+    octx.textBaseline = 'middle';
+
+    const lines = [
+      "Được làm",
+      "riêng cho bạn.",
+      "Không giới hạn ."
+    ];
+    const lineHeight = fontSize * 1.25;
+    const startY = h * 0.50 - ((lines.length - 1) * lineHeight) / 2;
+
+    lines.forEach((line, i) => {
+      octx.fillText(line, w * 0.50, startY + i * lineHeight);
+    });
+
+    const imgData = octx.getImageData(0, 0, w, h);
+    const data = imgData.data;
+    const points = [];
+    const pitch = isDesktop ? 3.8 : 3.0;
+
+    for (let y = Math.floor(startY - fontSize); y < Math.ceil(startY + lines.length * lineHeight); y += pitch) {
+      const yInt = Math.floor(y);
+      if (yInt < 0 || yInt >= h) continue;
+      for (let x = Math.floor(w * 0.15); x < Math.ceil(w * 0.85); x += pitch) {
+        const xInt = Math.floor(x);
+        const idx = (yInt * w + xInt) * 4;
+        if (data[idx + 3] > 110) {
+          points.push({ x: xInt, y: yInt });
+        }
+      }
+    }
+
+    points.sort((a, b) => (a.y === b.y ? a.x - b.x : a.y - b.y));
+    cachedTextTargets = points;
+    cachedTargetW = w;
+    cachedTargetH = h;
+    return points;
+  }
+
   function renderQuyTrinhCanvas(progress, activeStep) {
     if (!quyTrinhCanvasCtx || !quyTrinhCanvas) return;
     const ctx = quyTrinhCanvasCtx;
@@ -789,7 +849,7 @@ async function initScrollytelling() {
     const h = quyTrinhCanvas.height / dpr;
     if (w <= 0 || h <= 0) return;
 
-    // ── 1. BACKGROUND & FLOATING HEADER (100% Minimalist White Theme) ──
+    // ── 1. BACKGROUND (100% Minimalist White Theme) ──
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, w, h);
 
@@ -799,35 +859,28 @@ async function initScrollytelling() {
       viewportEl.style.backgroundColor = '#ffffff';
     }
 
-    // Always keep floating header in light mode (dark logo & buttons on white bg)
-    const headerEl = document.querySelector('.sybios-floating-header');
-    if (headerEl) {
-      headerEl.classList.add('is-light');
-    }
-
-    // ── 3. TIMELINE PHASES MATCHING USER DIRECTION 100% ──
+    // ── 3. CHOREOGRAPHED TIMELINE PHASES ──
     // Phase 1: Intro glide from CENTER to LEFT (0.05 to 0.11)
-    // At start (progress <= 0.05): drum is in MIDDLE ("thanh kéo hiện ở giữa"), 100% straight vertical
-    // When scrolling past 0.05: drum glides safely to LEFT BEFORE text appears ("không bị đè lên chữ")
+    // Progress <= 0.05: drum is straight in middle ("thanh kéo hiện ở giữa"), 100% vertical, no text
+    // Progress 0.05 -> 0.11: drum glides safely to LEFT BEFORE text appears ("không bị đè lên chữ")
     const introShiftRaw = Math.min(1, Math.max(0, (progress - 0.05) / 0.06));
     const introLeftT = smootherstep(introShiftRaw);
-    const curveAmount = introLeftT; // 0.0 when straight in center, smoothly rises to 1.0 when curved on left!
+    const curveAmount = introLeftT;
 
-    // Morph on the LEFT (Phase 2: 0.67 to 0.74)
-    const leftMorphRaw = Math.min(1, Math.max(0, (progress - 0.67) / 0.07));
-    const leftMorphT = smootherstep(leftMorphRaw);
+    // Phase 2: Unified Glide & Open into 3D Pyramid (0.74 to 0.82)
+    // Single continuous, fluid transition: Drum glides from left to center and opens into 3D pyramid!
+    // ("không bị lỗi chuyển động quá nhiều, mượt mà 100%")
+    const roadRaw = Math.min(1, Math.max(0, (progress - 0.74) / 0.08));
+    const roadT = smootherstep(roadRaw);
 
-    // Glide to CENTER (Phase 3: 0.77 to 0.83) - only starts AFTER Step 4 text has finished fading out!
-    const centerGlideRaw = Math.min(1, Math.max(0, (progress - 0.77) / 0.06));
-    const centerT = smootherstep(centerGlideRaw);
-
-    // Fullscreen Zoom Expansion (Phase 5: 0.83 to 0.93)
-    const zoomRaw = Math.min(1, Math.max(0, (progress - 0.83) / 0.10));
-    const zoomT = smootherstep(zoomRaw);
+    // Phase 3: Particle Text Morph (0.84 to 0.94)
+    // "mấy cái hạt như ảnh 2 sẽ biến thành chữ hết cho tôi nhé"
+    const textMorphRaw = Math.min(1, Math.max(0, (progress - 0.84) / 0.10));
+    const textMorphT = smootherstep(textMorphRaw);
 
     // ── 2. AMBIENT HALFTONE LATTICE (Trame de fond - subtle gray dot matrix on white) ──
     const gridPitch = 12;
-    const ambientAlpha = 0.045 * Math.max(0, 1 - zoomT);
+    const ambientAlpha = 0.045 * Math.max(0, 1 - roadT);
     if (ambientAlpha > 0.002) {
       ctx.fillStyle = `rgba(15, 23, 42, ${ambientAlpha})`;
       const cols = Math.ceil(w / gridPitch);
@@ -844,17 +897,15 @@ async function initScrollytelling() {
     const bgEase = Math.min(1, Math.max(0, (progress - 0.94) / 0.04));
 
     const isDesktop = w >= 960;
-    // Ladder center on LEFT:
-    // Safely positioned in the left third of viewport (never pushing rightwards towards text)
+    // Drum center on LEFT (Safely tucked on the left third, never colliding with right text column):
     const leftCx = isDesktop 
       ? Math.min(Math.max(160, Math.round(w * 0.18)), 250) 
       : (w > 640 ? Math.round(w * 0.18) : Math.round(w * 0.16));
-    // Ladder center in MIDDLE:
     const centerCx = w * 0.50;
 
-    // Base X position: Starts in CENTER, glides to LEFT when text appears, stays LEFT until Step 4, then glides back to CENTER!
-    const currentBaseCx = centerCx * (1 - introLeftT) + leftCx * introLeftT;
-    const cx = currentBaseCx * (1 - centerT) + centerCx * centerT;
+    // Single unified horizontal base position:
+    // Starts in CENTER -> glides to LEFT -> stays LEFT through steps 0-4 -> glides smoothly to CENTER as 3D pyramid!
+    const currentBaseCx = (centerCx * (1 - introLeftT) + leftCx * introLeftT) * (1 - roadT) + centerCx * roadT;
 
     // Keep interactive ruler handle in sync with drum base position
     if (quyTrinhRulerHandle) {
@@ -864,14 +915,6 @@ async function initScrollytelling() {
     }
 
     ctx.save();
-    const fadeZoomRaw = Math.min(1, Math.max(0, (zoomT - 0.78) / 0.22));
-    const slatAlpha = Math.max(0, 1 - Math.pow(fadeZoomRaw, 1.5));
-    if (slatAlpha <= 0.005) {
-      // Entire canvas is solid white, all slats fully merged - skip 100% of slat loops!
-      ctx.restore();
-      return;
-    }
-    ctx.globalAlpha = slatAlpha;
 
     const dotPitch = isDesktop ? 7.6 : 6.0;
     const centerY = h * 0.50;
@@ -880,25 +923,27 @@ async function initScrollytelling() {
     // Smooth continuous drum offset with zero acceleration jerk
     const drumOffset = getSmoothDrumOffset(progress);
 
-    // 100% Equal Width across all drum slats (user directive: xóa mấy cái thanh thẳng quá dài đi tất cả đều bằng nhau 100%)
-
     // 22 rungs on screen
     const visibleMinJ = 50;
     const visibleMaxJ = 71;
     const totalSlats = visibleMaxJ - visibleMinJ;
 
-    // Y Bounds on LEFT (Image 4):
-    const leftTopY = h * 0.14;
-    const leftBottomY = h * 0.94;
+    // 3D Road Perspective Bounds in CENTER (matching Image 2 & Image 5)
+    const centerTopY = h * 0.12;
+    const centerBottomY = h * 0.98;
+    const roadTopHalfW = isDesktop ? 28 : 20;
+    const maxRoadBottomHalfW = isDesktop ? w * 0.485 : w * 0.48; // Spans 97% of viewport at bottom!
 
-    // Y Bounds in CENTER (3D Road & Fullscreen Zoom):
+    // Text target points for particle morph ("mấy cái hạt như ảnh 2 sẽ biến thành chữ hết cho tôi nhé")
+    const textTargetPoints = textMorphT > 0 ? getTextTargetPoints(w, h) : null;
+    let globalDotCounter = 0;
 
     for (let j = -25; j <= 75; j++) {
       const flatY = centerY + j * rungSpacing - drumOffset;
       if (flatY < -150 || flatY > h + 150) continue;
 
       const isVisibleOnScreen = j >= visibleMinJ && j <= visibleMaxJ;
-      const outsideFade = isVisibleOnScreen ? 1.0 : Math.max(0, 1 - leftMorphT * 1.5);
+      const outsideFade = isVisibleOnScreen ? 1.0 : Math.max(0, 1 - roadT * 1.5);
       if (outsideFade <= 0) continue;
 
       // Vertical fade to hide slats near top and bottom ("ẩn gần ở trên và dưới")
@@ -912,21 +957,15 @@ async function initScrollytelling() {
         rawVFade = Math.max(0, (bottomLimit - flatY) / fadeMargin);
       }
       const smoothVFade = rawVFade * rawVFade * (3 - 2 * rawVFade);
-      const effectiveVFade = smoothVFade * (1 - leftMorphT) + 1.0 * leftMorphT;
+      const effectiveVFade = smoothVFade * (1 - roadT) + 1.0 * roadT;
       if (effectiveVFade <= 0.005) continue;
 
-      // ── DRUM CYLINDER CURVE (Image 2 & User Directives) ──
-      // 1. Equal width & equal dot count across all slats ("tất cả đều bằng nhau 100%, thẳng hàng với nhau 100%")
-      // 2. In center: slats are straight & aligned at base position ("ở giữa nó sẽ hiện đúng")
-      // 3. Towards top & bottom: slats curve smoothly to the right closer to the text ("dần dần qua 2 bên trên dưới sẽ hiện gần phía chữ bên phải và bên kia nó sẽ hiện xa hơn")
-      // 4. Moderate restrained curve ("bị cong quá rồi" -> maxCurveX = 26px desktop, 16px mobile)
+      // Curve is only active while on the left; when gliding to center pyramid, curves align straight to center!
       const distToCenter = Math.abs(flatY - centerY);
       const normDy = Math.min(1.0, distToCenter / (h * 0.44));
       const extraDist = Math.max(0.0, (distToCenter / (h * 0.44)) - 1.0);
-
       const maxCurveX = isDesktop ? 22 : 14;
-      // Flat in center (distToCenter < 60 gives curve < 0.6px), smoothly curving towards top/bottom
-      const curveX = (Math.pow(normDy, 1.65) + extraDist * 0.4) * maxCurveX * curveAmount;
+      const curveX = (Math.pow(normDy, 1.65) + extraDist * 0.4) * maxCurveX * curveAmount * (1 - roadT);
 
       const numDots = isDesktop ? 17 : 13;
       const drumW = (numDots - 1) * dotPitch;
@@ -940,7 +979,6 @@ async function initScrollytelling() {
       let flatRight = drumRightX;
       let dotR = 1.45;
       let rungDotAlpha = 0.75;
-      let bevelAmount = 0;
       let baseRows = 1.0;
 
       if (distToCenter < 75) {
@@ -959,122 +997,90 @@ async function initScrollytelling() {
 
       let contRows = baseRows;
 
-      // ── "ở dưới to dần dần lên" & 3D Curved Road Evolution ──
+      // ── Unified 3D Perspective Road Expansion (Ảnh 2 / Ảnh 5) ──
+      // Single continuous, smooth transition without jerky sub-stages!
       if (isVisibleOnScreen) {
         const slatIdx = j - visibleMinJ;
         const u = slatIdx / totalSlats; // 0.0 at top slat (horizon), 1.0 at bottom slat (camera)
 
-        // Target Y on LEFT (Image 4)
-        const target3DLeftY = leftTopY + (leftBottomY - leftTopY) * Math.pow(u, 1.55);
-
-
-        // Delay climbs from bottom up
-        const delay = (1 - u) * 0.42;
-        const rungMorphRaw = Math.min(1, Math.max(0, (leftMorphT - delay) / 0.58));
-        const rungMorph = smootherstep(rungMorphRaw);
-
-        // Position on LEFT (Ladder mode)
-        const maxLadderHalfW = isDesktop ? Math.min(95, Math.round(w * 0.075)) : 65;
-        const leftHalfW = (18 + (maxLadderHalfW - 18) * Math.pow(u, 1.15));
-        const targetLadderLeftX = leftCx - leftHalfW;
-        const targetLadderRightX = leftCx + leftHalfW;
-
-        const yOnLeft = flatY * (1 - rungMorph) + target3DLeftY * rungMorph;
-        const curLeftOnLeft = drumLeftX * (1 - rungMorph) + targetLadderLeftX * rungMorph;
-        const curRightOnLeft = drumRightX * (1 - rungMorph) + targetLadderRightX * rungMorph;
-
-        // In CENTER (3D Road) -> FULLSCREEN EXPANSION matching Image 3:
-        // 100% Centered and symmetrical ("vẫn hiện canh ở đúng giữa" -> roadCenter = centerCx, zero curve)
-        const roadTopHalfW = isDesktop ? 28 : 20;
-        const maxRoadBottomHalfW = isDesktop ? w * 0.485 : w * 0.48; // Spans 97% of viewport at bottom!
-        const roadBottomHalfW = (w * 0.24) * (1 - zoomT) + maxRoadBottomHalfW * zoomT;
-        const centerHalfW = roadTopHalfW + (roadBottomHalfW - roadTopHalfW) * Math.pow(u, 1.35);
-
-        const roadCenter = centerCx; // 100% DEAD CENTER (no curve, perfectly symmetrical like Image 3!)
-        const roadLeftX = roadCenter - centerHalfW;
-        const roadRightX = roadCenter + centerHalfW;
-
-        // Target Y on 3D Road with perspective depth (closely spaced near horizon, spread near camera)
-        const centerTopY = h * 0.12;
-        const centerBottomY = h * 0.98;
+        const pyramidHalfW = roadTopHalfW + (maxRoadBottomHalfW - roadTopHalfW) * Math.pow(u, 1.35);
         const roadTargetY = centerTopY + (centerBottomY - centerTopY) * Math.pow(u, 1.60);
 
-        flatLeft = curLeftOnLeft * (1 - centerT) + roadLeftX * centerT;
-        flatRight = curRightOnLeft * (1 - centerT) + roadRightX * centerT;
-        currentY = yOnLeft * (1 - centerT) + roadTargetY * centerT;
+        const currentHalfW = (drumW * 0.5) * (1 - roadT) + pyramidHalfW * roadT;
+        flatLeft = currentBaseCx - currentHalfW;
+        flatRight = currentBaseCx + currentHalfW;
+        currentY = flatY * (1 - roadT) + roadTargetY * roadT;
 
-        // Continuous Row Count & Gap Closure:
-        let targetRowsLeft = 1.0;
-        if (u > 0.88) targetRowsLeft = 1.0 + 5.5 * Math.pow((u - 0.2) / 0.8, 1.4);
-        else if (u > 0.20) targetRowsLeft = 1.0 + 3.8 * Math.pow((u - 0.2) / 0.8, 1.4);
-        else targetRowsLeft = 1.0;
-
-        let targetRowsCenter = targetRowsLeft;
-        if (centerT > 0) {
-          if (u > 0.80) targetRowsCenter = 7.0 * centerT + targetRowsLeft * (1 - centerT);
-          else if (u > 0.60) targetRowsCenter = 5.0 * centerT + targetRowsLeft * (1 - centerT);
-          else if (u > 0.35) targetRowsCenter = 3.0 * centerT + targetRowsLeft * (1 - centerT);
-          else if (u > 0.18) targetRowsCenter = 2.0 * centerT + targetRowsLeft * (1 - centerT);
-          else targetRowsCenter = 1.0 * centerT + targetRowsLeft * (1 - centerT);
-        }
-
-        // When zooming in fullscreen, slats expand row count to merge and become the white background:
-        if (zoomT > 0) {
-          const fullscreenRows = 3.0 + u * 2.0;
-          targetRowsCenter = targetRowsCenter * (1 - zoomT) + fullscreenRows * zoomT;
-        }
-
-        const rowsOnLeft = baseRows * (1 - rungMorph) + targetRowsLeft * rungMorph;
-        contRows = Math.max(1.0, rowsOnLeft * (1 - centerT) + targetRowsCenter * centerT);
-
-        // Dot radius grows during zoom so dots merge horizontally and vertically into solid white
-        dotR = 1.45 + (u * 0.35) * rungMorph + (u * 0.8 + 0.3) * centerT + (2.6 * zoomT);
-        bevelAmount = Math.max(rungMorph, centerT);
-        rungDotAlpha = 1.0;
+        const targetPyramidRows = 2.0 + u * 1.5;
+        contRows = baseRows * (1 - roadT) + targetPyramidRows * roadT;
+        dotR = dotR * (1 - roadT) + (1.55 + u * 0.65) * roadT;
+        rungDotAlpha = rungDotAlpha * (1 - roadT) + 1.0 * roadT;
       }
 
-      // Render the slat dots with crisp, beveled trapezoid ends & continuous growth
-      const baseAlpha = ctx.globalAlpha * rungDotAlpha * outsideFade * effectiveVFade;
+      const baseAlpha = rungDotAlpha * outsideFade * effectiveVFade;
       if (baseAlpha <= 0.005) continue;
 
       ctx.save();
       ctx.fillStyle = '#0f172a';
 
       const rowSpacing = dotPitch;
-
       const totalRowsCount = Math.ceil(contRows);
+
       for (let rIdx = 0; rIdx < totalRowsCount; rIdx++) {
-        // Continuous row weight: 1.0 for fully active rows, fractional for nascent outer rows
         const rowCoverage = Math.max(0, Math.min(1, contRows - rIdx));
         if (rowCoverage <= 0.02) continue;
 
         const rowNorm = (rIdx - (contRows - 1) / 2);
         const dotY = currentY + rowNorm * rowSpacing;
 
-        // Trapezoid stair-step bevel matching Sybiosme 100%
-        const rowBevel = rowNorm * dotPitch * 0.55 * bevelAmount;
+        // Bevel only active during road transition
+        const rowBevel = rowNorm * dotPitch * 0.55 * roadT;
         const rowLeft = flatLeft - rowBevel;
         const rowRight = flatRight + rowBevel;
-        const dotCount = Math.floor((rowRight - rowLeft) / dotPitch);
 
-        // Smooth growth: dots in nascent rows grow smoothly from 0.4 radius to full radius
         const curDotR = dotR * (0.35 + 0.65 * rowCoverage);
-        ctx.globalAlpha = baseAlpha * (0.15 + 0.85 * rowCoverage);
+        const rowAlpha = baseAlpha * (0.15 + 0.85 * rowCoverage);
 
-        if (leftMorphT > 0) {
+        if (roadT > 0) {
           const actualSpan = rowRight - rowLeft;
           const dotCount = Math.floor(actualSpan / dotPitch);
-          // Centered dot layout for 100% mathematical symmetry about centerCx
           const startDotX = (rowLeft + rowRight - dotCount * dotPitch) * 0.5;
+
           for (let d = 0; d <= dotCount; d++) {
             const dotX = startDotX + d * dotPitch;
-            ctx.beginPath();
-            ctx.arc(dotX, dotY, curDotR, 0, Math.PI * 2);
-            ctx.fill();
+            let drawX = dotX;
+            let drawY = dotY;
+            let drawR = curDotR;
+            let drawAlpha = rowAlpha;
+
+            // ── Particle Text Morph ("mấy cái hạt như ảnh 2 sẽ biến thành chữ hết cho tôi nhé") ──
+            if (textMorphT > 0 && textTargetPoints && textTargetPoints.length > 0) {
+              const dotIdx = globalDotCounter++;
+              if (dotIdx < textTargetPoints.length) {
+                const target = textTargetPoints[dotIdx];
+                // Smooth organic ease into letter positions
+                const dotProgress = smootherstep(textMorphT);
+                drawX = dotX + (target.x - dotX) * dotProgress;
+                drawY = dotY + (target.y - dotY) * dotProgress;
+                drawR = curDotR * (1 - dotProgress) + 1.85 * dotProgress;
+                drawAlpha = rowAlpha;
+              } else {
+                // Surplus dots fade away gracefully as text forms
+                drawAlpha = rowAlpha * Math.max(0, 1 - textMorphT * 1.6);
+              }
+            }
+
+            if (drawAlpha > 0.005) {
+              ctx.globalAlpha = drawAlpha;
+              ctx.beginPath();
+              ctx.arc(drawX, drawY, drawR, 0, Math.PI * 2);
+              ctx.fill();
+            }
           }
         } else {
           for (let d = 0; d < numDots; d++) {
             const dotX = flatLeft + d * dotPitch;
+            ctx.globalAlpha = rowAlpha;
             ctx.beginPath();
             ctx.arc(dotX, dotY, curDotR, 0, Math.PI * 2);
             ctx.fill();
@@ -1082,15 +1088,6 @@ async function initScrollytelling() {
         }
       }
       ctx.restore();
-    }
-
-    // Seamless Solid White Transition ("nó sẽ làm lấy cái đó làm nền trắng luôn nhé"):
-    // As zoomT finishes (0.85 -> 1.0), smoothly bridge any micro interstitial crevices so
-    // the expanding slats physically become 100% solid white before the background color switch!
-    if (zoomT > 0.85) {
-      const mergeWhiteAlpha = Math.min(1, (zoomT - 0.85) / 0.15);
-      ctx.fillStyle = `rgba(255, 255, 255, ${mergeWhiteAlpha})`;
-      ctx.fillRect(0, 0, w, h);
     }
 
     ctx.restore();

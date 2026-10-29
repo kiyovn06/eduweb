@@ -2918,70 +2918,7 @@ body {
   }
 }
 
-/* ── SYBIOSME FLOATING HEADER (Logo Left & Pill Toolbar Right - Chuẩn Ảnh 1) ── */
-.sybios-floating-header {
-  position: absolute;
-  top: 24px;
-  left: clamp(24px, 4vw, 56px);
-  right: clamp(24px, 4vw, 56px);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  z-index: 25;
-  pointer-events: none;
-}
 
-.sybios-brand-logo {
-  display: flex;
-  align-items: center;
-  color: #ffffff;
-  pointer-events: auto;
-  opacity: 0.9;
-  transition: opacity 0.2s ease;
-}
-
-.sybios-brand-logo:hover {
-  opacity: 1;
-}
-
-.sybios-toolbar {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(18, 18, 22, 0.75);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  padding: 6px;
-  border-radius: 9999px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-  pointer-events: auto;
-}
-
-.sybios-tool-btn {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  background: #24252a;
-  color: #ffffff;
-  cursor: pointer;
-  padding: 0;
-  transition: transform 0.15s ease, background-color 0.15s ease;
-}
-
-.sybios-tool-btn:hover {
-  transform: scale(1.06);
-}
-
-.sybios-tool-btn.btn-orange {
-  background: #fe4701 !important;
-  color: #ffffff !important;
-  box-shadow: 0 0 14px rgba(254, 71, 1, 0.5);
-}
 
 /* ── STORY EYEBROW BADGE (Dấu chấm tròn cam #fe4701 + Bước 01) ── */
 .story-eyebrow {
@@ -3005,25 +2942,7 @@ body {
   box-shadow: 0 0 10px rgba(254, 71, 1, 0.8);
 }
 
-/* ── SYBIOSME FLOATING HEADER LIGHT MODE (Khi nền chuyển sang trắng #f2f2f4) ── */
-.sybios-floating-header {
-  transition: color 0.3s ease;
-}
 
-.sybios-floating-header.is-light .sybios-brand-logo {
-  color: #0a0b0e !important;
-}
-
-.sybios-floating-header.is-light .sybios-toolbar {
-  background: rgba(255, 255, 255, 0.90) !important;
-  border-color: rgba(0, 0, 0, 0.12) !important;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
-}
-
-.sybios-floating-header.is-light .sybios-tool-btn:not(.btn-orange) {
-  background: #18181c !important;
-  color: #ffffff !important;
-}
 
 .text-orange-gradient {
   background: linear-gradient(90deg, #fe4701 0%, #fe4701 40%, #7e381b 95%);
