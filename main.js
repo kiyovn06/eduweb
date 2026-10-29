@@ -690,6 +690,8 @@ async function initScrollytelling() {
     if (!quyTrinhTrack) return;
     const rect = quyTrinhTrack.getBoundingClientRect();
     const windowH = window.innerHeight;
+    // Fast bailout: if section is completely offscreen, skip all canvas work
+    if (rect.bottom < -50 || rect.top > windowH + 50) return;
     const totalDist = rect.height - windowH;
     if (totalDist <= 0) return;
 
@@ -699,7 +701,7 @@ async function initScrollytelling() {
 
     // ── Continuous Scroll-Scrubbed Text Animation (With Stable Readability Plateaus) ──
     const cardTimeline = [
-      { step: 0, inP: -0.05, peakIn: 0.02, peakOut: 0.05, outP: 0.12 },
+      { step: 0, inP: 0.015, peakIn: 0.045, peakOut: 0.075, outP: 0.13 },
       { step: 1, inP: 0.08,  peakIn: 0.14, peakOut: 0.18, outP: 0.25 }, // Day 1
       { step: 2, inP: 0.24,  peakIn: 0.30, peakOut: 0.34, outP: 0.41 }, // Day 4
       { step: 3, inP: 0.40,  peakIn: 0.46, peakOut: 0.50, outP: 0.57 }, // Day 7
@@ -804,6 +806,12 @@ async function initScrollytelling() {
     }
 
     // ── 3. TIMELINE PHASES MATCHING USER DIRECTION 100% ──
+    // Phase 1: Intro glide from CENTER to LEFT as text enters (0.015 to 0.07)
+    // At start: drum is in MIDDLE ("thanh kéo hiện ở giữa")
+    // When text appears: drum glides to LEFT ("chữ xuất hiện đẩy thanh kéo qua bên trái")
+    const introShiftRaw = Math.min(1, Math.max(0, (progress - 0.015) / 0.055));
+    const introLeftT = smootherstep(introShiftRaw);
+
     // Morph on the LEFT (Phase 2: 0.62 to 0.74)
     const leftMorphRaw = Math.min(1, Math.max(0, (progress - 0.62) / 0.12));
     const leftMorphT = smootherstep(leftMorphRaw);
@@ -840,11 +848,22 @@ async function initScrollytelling() {
     // Ladder center in MIDDLE:
     const centerCx = w * 0.50;
 
-    // Center X position: Stays on LEFT until Step 4 finishes (progress 0.74), then glides to CENTER!
-    const cx = leftCx * (1 - centerT) + centerCx * centerT;
+    // Base X position: Starts in CENTER, glides to LEFT when text appears, stays LEFT until Step 4, then glides back to CENTER!
+    const currentBaseCx = centerCx * (1 - introLeftT) + leftCx * introLeftT;
+    const cx = currentBaseCx * (1 - centerT) + centerCx * centerT;
+
+    // Keep interactive ruler handle in sync with drum base position
+    if (quyTrinhRulerHandle) {
+      quyTrinhRulerHandle.style.left = `${currentBaseCx - (isDesktop ? 80 : 50)}px`;
+    }
 
     ctx.save();
     const slatAlpha = Math.max(0, 1 - Math.pow(zoomT, 1.5));
+    if (slatAlpha <= 0.005) {
+      // Entire canvas is solid white, all slats fully merged - skip 100% of slat loops!
+      ctx.restore();
+      return;
+    }
     ctx.globalAlpha = slatAlpha;
 
     const dotPitch = isDesktop ? 7.6 : 6.0;
@@ -907,7 +926,7 @@ async function initScrollytelling() {
       const numDots = isDesktop ? 17 : 13;
       const drumW = (numDots - 1) * dotPitch;
 
-      const slatCx = leftCx + curveX;
+      const slatCx = currentBaseCx + curveX;
       const drumLeftX = slatCx - drumW * 0.5;
       const drumRightX = slatCx + drumW * 0.5;
 
@@ -964,8 +983,8 @@ async function initScrollytelling() {
 
         // In CENTER (3D Road) -> FULLSCREEN EXPANSION ("mới mở rộng qua 2 bên", "phóng to hết màn hình"):
         const roadTopHalfW = isDesktop ? 24 : 18;
-        const zoomTopHalfW = (roadTopHalfW) * (1 - zoomT) + (w * 1.50) * zoomT;
-        const zoomBottomHalfW = (w * 0.52) * (1 - zoomT) + (w * 2.00) * zoomT;
+        const zoomTopHalfW = (roadTopHalfW) * (1 - zoomT) + (w * 0.45) * zoomT;
+        const zoomBottomHalfW = (w * 0.52) * (1 - zoomT) + (w * 0.65) * zoomT;
         const centerHalfW = zoomTopHalfW + (zoomBottomHalfW - zoomTopHalfW) * Math.pow(u, 1.25 * (1 - zoomT * 0.70));
 
         const roadCurveX = Math.pow(1 - u, 1.7) * (w * 0.11) * (1 - zoomT);
@@ -994,7 +1013,7 @@ async function initScrollytelling() {
 
         // When zooming in fullscreen, slats expand row count to merge and become the white background:
         if (zoomT > 0) {
-          const fullscreenRows = 14.0 + u * 12.0;
+          const fullscreenRows = 3.0 + u * 2.0;
           targetRowsCenter = targetRowsCenter * (1 - zoomT) + fullscreenRows * zoomT;
         }
 
@@ -1008,8 +1027,10 @@ async function initScrollytelling() {
       }
 
       // Render the slat dots with crisp, beveled trapezoid ends & continuous growth
-      ctx.save();
       const baseAlpha = ctx.globalAlpha * rungDotAlpha * outsideFade * effectiveVFade;
+      if (baseAlpha <= 0.005) continue;
+
+      ctx.save();
       ctx.fillStyle = '#0f172a';
 
       const rowSpacing = dotPitch;
