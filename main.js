@@ -907,19 +907,25 @@ async function initScrollytelling() {
       const outsideFade = isVisibleOnScreen ? 1.0 : Math.max(0, 1 - leftMorphT * 1.5);
       if (outsideFade <= 0) continue;
 
-      // ── DRUM ARC MATCHING SYBIOSME (Image 2) ──
-      // The right edge is a constant vertical baseline.
-      // The left edge forms a smooth, continuous, perfectly even circular arc:
+      // ── 3D DRUM CYLINDER CURVE (Image 2 & User direction) ──
+      // Both top and bottom curve smoothly and prominently to the right ("cong cong qua bên phải", "ở dưới cũng cong", "cong đều")
       const distToCenter = Math.abs(flatY - centerY);
-      const normDist = Math.min(1.0, distToCenter / (h * 0.45));
-      const curveProfile = Math.sqrt(Math.max(0.0, 1.0 - normDist * normDist));
+      const dy = flatY - centerY;
+      const normDy = dy / (h * 0.44);
+      const absNorm = Math.min(1.0, Math.abs(normDy));
+      const extraDist = Math.max(0.0, Math.abs(normDy) - 1.0);
 
-      const minWidth = isDesktop ? 40 : 28; // ~6 dots
-      const maxWidth = isDesktop ? 96 : 68; // ~14 dots
-      const drumW = minWidth + (maxWidth - minWidth) * curveProfile;
+      const maxCurveX = isDesktop ? 75 : 48;
+      const curveX = (1.0 - Math.cos(absNorm * Math.PI * 0.5) + extraDist * 0.5) * maxCurveX;
 
-      const drumRightX = leftCx + (isDesktop ? 36 : 24);
-      const drumLeftX = drumRightX - drumW;
+      const minWidth = isDesktop ? 64 : 44;
+      const maxWidth = isDesktop ? 96 : 68;
+      const widthProfile = Math.cos(absNorm * Math.PI * 0.5);
+      const drumW = minWidth + (maxWidth - minWidth) * widthProfile;
+
+      const slatCx = leftCx + curveX;
+      const drumLeftX = slatCx - drumW * 0.5;
+      const drumRightX = slatCx + drumW * 0.5;
 
       let currentY = flatY;
       let flatLeft = drumLeftX;
@@ -1070,11 +1076,14 @@ async function initScrollytelling() {
         if (subY >= 40 && subY <= h - 40) {
           ctx.save();
           ctx.globalAlpha = 0.45 * dateLabelFade * slatAlpha;
-          const subDistY = Math.abs(subY - centerY);
-          const subNormDist = Math.min(1.0, subDistY / (h * 0.45));
-          const subCurveProfile = Math.sqrt(Math.max(0.0, 1.0 - subNormDist * subNormDist));
-          const subW = minWidth + (maxWidth - minWidth) * subCurveProfile;
-          const subLeftX = drumRightX - subW;
+          const subDy = subY - centerY;
+          const subNormDy = subDy / (h * 0.44);
+          const subAbsNorm = Math.min(1.0, Math.abs(subNormDy));
+          const subExtraDist = Math.max(0.0, Math.abs(subNormDy) - 1.0);
+          const subCurveX = (1.0 - Math.cos(subAbsNorm * Math.PI * 0.5) + subExtraDist * 0.5) * maxCurveX;
+          const subWidthProfile = Math.cos(subAbsNorm * Math.PI * 0.5);
+          const subW = minWidth + (maxWidth - minWidth) * subWidthProfile;
+          const subLeftX = (leftCx + subCurveX) - subW * 0.5;
           
           ctx.font = '700 11px monospace';
           const refDayW = sInfo.day ? ctx.measureText(sInfo.day).width : 45;
