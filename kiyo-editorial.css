@@ -2192,7 +2192,7 @@ body {
 .quy-trinh-text-col {
   position: relative;
   margin-left: auto;
-  width: clamp(280px, 46vw, 560px);
+  width: clamp(320px, 55vw, 780px);
   height: 100%;
   display: flex;
   align-items: center;
@@ -2233,9 +2233,30 @@ body {
 }
 
 .step-impact-editorial {
-  font-size: clamp(1.4rem, 2.6vw, 2.5rem);
-  line-height: 1.28;
+  font-size: clamp(1.3rem, 2.2vw, 2.3rem);
+  line-height: 1.34;
+  letter-spacing: -0.025em;
   color: #ffffff;
+}
+
+.quy-trinh-step-view[data-step="4"] .step4-faint {
+  opacity: 0.26;
+  transition: opacity 0.3s ease;
+}
+
+.quy-trinh-step-view[data-step="4"] .step4-accent {
+  color: #ffffff !important;
+  opacity: 0.26;
+  transition: color 0.3s ease, opacity 0.3s ease;
+}
+
+.quy-trinh-step-view[data-step="4"].is-lit .step4-faint {
+  opacity: 1;
+}
+
+.quy-trinh-step-view[data-step="4"].is-lit .step4-accent {
+  color: #fe4701 !important;
+  opacity: 1;
 }
 
 .text-orange-accent {

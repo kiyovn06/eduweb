@@ -652,12 +652,12 @@ async function initScrollytelling() {
     // ── Continuous Scroll-Scrubbed Text Animation (Zero Jitter, Zero Overlap, Sybiosme-Standard) ──
     // Clean discrete handoffs: outgoing step glides up and exits BEFORE incoming step rises from below
     const cardTimeline = [
-      { step: 0, inP: -0.05, peak: 0.04, outP: 0.09 },
-      { step: 1, inP: 0.10,  peak: 0.18, outP: 0.25 },
-      { step: 2, inP: 0.27,  peak: 0.35, outP: 0.43 },
-      { step: 3, inP: 0.45,  peak: 0.52, outP: 0.58 },
-      { step: 4, inP: 0.60,  peak: 0.67, outP: 0.73 },
-      { step: 5, inP: 0.86,  peak: 0.90, outP: 1.05 }
+      { step: 0, inP: -0.05, peak: 0.04, outP: 0.12 },
+      { step: 1, inP: 0.13,  peak: 0.21, outP: 0.28 },
+      { step: 2, inP: 0.30,  peak: 0.38, outP: 0.46 },
+      { step: 3, inP: 0.48,  peak: 0.55, outP: 0.61 },
+      { step: 4, inP: 0.62,  peak: 0.70, outP: 0.77 },
+      { step: 5, inP: 0.88,  peak: 0.93, outP: 1.05 }
     ];
 
     let activeStep = -1;
@@ -694,6 +694,9 @@ async function initScrollytelling() {
       view.style.visibility = alpha > 0.005 ? 'visible' : 'hidden';
       view.style.pointerEvents = alpha > 0.5 ? 'auto' : 'none';
 
+      if (step === 4) {
+        view.classList.toggle('is-lit', progress >= 0.685);
+      }
       if (step === 5) {
         view.style.transform = `translateY(${offset.toFixed(1)}px)`;
       } else {
@@ -715,10 +718,10 @@ async function initScrollytelling() {
     const h = quyTrinhCanvas.height / dpr;
     if (w <= 0 || h <= 0) return;
 
-    // ── 1. BACKGROUND DUAL-TONE CURVE (Matching Sybiosme 1:1) ──
-    // Dark void #0a0b0e transitions to pure radiant white #ffffff as slats merge and engulf the viewport
-    // "thành nền trắng nhé"
-    const bgProgress = Math.min(1, Math.max(0, (progress - 0.82) / 0.055));
+    // ── 1. BACKGROUND DUAL-TONE & WHITE BLOOM (100% Sybiosme Match) ──
+    // Void #0a0b0e stays solid through Image 1, 2, 3, 4, 5.
+    // Blooms into pure radiant white #ffffff only at final transition (0.85 - 0.90)
+    const bgProgress = Math.min(1, Math.max(0, (progress - 0.85) / 0.05));
     const bgEase = bgProgress * bgProgress * (3 - 2 * bgProgress);
 
     const r = Math.round(10 + (255 - 10) * bgEase);
@@ -759,27 +762,40 @@ async function initScrollytelling() {
     if (bgEase >= 1.0) return;
 
     const isDesktop = w >= 960;
-    const initialCx = isDesktop ? w * 0.30 : (w > 640 ? w * 0.24 : w * 0.20);
+    // Ladder center on LEFT (Image 1, 2, 3, 4): exactly 26.5% width on desktop
+    const leftCx = isDesktop ? w * 0.265 : (w > 640 ? w * 0.24 : w * 0.22);
+    // Ladder center in MIDDLE (Image 5): exactly 50% width
     const centerCx = w * 0.50;
 
-    // ── 3. TIMELINE MORPH & 3D PERSPECTIVE SLATS ──
-    // Phase 1 (0.72 - 0.78): Ruler bar at NGÀY THỨ 10 widens from bottom up and glides to center
-    // Phase 2 (0.78 - 0.84): Centered 3D ladder expands full width ("hiện full màn hình" - Image 2)
-    // Phase 3 (0.84 - 0.88): Slats thicken & merge into solid white carpet flooding upwards into pure white
-    const morphRaw = Math.min(1, Math.max(0, (progress - 0.72) / 0.065));
-    const morphT = morphRaw * morphRaw * (3 - 2 * morphRaw);
+    // ── 3. TIMELINE PHASES MATCHING THE 5 USER IMAGES 100% ──
+    // Phase 1 (0.00 - 0.62): 2D drum on LEFT scrolling dates (Image 1 & Image 2)
+    // Phase 2 (0.62 - 0.70): Image 3: Drum on LEFT locks at NGÀY THỨ 10, bottom rungs thicken ("ở dưới to dần dần lên")
+    // Phase 3 (0.70 - 0.77): Image 4: 3D perspective ladder forms on LEFT while Step 4 text highlights in orange on RIGHT
+    // Phase 4 (0.77 - 0.85): Image 5: Ladder glides to CENTER and expands to FULL SCREEN ("hiện full màn hình")
+    // Phase 5 (0.85 - 0.90): Slats swell huge and background blooms into pure white ("thành nền trắng nhé")
 
-    const zoomRaw = Math.min(1, Math.max(0, (progress - 0.78) / 0.07));
-    const zoomT = zoomRaw * zoomRaw * (3 - 2 * zoomRaw);
+    // Morph on the LEFT (Phase 2 & Phase 3: 0.62 to 0.75)
+    const leftMorphRaw = Math.min(1, Math.max(0, (progress - 0.62) / 0.11));
+    const leftMorphT = leftMorphRaw * leftMorphRaw * (3 - 2 * leftMorphRaw);
+
+    // Glide to CENTER (Phase 4: 0.75 to 0.80)
+    const centerGlideRaw = Math.min(1, Math.max(0, (progress - 0.75) / 0.05));
+    const centerT = centerGlideRaw * centerGlideRaw * (3 - 2 * centerGlideRaw);
+
+    // Fullscreen width expansion (Phase 4: 0.76 to 0.85)
+    const fullRaw = Math.min(1, Math.max(0, (progress - 0.76) / 0.08));
+    const fullT = fullRaw * fullRaw * (3 - 2 * fullRaw);
+
+    // Center X position: Stays on LEFT until Step 4 finishes (progress 0.77), then glides to CENTER!
+    const cx = leftCx * (1 - centerT) + centerCx * centerT;
 
     ctx.save();
-    // Slats stay fully opaque white until background turns white, then fade seamlessly into white
-    const slatAlpha = Math.max(0, 1 - Math.pow(bgEase, 2.0));
+    const slatAlpha = Math.max(0, 1 - Math.pow(bgEase, 1.5));
     ctx.globalAlpha = slatAlpha;
 
-    const dotPitch = 7.2;
+    const dotPitch = isDesktop ? 6.8 : 5.6;
     const centerY = h * 0.50;
-    const rungSpacing = 26;
+    const rungSpacing = isDesktop ? 26 : 22;
 
     let drumOffset = 0;
     if (progress < 0.18) {
@@ -795,7 +811,8 @@ async function initScrollytelling() {
     }
 
     const specialRungs = {
-      '-18': { date: 'THỨ SÁU, NGÀY 23 THÁNG 10', day: '', ext: 0, extRows: 1 },
+      '-22': { date: 'THỨ NĂM, NGÀY 22 THÁNG 10', day: '', ext: (isDesktop ? 70 : 40), extRows: 1 },
+      '-18': { date: 'THỨ SÁU, NGÀY 23 THÁNG 10', day: '', ext: (isDesktop ? 70 : 40), extRows: 1 },
       '-10': { date: 'THỨ HAI, NGÀY 26 THÁNG 10', day: '', ext: (isDesktop ? 65 : 40), extRows: 2 },
       '-4':  { date: 'THỨ BA, NGÀY 27 THÁNG 10',  day: '', ext: (isDesktop ? 90 : 50), extRows: 1 },
       '0':   { date: 'THỨ NĂM, NGÀY 29 THÁNG 10', day: 'NGÀY 1', ext: (isDesktop ? 220 : 120), extRows: 1, subDate: 'THỨ SÁU, NGÀY 30 THÁNG 10' },
@@ -804,26 +821,25 @@ async function initScrollytelling() {
       '60':  { date: 'THỨ NĂM, NGÀY 12 THÁNG 11', day: 'NGÀY THỨ 10', ext: (isDesktop ? 220 : 120), extRows: 1, subDate: 'THỨ SÁU, NGÀY 13 THÁNG 11' }
     };
 
-    // Center X smoothly glides from left drum position to exact center
-    const cx = initialCx * (1 - morphT) + centerCx * morphT;
-
-    // Measured parameters from Sybiosme 1:1 (22 slats on screen)
-    // As zoomT advances: camera travels forward along the road, slats move up and expand
-    const baseTopY = h * 0.155;
-    const baseBottomY = h * 0.912;
-    const ladderTopY = baseTopY * (1 - zoomT) + (-h * 0.35) * zoomT;
-    const ladderBottomY = baseBottomY * (1 - zoomT) + (h * 1.15) * zoomT;
-
+    // 22 rungs on screen
     const visibleMinJ = 50;
-    const visibleMaxJ = 71; // 22 rungs exactly!
+    const visibleMaxJ = 71;
     const totalSlats = visibleMaxJ - visibleMinJ;
+
+    // Y Bounds on LEFT (Image 4):
+    const leftTopY = h * 0.14;
+    const leftBottomY = h * 0.94;
+
+    // Y Bounds in CENTER (Image 5):
+    const centerTopY = h * 0.10;
+    const centerBottomY = h * 0.95;
 
     for (let j = -25; j <= 75; j++) {
       const flatY = centerY + j * rungSpacing - drumOffset;
       if (flatY < -150 || flatY > h + 150) continue;
 
       const isVisibleOnScreen = j >= visibleMinJ && j <= visibleMaxJ;
-      const outsideFade = isVisibleOnScreen ? 1.0 : Math.max(0, 1 - morphT * 3.5);
+      const outsideFade = isVisibleOnScreen ? 1.0 : Math.max(0, 1 - leftMorphT * 3.5);
       if (outsideFade <= 0) continue;
 
       const distToCenter = Math.abs(flatY - centerY);
@@ -837,10 +853,11 @@ async function initScrollytelling() {
       let dotR = 1.45;
       let rungDotAlpha = 0.75;
       let bevelAmount = 0;
+      let extraRightExt = 0;
 
       const sInfo = specialRungs[j.toString()];
       const isMilestone = !!sInfo && !!sInfo.day;
-      const milestoneExtension = (sInfo && morphT < 0.35) ? sInfo.ext * (1 - morphT * 3.0) : 0;
+      const milestoneExtension = (sInfo && leftMorphT < 0.80) ? sInfo.ext * (1 - Math.max(0, leftMorphT - 0.4) * 2.0) : 0;
 
       if (isMilestone) {
         numRows = 1;
@@ -864,56 +881,72 @@ async function initScrollytelling() {
         numRows = sInfo.extRows;
       }
 
-      // ── "ở dưới to dần dần lên": Precise 1:1 Sybiosme Slat Morph ──
+      // ── "ở dưới to dần dần lên": Multi-Phase Slat Evolution ──
       if (isVisibleOnScreen) {
         const slatIdx = j - visibleMinJ;
         const u = slatIdx / totalSlats; // 0.0 at top slat, 1.0 at bottom slat
 
-        // Target 3D perspective Y position
-        const target3DY = ladderTopY + (ladderBottomY - ladderTopY) * Math.pow(u, 1.55);
+        // Target Y on LEFT (Image 4)
+        const target3DLeftY = leftTopY + (leftBottomY - leftTopY) * Math.pow(u, 1.55);
+        // Target Y in CENTER (Image 5: more perspective separation towards bottom)
+        const target3DCenterY = centerTopY + (centerBottomY - centerTopY) * Math.pow(u, 1.72);
 
-        // Bottom slats widen first, climbing smoothly upward
+        // Delay climbs from bottom up (Image 3: bottom rungs thicken first)
         const delay = (1 - u) * 0.45;
-        const rungMorphRaw = Math.min(1, Math.max(0, (morphT - delay) / (1 - delay)));
+        const rungMorphRaw = Math.min(1, Math.max(0, (leftMorphT - delay) / (1 - delay)));
         const rungMorph = rungMorphRaw * rungMorphRaw * (3 - 2 * rungMorphRaw);
 
-        currentY = flatY * (1 - rungMorph) + target3DY * rungMorph;
+        const yOnLeft = flatY * (1 - rungMorph) + target3DLeftY * rungMorph;
+        currentY = yOnLeft * (1 - centerT) + target3DCenterY * centerT;
 
-        // Sybiosme Slat width:
-        // In 3D: Top is 25% w (50% full width), Bottom is 50% w (100% full width)
-        // In Zoom expansion ("hiện full màn hình"): Top swells to 55% w, Bottom swells to 80% w
-        const targetTopHalfW = (w * 0.25) * (1 - zoomT) + (w * 0.55) * zoomT;
-        const targetBottomHalfW = (w * 0.50) * (1 - zoomT) + (w * 0.80) * zoomT;
-        const target3DHalfW = targetTopHalfW + (targetBottomHalfW - targetTopHalfW) * Math.pow(u, 1.1);
+        // Slat Width Evolution:
+        // On LEFT (Image 4): Top halfW = 20px (~6 dots), Bottom halfW = 135px (~40 dots)
+        const leftHalfW = (20 + (135 - 20) * Math.pow(u, 1.15));
+        const wOnLeft = baseHalfW * (1 - rungMorph) + leftHalfW * rungMorph;
 
-        currentHalfW = baseHalfW * (1 - rungMorph) + target3DHalfW * rungMorph;
+        // In CENTER (Image 5): Full pyramid perspective expansion!
+        const targetTopHalfW = (w * 0.04) * (1 - fullT) + (w * 0.055) * fullT;
+        const targetBottomHalfW = (w * 0.35) * (1 - fullT) + (w * 0.65) * fullT;
+        const centerHalfW = targetTopHalfW + (targetBottomHalfW - targetTopHalfW) * Math.pow(u, 1.35);
 
-        // Slat row count (thickness):
-        // Top: 2 rows, Mid: 3-4 rows, Bottom: 5-6 rows
-        // During zoomT: bottom slats thicken dramatically to close gaps into solid white carpet!
-        let targetRows = 2;
-        if (u > 0.85) targetRows = 6;
-        else if (u > 0.60) targetRows = 4;
-        else if (u > 0.35) targetRows = 3;
-        else targetRows = 2;
+        currentHalfW = wOnLeft * (1 - centerT) + centerHalfW * centerT;
 
-        if (zoomT > 0) {
-          // Bottom slats expand up to 14-18 rows of dots, closing the gaps completely
-          const extraRows = Math.round(14 * Math.pow(u, 0.8) * zoomT);
-          targetRows += extraRows;
+        // Row Count (Thickness):
+        // Top slats: 1 row. Mid slats: 2-3 rows. Bottom slats: 5-8 rows.
+        let targetRowsLeft = 1;
+        if (u > 0.88) targetRowsLeft = 8;
+        else if (u > 0.72) targetRowsLeft = 6;
+        else if (u > 0.55) targetRowsLeft = 4;
+        else if (u > 0.38) targetRowsLeft = 3;
+        else if (u > 0.20) targetRowsLeft = 2;
+        else targetRowsLeft = 1;
+
+        let targetRowsCenter = targetRowsLeft;
+        if (fullT > 0) {
+          if (u > 0.80) targetRowsCenter = Math.round(7 * fullT + targetRowsLeft * (1 - fullT));
+          else if (u > 0.60) targetRowsCenter = Math.round(5 * fullT + targetRowsLeft * (1 - fullT));
+          else if (u > 0.40) targetRowsCenter = Math.round(3 * fullT + targetRowsLeft * (1 - fullT));
+          else targetRowsCenter = targetRowsLeft;
         }
 
-        numRows = Math.max(1, Math.round(numRows * (1 - rungMorph) + targetRows * rungMorph));
-        dotR = 1.45 + (u * 0.35) * rungMorph + (u * 1.2 + 0.3) * zoomT;
-        bevelAmount = Math.max(rungMorph, zoomT);
+        const rowsOnLeft = Math.max(1, Math.round(numRows * (1 - rungMorph) + targetRowsLeft * rungMorph));
+        numRows = Math.max(1, Math.round(rowsOnLeft * (1 - centerT) + targetRowsCenter * centerT));
+
+        dotR = 1.45 + (u * 0.35) * rungMorph + (u * 0.8 + 0.3) * fullT;
+        bevelAmount = Math.max(rungMorph, fullT);
         rungDotAlpha = 1.0;
+
+        // Extra horizontal dotted line at very bottom rung in Image 3
+        if (u > 0.95 && leftMorphT > 0.05 && leftMorphT < 0.85) {
+          extraRightExt = (1 - Math.max(0, leftMorphT - 0.3) * 1.5) * (isDesktop ? 130 : 65);
+        }
       }
 
-      // Date labels on left (fade out quickly once morph begins)
-      if (sInfo && isDesktop && morphT < 0.35 && flatY >= 35 && flatY <= h - 35) {
+      // Date labels on left (Image 1 & Image 2)
+      if (sInfo && isDesktop && leftMorphT < 0.05 && flatY >= 35 && flatY <= h - 35) {
         ctx.save();
         const isMainMilestone = !!sInfo.day;
-        const labelAlpha = (isMainMilestone ? 0.95 : 0.45) * Math.max(0, 1 - morphT * 3.0);
+        const labelAlpha = (isMainMilestone ? 0.95 : 0.45) * Math.max(0, 1 - leftMorphT * 3.0);
         ctx.globalAlpha = labelAlpha * slatAlpha;
 
         ctx.font = '500 11px monospace';
@@ -940,11 +973,11 @@ async function initScrollytelling() {
       }
 
       // Secondary date label 4 rungs below milestone
-      if (sInfo && sInfo.subDate && isDesktop && morphT < 0.35) {
+      if (sInfo && sInfo.subDate && isDesktop && leftMorphT < 0.05) {
         const subY = flatY + 4 * rungSpacing;
         if (subY >= 40 && subY <= h - 40) {
           ctx.save();
-          ctx.globalAlpha = 0.45 * Math.max(0, 1 - morphT * 3.0) * slatAlpha;
+          ctx.globalAlpha = 0.45 * Math.max(0, 1 - leftMorphT * 3.0) * slatAlpha;
           ctx.font = '500 10px monospace';
           ctx.fillStyle = '#6b7280';
           ctx.textAlign = 'right';
@@ -959,15 +992,15 @@ async function initScrollytelling() {
       ctx.fillStyle = '#ffffff';
 
       const flatLeft = cx - currentHalfW;
-      const flatRight = cx + currentHalfW + milestoneExtension;
-      const rowSpacing = 3.6 + zoomT * 0.8;
+      const flatRight = cx + currentHalfW + milestoneExtension + extraRightExt;
+      const rowSpacing = dotPitch;
 
       for (let rIdx = 0; rIdx < numRows; rIdx++) {
         const rowNorm = (rIdx - (numRows - 1) / 2);
         const dotY = currentY + rowNorm * rowSpacing;
 
-        // Trapezoid bevel: each row steps outward by 0.5 * dotPitch (stair-step bevel matching Sybiosme 100%)
-        const rowBevel = rowNorm * dotPitch * 0.6 * bevelAmount;
+        // Trapezoid stair-step bevel matching Sybiosme 100%
+        const rowBevel = rowNorm * dotPitch * 0.55 * bevelAmount;
         const rowLeft = flatLeft - rowBevel;
         const rowRight = flatRight + rowBevel;
         const dotCount = Math.floor((rowRight - rowLeft) / dotPitch);
