@@ -2192,7 +2192,7 @@ body {
 .quy-trinh-text-col {
   position: relative;
   margin-left: auto;
-  width: clamp(340px, 48vw, 620px);
+  width: clamp(280px, 46vw, 560px);
   height: 100%;
   display: flex;
   align-items: center;
@@ -2204,19 +2204,12 @@ body {
   left: 0;
   right: 0;
   top: 50%;
-  transform: translateY(calc(-50% + 16px));
+  transform: translateY(-50%);
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transition: opacity 0.32s cubic-bezier(0.16, 1, 0.3, 1), transform 0.36s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.32s;
+  transition: none !important;
   will-change: opacity, transform;
-}
-
-.quy-trinh-step-view.is-active {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-  transform: translateY(-50%);
 }
 
 .step-num-line {
@@ -2231,17 +2224,17 @@ body {
 
 .step-hero-title {
   font-family: var(--font-display, 'Plus Jakarta Sans', sans-serif);
-  font-size: clamp(2.4rem, 4vw, 3.8rem);
+  font-size: clamp(1.8rem, 3.6vw, 3.4rem);
   font-weight: 700;
-  line-height: 1.15;
+  line-height: 1.18;
   color: #ffffff;
   letter-spacing: -0.03em;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.1rem;
 }
 
 .step-impact-editorial {
-  font-size: clamp(2rem, 3.2vw, 3rem);
-  line-height: 1.25;
+  font-size: clamp(1.4rem, 2.6vw, 2.5rem);
+  line-height: 1.28;
   color: #ffffff;
 }
 
@@ -2306,14 +2299,14 @@ body {
 }
 
 /* Responsive */
-@media (max-width: 960px) {
+@media (max-width: 640px) {
   .stage-quy-trinh-dark {
     min-height: 380vh;
   }
   .quy-trinh-overlay-stage {
     flex-direction: column;
     justify-content: center;
-    padding: 0 24px;
+    padding: 0 20px;
   }
   .quy-trinh-left-milestones {
     display: none;
@@ -2323,7 +2316,7 @@ body {
     margin-left: 0;
   }
   .step-hero-title {
-    font-size: 2rem;
+    font-size: 1.8rem;
   }
   .quy-trinh-step-view.step-final-centered {
     left: 0;
