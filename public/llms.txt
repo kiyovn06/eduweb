@@ -18,5 +18,5 @@ KiyoEdu là giải pháp công nghệ giáo dục (EdTech) trực thuộc KIYOVN
 
 ## Canonical Links
 - Trang chủ nền tảng: https://ede.kiyo.vn
-- Đăng ký & Trải nghiệm: https://ede.kiyo.vn/register
+- Đăng ký & Trải nghiệm: https://ede.kiyo.vn/
 - Tập đoàn KIYOVN: https://kiyovn.com
