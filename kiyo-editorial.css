@@ -1152,17 +1152,32 @@ body {
 
 .managed-title {
   font-family: var(--font-sans), 'Plus Jakarta Sans', -apple-system, sans-serif;
-  font-size: clamp(1.8rem, 2.3vw, 2.9rem);
+  font-size: clamp(2.8rem, 4vw, 4.8rem);
   font-weight: 800;
   color: #2b5cff;
-  line-height: 1.15;
-  letter-spacing: -0.035em;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
   margin: 0;
   text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.title-line-text {
+  color: #2b5cff;
+  display: block;
   white-space: nowrap;
-  display: inline-flex;
-  align-items: baseline;
-  gap: 0.25em;
+}
+
+.title-line-num {
+  font-size: 1.55em;
+  font-weight: 900;
+  color: #ff5500;
+  line-height: 0.88;
+  display: block;
+  margin: 6px 0;
+  text-shadow: 0 6px 24px rgba(255, 85, 0, 0.28);
 }
 
 .title-line-text {
