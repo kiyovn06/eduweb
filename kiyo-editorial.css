@@ -2178,6 +2178,21 @@ body {
   margin: 0 auto;
 }
 
+#tinh-nang .section-intro {
+  margin-bottom: clamp(3rem, 5vh, 4.5rem);
+  text-align: center;
+}
+
+#tinh-nang .section-title {
+  font-family: var(--font-display, 'Plus Jakarta Sans', sans-serif);
+  font-size: clamp(2.2rem, 3.4vw, 3.6rem);
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.035em;
+  line-height: 1.15;
+  margin: 0;
+}
+
 .pricing-tiers-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
