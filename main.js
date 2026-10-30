@@ -70,6 +70,12 @@ async function initScrollytelling() {
   const statValues = Array.from(document.querySelectorAll('.stat-value'));
   let statsCounted = false;
 
+  // Smootherstep helper: C2 continuous zero acceleration jerk at boundaries
+  function smootherstep(t) {
+    const c = Math.max(0, Math.min(1, t));
+    return c * c * c * (c * (c * 6 - 15) + 10);
+  }
+
   // ── 3. Smooth Hero Pinned Scroll & Scaling (Kéo lên luôn · Chữ & Ảnh co giãn) ───
   function updateHeroParallax(scrollY) {
     if (!heroStage) return;
@@ -294,8 +300,8 @@ async function initScrollytelling() {
 
     if (rect.top <= windowH && galleryItems && numItems > 0) {
       const visualW = getGrailVisualW(visualEl);
-      const collapsedW = 40; // 40px standard slice
-      const gap = 14;
+      const collapsedW = 48; // 48px sleek rounded slice
+      const gap = 24; // 24px clean generous gap - 100% no touching
 
       const totalDist = rect.height - windowH;
       const galleryProgress = totalDist > 0 ? Math.min(1, Math.max(0, -rect.top / totalDist)) : 0;
@@ -325,7 +331,7 @@ async function initScrollytelling() {
         widths[0] = visualW;
         margins[0] = 0;
       } else if (galleryProgress >= steps[steps.length - 1].end) {
-        // Final state: Photos 0..N-2 collapsed to 40px on left, last photo fills rest
+        // Final state: Photos 0..N-2 collapsed to 48px on left, last photo fills rest
         for (let i = 0; i < numItems - 1; i++) {
           widths[i] = collapsedW;
           margins[i] = i === 0 ? 0 : gap;
@@ -345,10 +351,21 @@ async function initScrollytelling() {
         const curStep = steps[currentStepIdx];
         const rawP = Math.max(0, Math.min(1, (galleryProgress - curStep.start) / (curStep.end - curStep.start)));
 
-        // Smooth Hermite easing (Smoothstep) for zero-jitter, continuous velocity
-        const easeT = rawP * rawP * (3 - 2 * rawP);
+        // Plateau hold:
+        // rawP 0.00 -> 0.12: Giữ ảnh hiện tại ổn định
+        // rawP 0.12 -> 0.88: Chuyển đổi mượt mà bằng Hermite smoothstep
+        // rawP 0.88 -> 1.00: Giữ ảnh mới ổn định
+        let easeT = 0;
+        if (rawP <= 0.12) {
+          easeT = 0;
+        } else if (rawP >= 0.88) {
+          easeT = 1;
+        } else {
+          const normP = (rawP - 0.12) / 0.76;
+          easeT = normP * normP * (3 - 2 * normP);
+        }
 
-        // Previous items are fully collapsed to 40px
+        // Previous items are fully collapsed to 48px
         for (let i = 0; i < curStep.from; i++) {
           widths[i] = collapsedW;
           margins[i] = i === 0 ? 0 : gap;
@@ -356,22 +373,22 @@ async function initScrollytelling() {
 
         // Space available for current pair (from & to)
         const usedLeft = curStep.from * (collapsedW + gap);
-        const spaceForPair = Math.max(collapsedW + gap + 40, visualW - usedLeft);
+        const spaceForPair = Math.max(collapsedW + gap + 100, visualW - usedLeft);
 
         // Photo `from` margin:
         margins[curStep.from] = curStep.from === 0 ? 0 : gap;
 
-        // Photo `from` shrinks smoothly to collapsedW (40px)
-        const fromW = spaceForPair - (spaceForPair - collapsedW) * easeT;
+        // Photo `from` shrinks smoothly to collapsedW
+        const shrinkAmount = (spaceForPair - collapsedW) * easeT;
+        const fromW = Math.max(collapsedW, spaceForPair - shrinkAmount);
         widths[curStep.from] = fromW;
 
-        // Gap between `from` and `to` grows smoothly from 0 to 14px
-        const curGap = gap * easeT;
-        margins[curStep.to] = curGap;
+        // Gap between `from` and `to`: ALWAYS fixed at gap (24px) - tuyệt đối không chạm nhau
+        margins[curStep.to] = gap;
 
-        // Photo `to` expands to fill exact remainder
-        // Mathematical invariant: fromW + curGap + toW = spaceForPair AT ALL TIMES!
-        const toW = Math.max(0, spaceForPair - fromW - curGap);
+        // Photo `to` expands into the freed space (minus the fixed gap)
+        const freedSpace = spaceForPair - fromW;
+        const toW = freedSpace > gap ? freedSpace - gap : 0;
         widths[curStep.to] = toW;
 
         // Subsequent items remain hidden
@@ -398,7 +415,7 @@ async function initScrollytelling() {
             item.style.opacity = '1';
           }
 
-          const isCollapsed = w <= 45;
+          const isCollapsed = w <= 55;
           const isActive = !isCollapsed;
 
           item.style.width = `${w.toFixed(2)}px`;
