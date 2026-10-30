@@ -11,11 +11,11 @@ import { ScrollytellingEngine } from './webgpu-story-engine.js';
 async function initScrollytelling() {
   // ── 0. Lenis Smooth Scroll Engine (Awwwards Industry Benchmark) ──────────
   const lenis = new Lenis({
-    duration: 1.2,
+    duration: 0.85,
     easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
     smoothWheel: true,
     smoothTouch: false,
-    wheelMultiplier: 1.0,
+    wheelMultiplier: 1.15,
     touchMultiplier: 1.5,
   });
   window.lenis = lenis;
@@ -123,7 +123,7 @@ async function initScrollytelling() {
     if (liveQuizTrack) {
       liveQuizTop = getElementPageTop(liveQuizTrack);
       liveQuizHeight = liveQuizTrack.offsetHeight;
-      liveQuizFanDist = windowH * 1.15;
+      liveQuizFanDist = liveQuizHeight - windowH;
     }
     if (grailSheetSection) {
       grailSheetTop = getElementPageTop(grailSheetSection);
@@ -215,7 +215,7 @@ async function initScrollytelling() {
   let lastBocTachProgress = -1;
   let lastBocTachWidth = -1;
   function applyBocTachState(progress) {
-    const shrinkProgress = Math.min(1, Math.max(0, progress / 0.65));
+    const shrinkProgress = Math.min(1, Math.max(0, progress));
     const startWidth = (6 / 7) * 100;
     const endWidth = (4 / 7) * 100;
     const currentWidth = startWidth - shrinkProgress * (startWidth - endWidth);
@@ -225,31 +225,31 @@ async function initScrollytelling() {
     }
 
     if (bocTachTitleGroup) {
-      const raw = Math.min(1, Math.max(0, (shrinkProgress - 0.05) / 0.28));
+      const raw = Math.min(1, Math.max(0, shrinkProgress / 0.35));
       const titleProg = smootherstep(raw);
       bocTachTitleGroup.style.opacity = titleProg.toFixed(3);
-      bocTachTitleGroup.style.transform = `translate3d(${((1 - titleProg) * 40).toFixed(1)}px, 0, 0)`;
+      bocTachTitleGroup.style.transform = `translate3d(${((1 - titleProg) * 36).toFixed(1)}px, 0, 0)`;
     }
 
     if (bocTachCards[0]) {
-      const raw = Math.min(1, Math.max(0, (shrinkProgress - 0.18) / 0.28));
+      const raw = Math.min(1, Math.max(0, (shrinkProgress - 0.18) / 0.35));
       const c0Prog = smootherstep(raw);
       bocTachCards[0].style.opacity = c0Prog.toFixed(3);
-      bocTachCards[0].style.transform = `translate3d(${((1 - c0Prog) * 40).toFixed(1)}px, 0, 0)`;
+      bocTachCards[0].style.transform = `translate3d(${((1 - c0Prog) * 36).toFixed(1)}px, 0, 0)`;
     }
 
     if (bocTachCards[1]) {
-      const raw = Math.min(1, Math.max(0, (shrinkProgress - 0.32) / 0.28));
+      const raw = Math.min(1, Math.max(0, (shrinkProgress - 0.36) / 0.35));
       const c1Prog = smootherstep(raw);
       bocTachCards[1].style.opacity = c1Prog.toFixed(3);
-      bocTachCards[1].style.transform = `translate3d(${((1 - c1Prog) * 40).toFixed(1)}px, 0, 0)`;
+      bocTachCards[1].style.transform = `translate3d(${((1 - c1Prog) * 36).toFixed(1)}px, 0, 0)`;
     }
 
     if (bocTachCards[2]) {
-      const raw = Math.min(1, Math.max(0, (shrinkProgress - 0.46) / 0.28));
+      const raw = Math.min(1, Math.max(0, (shrinkProgress - 0.54) / 0.38));
       const c2Prog = smootherstep(raw);
       bocTachCards[2].style.opacity = c2Prog.toFixed(3);
-      bocTachCards[2].style.transform = `translate3d(${((1 - c2Prog) * 40).toFixed(1)}px, 0, 0)`;
+      bocTachCards[2].style.transform = `translate3d(${((1 - c2Prog) * 36).toFixed(1)}px, 0, 0)`;
     }
   }
 
@@ -300,7 +300,7 @@ async function initScrollytelling() {
     const targetRot2 = 7.0;
 
     // Phase 1: Left 1 & Right 1
-    const rawP1 = Math.min(1, Math.max(0, fanProgress / 0.65));
+    const rawP1 = Math.min(1, Math.max(0, fanProgress / 0.72));
     const p1 = smootherstep(rawP1);
     const dist1 = baseOff1 + (targetOff1 - baseOff1) * p1;
     const rot1 = baseRot1 + (targetRot1 - baseRot1) * p1;
@@ -313,7 +313,7 @@ async function initScrollytelling() {
     }
 
     // Phase 2: Left 2 & Right 2
-    const rawP2 = Math.min(1, Math.max(0, (fanProgress - 0.12) / 0.72));
+    const rawP2 = Math.min(1, Math.max(0, (fanProgress - 0.15) / 0.8));
     const p2 = smootherstep(rawP2);
     const dist2 = baseOff2 + (targetOff2 - baseOff2) * p2;
     const rot2 = baseRot2 + (targetRot2 - baseRot2) * p2;
@@ -326,7 +326,7 @@ async function initScrollytelling() {
     }
 
     // Center card
-    const pCenter = Math.min(1, Math.max(0, fanProgress / 0.6));
+    const pCenter = Math.min(1, Math.max(0, fanProgress / 0.7));
     const tabletScale = (1.0 + 0.02 * pCenter).toFixed(3);
     fanCenterTablet.style.transform = `translate3d(-50%, -50%, 0) scale(${tabletScale})`;
   }
@@ -369,8 +369,8 @@ async function initScrollytelling() {
   function initGrailSteps() {
     if (!grailGalleryItems || grailNumItems === 0) return;
     const numTransitions = grailNumItems - 1;
-    const startPad = 0.04;
-    const endPad = 0.04;
+    const startPad = 0.02;
+    const endPad = 0.02;
     const availableP = 1 - startPad - endPad;
     const stepSpan = availableP / Math.max(1, numTransitions);
 
@@ -430,15 +430,7 @@ async function initScrollytelling() {
       const curStep = grailSteps[currentStepIdx];
       const rawP = Math.max(0, Math.min(1, (galleryProgress - curStep.start) / (curStep.end - curStep.start)));
 
-      let easeT = 0;
-      if (rawP <= 0.12) {
-        easeT = 0;
-      } else if (rawP >= 0.88) {
-        easeT = 1;
-      } else {
-        const normP = (rawP - 0.12) / 0.76;
-        easeT = normP * normP * (3 - 2 * normP);
-      }
+      const easeT = rawP * rawP * (3 - 2 * rawP);
 
       for (let i = 0; i < curStep.from; i++) {
         cachedGrailWidths[i] = collapsedW;
@@ -613,7 +605,7 @@ async function initScrollytelling() {
       appRightCol.style.opacity = '1';
     }
 
-    const stackProgress = Math.min(1, Math.max(0, (progress - 0.15) / 0.70));
+    const stackProgress = Math.min(1, Math.max(0, progress));
 
     if (stackProgress <= 0) {
       p2.style.transform = 'translate3d(-50%, 140%, 0)';
