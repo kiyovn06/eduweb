@@ -2099,108 +2099,190 @@ body {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   05: BẢNG TÍNH NĂNG & GÓI TRIỂN KHAI
+   05: BẢNG TÍNH NĂNG & GÓI TRIỂN KHAI (SIÊU TO · KHÔNG KHUNG VIỀN · CÁI CAO CÁI THẤP)
    ══════════════════════════════════════════════════════════════════════════ */
+#tinh-nang {
+  padding: clamp(5rem, 10vh, 10rem) clamp(24px, 3.5vw, 60px);
+  background: #ffffff !important;
+  overflow: hidden;
+}
+
+#tinh-nang .chapter-container {
+  max-width: clamp(1240px, 94vw, 1620px);
+  margin: 0 auto;
+}
+
 .pricing-tiers-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
-  align-items: stretch;
+  gap: clamp(28px, 3vw, 56px);
+  align-items: center; /* Cho phép các cột cao thấp tự nhiên, không ép bằng phẳng */
 }
 
+/* Base Tier Card: 100% Không Khung, Không Viền, Siêu To */
 .tier-card {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-card);
-  border-radius: var(--radius-md);
-  padding: 2.25rem 2rem;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
   display: flex;
   flex-direction: column;
-  transition: border-color 0.2s ease;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .tier-card:hover {
-  border-color: #cbd5e1;
+  border: none !important;
+  outline: none !important;
+  transform: translateY(-8px);
 }
 
+/* Thẻ 1: Học Sinh - Thấp vừa, lùi xuống dưới */
+.tier-card:nth-child(1) {
+  min-height: clamp(520px, 62vh, 600px);
+  padding: clamp(3rem, 3.8vw, 4.25rem) clamp(2.25rem, 2.8vw, 3.25rem);
+  margin-top: clamp(24px, 3.5vh, 48px);
+  background: #f8fafc;
+  border-radius: 40px;
+}
+
+/* Thẻ 2: Giáo Viên - Hero Tier - Siêu To & Cao Nhất, vươn cao lên trên */
+.tier-card:nth-child(2),
 .tier-card.tier-highlighted {
-  border: 2px solid var(--accent-blue);
-  background: var(--bg-surface);
+  min-height: clamp(660px, 78vh, 780px);
+  padding: clamp(4.25rem, 5vw, 5.75rem) clamp(2.75rem, 3.5vw, 3.75rem);
+  margin-top: clamp(-30px, -4vh, -54px); /* Vươn cao vượt trội tạo nhịp điệu cao thấp */
+  background: #f1f5f9; /* Tuyệt đối không khung viền xanh */
+  border-radius: 48px;
+}
+
+/* Thẻ 3: Trường Học - Chiều cao trung bình, dạt xuống tạo dáng so le */
+.tier-card:nth-child(3) {
+  min-height: clamp(560px, 68vh, 660px);
+  padding: clamp(3.25rem, 4vw, 4.5rem) clamp(2.25rem, 2.8vw, 3.25rem);
+  margin-top: clamp(48px, 6vh, 72px); /* Thấp hơn nữa tạo độ sole nhịp điệu sinh động */
+  background: #f8fafc;
+  border-radius: 40px;
 }
 
 .tier-header {
   margin-bottom: 1.5rem;
 }
 
-.tier-tag {
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: var(--accent-blue);
-  text-transform: uppercase;
-  display: block;
-  margin-bottom: 0.5rem;
-}
-
+/* Tiêu đề Siêu To */
 .tier-card h3 {
-  font-size: 1.35rem;
+  font-family: var(--font-display, 'Plus Jakarta Sans', sans-serif);
+  font-size: clamp(2.4rem, 3.2vw, 3.6rem);
   font-weight: 800;
-  color: var(--text-primary);
-  margin-bottom: 0.5rem;
+  color: #0f172a;
+  letter-spacing: -0.035em;
+  line-height: 1.08;
+  margin-bottom: 0.85rem;
 }
 
+.tier-card:nth-child(2) h3 {
+  font-size: clamp(2.8rem, 4vw, 4.2rem);
+  letter-spacing: -0.04em;
+}
+
+/* Giá / Trạng thái */
 .tier-price {
-  font-size: 1.15rem;
+  font-size: clamp(1.2rem, 1.5vw, 1.55rem);
   font-weight: 700;
-  color: var(--accent-blue);
-  font-family: var(--font-mono);
+  color: var(--accent-blue, #2563eb);
+  letter-spacing: -0.01em;
+  font-family: var(--font-sans);
 }
 
+/* Danh sách tính năng: Siêu To, Rộng Rãi, 100% Không Viền Kẻ Gạch Dưới */
 .tier-feature-list {
   list-style: none;
   padding: 0;
-  margin: 0 0 2rem 0;
+  margin: 2.25rem 0 3rem 0;
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
 }
 
 .tier-feature-list li {
-  font-size: 0.88rem;
-  color: var(--text-secondary);
-  padding: 0.5rem 0;
-  border-bottom: 1px solid var(--border-light);
+  font-size: clamp(1.08rem, 1.3vw, 1.28rem);
+  font-weight: 500;
+  color: #334155;
+  line-height: 1.5;
+  padding: 0;
+  border: none !important; /* Xóa triệt để đường viền gạch dưới */
+  border-bottom: none !important;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
 }
 
-.tier-feature-list li:last-child {
-  border-bottom: none;
+.tier-feature-list li::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--accent-blue, #2563eb);
+  flex-shrink: 0;
 }
 
+.tier-card:nth-child(2) .tier-feature-list li {
+  font-size: clamp(1.15rem, 1.4vw, 1.35rem);
+  color: #0f172a;
+  font-weight: 600;
+  gap: 1rem;
+}
+
+.tier-card:nth-child(2) .tier-feature-list li::before {
+  width: 9px;
+  height: 9px;
+  background-color: #2563eb;
+}
+
+/* Nút bấm Apple Pill: Sang trọng, 100% Không Viền Khung */
 .btn-tier-action {
   text-decoration: none;
-  font-size: 0.9rem;
+  font-size: clamp(1.05rem, 1.2vw, 1.2rem);
   font-weight: 600;
   text-align: center;
-  color: var(--text-primary);
-  background: var(--bg-surface);
-  border: 1px solid var(--border-card);
-  padding: 0.75rem 1rem;
-  border-radius: var(--radius-sm);
-  transition: all 0.2s ease;
-  display: block;
+  color: #0f172a;
+  background: #e2e8f0;
+  border: none !important; /* Xóa viền khung nút */
+  outline: none !important;
+  box-shadow: none !important;
+  padding: 1.2rem 2.25rem;
+  border-radius: 9999px;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: auto;
 }
 
 .btn-tier-action:hover {
-  background: var(--bg-subtle);
-  border-color: #cbd5e1;
+  background: #cbd5e1;
+  color: #000000;
+  transform: scale(1.02);
+  border: none !important;
 }
 
 .btn-tier-action.btn-tier-primary {
-  background: var(--accent-blue);
+  background: #2563eb;
   color: #ffffff;
-  border-color: var(--accent-blue);
+  border: none !important;
+  box-shadow: 0 12px 30px rgba(37, 99, 235, 0.28);
+  padding: 1.35rem 2.5rem;
+  font-size: clamp(1.15rem, 1.3vw, 1.3rem);
+  font-weight: 700;
 }
 
 .btn-tier-action.btn-tier-primary:hover {
-  background: var(--accent-blue-hover);
-  border-color: var(--accent-blue-hover);
+  background: #1d4ed8;
+  box-shadow: 0 16px 36px rgba(37, 99, 235, 0.38);
+  transform: scale(1.03);
+  border: none !important;
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
@@ -2436,6 +2518,15 @@ body {
   .analytics-showcase-grid,
   .pricing-tiers-grid {
     grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .tier-card:nth-child(1),
+  .tier-card:nth-child(2),
+  .tier-card:nth-child(3),
+  .tier-card.tier-highlighted {
+    margin-top: 0 !important;
+    min-height: auto;
   }
 
   .stats-counter-strip {
