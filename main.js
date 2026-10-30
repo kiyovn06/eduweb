@@ -96,7 +96,7 @@ async function initScrollytelling() {
   let windowH = window.innerHeight;
   let windowW = window.innerWidth;
   let cachedGrailVisualW = 0;
-  let cachedAppStopOffsetY = 165;
+  let cachedAppStopOffsetY = 0;
   let cachedCardHeight = 400;
 
   let bocTachTop = 0, bocTachHeight = 0, bocTachDist = 0;
@@ -657,7 +657,7 @@ async function initScrollytelling() {
     }
     if (c1) {
       c1.style.transform = 'translate3d(0, 0, 0) scale(1)';
-      c1.style.opacity = '1';
+      c1.style.opacity = Math.max(0, (1 - easeY * 1.5)).toFixed(3);
     }
   }
 

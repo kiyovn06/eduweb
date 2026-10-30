@@ -1152,16 +1152,17 @@ body {
 
 .managed-title {
   font-family: var(--font-sans), 'Plus Jakarta Sans', -apple-system, sans-serif;
-  font-size: clamp(2.4rem, 3.4vw, 4.4rem);
+  font-size: clamp(1.8rem, 2.3vw, 2.9rem);
   font-weight: 800;
   color: #2b5cff;
-  line-height: 1.08;
-  letter-spacing: -0.04em;
+  line-height: 1.15;
+  letter-spacing: -0.035em;
   margin: 0;
   text-align: left;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.25em;
 }
 
 .title-line-text {
@@ -2243,7 +2244,7 @@ body {
   border: none !important; /* Xóa triệt để đường viền gạch dưới */
   border-bottom: none !important;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.85rem;
 }
 
@@ -2255,6 +2256,7 @@ body {
   border-radius: 50%;
   background-color: var(--accent-blue, #2563eb);
   flex-shrink: 0;
+  margin-top: 0.45em;
 }
 
 .tier-card:nth-child(2) .tier-feature-list li {
@@ -2362,10 +2364,122 @@ body {
    09: BẮT ĐẦU TRẢI NGHIỆM (CTA)
    ══════════════════════════════════════════════════════════════════════════ */
 .stage-cta {
-  padding: clamp(3rem, 5vh, 5.5rem) 0 clamp(4rem, 6vh, 6.5rem);
+  padding: clamp(3rem, 5vh, 5.5rem) 0 0 0;
   background: var(--bg-surface);
   width: 100%;
   overflow: hidden;
+}
+
+.footer-editorial-container {
+  width: 100%;
+  box-sizing: border-box;
+  padding: clamp(3.5rem, 6vh, 6rem) clamp(24px, 5vw, 80px) 0;
+  background: var(--bg-surface);
+  overflow: hidden;
+  margin-top: clamp(2rem, 4vh, 4rem);
+}
+
+.footer-editorial-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: clamp(2rem, 4vw, 4rem);
+  max-width: 1540px;
+  margin: 0 auto clamp(3rem, 6vh, 5.5rem);
+}
+
+.footer-creative-brand {
+  max-width: 520px;
+  text-align: left;
+}
+
+.footer-creative-title {
+  font-family: var(--font-sans), 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: clamp(2rem, 2.8vw, 3.2rem);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  color: #0b0f19;
+  margin: 0 0 0.85rem 0;
+  line-height: 1.15;
+}
+
+.footer-creative-tagline {
+  font-size: clamp(1rem, 1.15vw, 1.2rem);
+  color: #64748b;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.footer-editorial-nav {
+  display: flex;
+  gap: clamp(3.5rem, 7vw, 7.5rem);
+}
+
+.footer-nav-col {
+  text-align: left;
+}
+
+.footer-col-heading {
+  font-family: var(--font-sans), 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0b0f19;
+  margin: 0 0 1.25rem 0;
+  letter-spacing: -0.01em;
+}
+
+.footer-links-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.footer-links-list li a {
+  font-size: 0.95rem;
+  color: #475569;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  white-space: nowrap;
+}
+
+.footer-links-list li a:hover {
+  color: #2b5cff;
+}
+
+/* CHỮ SIÊU TO FULL WEB IN HOA CHẠM ĐÁY (CHUẨN 100% ẢNH 1 ANTIGRAVITY) */
+.footer-monumental-wordmark {
+  width: 100%;
+  overflow: visible;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  flex-direction: column;
+  user-select: none;
+  pointer-events: none;
+  padding: 0;
+  margin: 0;
+  /* Clip chữ ở đáy - chỉ hiện phần trên như ảnh tham chiếu */
+  height: clamp(4rem, 14.5vw, 19rem);
+}
+
+.monumental-text {
+  font-family: var(--font-sans), 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  /* Scale to fill full viewport width */
+  font-size: clamp(6rem, 21vw, 29rem);
+  font-weight: 900;
+  letter-spacing: -0.05em;
+  color: #0a0f1d;
+  line-height: 0.78;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  white-space: nowrap;
+  width: 100%;
+  display: block;
 }
 
 .cta-resolution-container {
