@@ -1,0 +1,22 @@
+# KiyoEdu
+
+> Nền tảng khảo thí AI và quản lý lớp học thông minh hàng đầu Việt Nam.
+
+KiyoEdu là giải pháp công nghệ giáo dục (EdTech) trực thuộc KIYOVN, ứng dụng trí tuệ nhân tạo (AI) để tự động hóa toàn bộ quy trình kiểm tra - đánh giá học tập: từ bóc tách đề thi (Word, PDF, ảnh) trong 3 giây, mở phòng thi trắc nghiệm thời gian thực 0ms, chấm bài tự động kèm lời giải chi tiết, đến quản lý bảng điểm điện tử và sổ liên lạc trực tuyến.
+
+## Core Capabilities
+- Bóc tách đề thi AI: Tự động trích xuất câu hỏi, công thức toán học và đáp án từ tài liệu Word, PDF, ảnh chụp chỉ trong 3 giây.
+- Đấu trường trắc nghiệm trực tiếp 0ms: Tổ chức thi đấu và kiểm tra trực tuyến thời gian thực bằng mã PIN, không độ trễ.
+- Chấm thi tự động & giải thích chi tiết: Tự động chấm điểm trắc nghiệm tức thì khi học sinh nộp bài và cung cấp lời giải cụ thể từng câu.
+- Bảng điểm điện tử: Tự động đồng bộ và thống kê điểm số theo học sinh, lớp học và toàn trường.
+- Bảo mật thi cử: Cơ chế khóa màn hình chống gian lận đa tầng.
+
+## Target Users & Pricing Models
+- Học sinh: Miễn phí 100% (làm bài không giới hạn, xem giải thích, phòng bài làm, luyện tập).
+- Giáo viên: Gói Chuyên nghiệp (bóc tách đề AI từ Word, PDF, ảnh, mở phòng luyện tập, giao bài tập tuần, chấm tự động, xuất sổ điểm Excel).
+- Trường học: Giải pháp chuẩn hóa (quản lý học sinh và giáo viên, ngân hàng đề thi nội bộ tập trung, thống kê phổ điểm toàn trường, hỗ trợ kỹ thuật và tích hợp hệ thống).
+
+## Canonical Links
+- Trang chủ nền tảng: https://ede.kiyo.vn
+- Đăng ký & Trải nghiệm: https://ede.kiyo.vn/register
+- Tập đoàn KIYOVN: https://kiyovn.com

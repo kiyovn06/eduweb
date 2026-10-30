@@ -1,0 +1,23 @@
+User-agent: *
+Allow: /
+
+# Dedicated Search Engines & AI Crawlers
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+Sitemap: https://ede.kiyo.vn/sitemap.xml
