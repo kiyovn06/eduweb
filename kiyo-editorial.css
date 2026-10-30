@@ -2362,27 +2362,38 @@ body {
    09: BẮT ĐẦU TRẢI NGHIỆM (CTA)
    ══════════════════════════════════════════════════════════════════════════ */
 .stage-cta {
-  padding: 6rem 1.5rem 4rem;
+  padding: clamp(3rem, 5vh, 5.5rem) 0 clamp(4rem, 6vh, 6.5rem);
   background: var(--bg-surface);
+  width: 100%;
+  overflow: hidden;
 }
 
 .cta-resolution-container {
-  max-width: 860px;
+  max-width: 1540px;
+  width: 100%;
   margin: 0 auto;
+  padding: 0 clamp(20px, 3vw, 48px);
+  box-sizing: border-box;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .cta-campus-banner {
-  margin-bottom: 2.5rem;
-  border-radius: var(--radius-md);
+  width: 100%;
+  margin-bottom: clamp(2rem, 3.5vh, 3.5rem);
+  border-radius: clamp(24px, 2.5vw, 44px);
   overflow: hidden;
-  border: 1px solid var(--border-card);
+  border: none !important;
+  box-shadow: 0 24px 64px -16px rgba(15, 23, 42, 0.16);
 }
 
 .cta-campus-banner img {
   width: 100%;
-  height: 320px;
+  height: clamp(480px, 65vh, 780px);
   object-fit: cover;
+  object-position: center 30%;
   display: block;
 }
 
@@ -2399,11 +2410,15 @@ body {
 }
 
 .cta-headline {
-  font-size: 2.5rem;
+  font-family: var(--font-sans), 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: clamp(2.2rem, 3.5vw, 3.8rem);
   font-weight: 800;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.035em;
   color: var(--text-primary);
-  margin-bottom: 0.75rem;
+  margin: 0 auto;
+  line-height: 1.2;
+  text-align: center;
+  max-width: 1000px;
 }
 
 .cta-lead {
