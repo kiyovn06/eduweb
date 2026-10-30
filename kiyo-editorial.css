@@ -842,35 +842,40 @@ body {
 .feature-block {
   display: block;
   border-top: 1px solid rgba(15, 23, 42, 0.1);
-  padding: 1.35rem 0;
+  padding: clamp(1.4rem, 2.2vh, 2rem) 0;
+}
+
+.boc-tach-feature-cards .feature-block:first-child {
+  border-top: none;
+  padding-top: 0;
 }
 
 .block-num {
-  display: block;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--accent-blue, #2563eb);
-  background: none;
-  padding: 0;
-  border-radius: 0;
-  margin-bottom: 0.5rem;
+  background: rgba(37, 99, 235, 0.08);
+  padding: 0.25rem 0.65rem;
+  border-radius: 8px;
+  margin-bottom: 0.65rem;
   font-family: var(--font-mono);
 }
 
 .block-content h3 {
-  font-size: clamp(1.15rem, 1.4vw, 1.45rem);
+  font-size: clamp(1.25rem, 1.55vw, 1.6rem);
   font-weight: 700;
   color: #0f172a;
-  margin-bottom: 0.4rem;
-  letter-spacing: -0.018em;
+  margin-bottom: 0.45rem;
+  letter-spacing: -0.02em;
   line-height: 1.25;
 }
 
 .block-content p {
-  font-size: clamp(0.88rem, 0.95vw, 1.0rem);
-  color: rgba(15, 23, 42, 0.55);
+  font-size: clamp(0.92rem, 1.02vw, 1.05rem);
+  color: rgba(15, 23, 42, 0.62);
   line-height: 1.65;
   margin: 0;
 }

@@ -232,21 +232,21 @@ async function initScrollytelling() {
     }
 
     if (bocTachCards[0]) {
-      const raw = Math.min(1, Math.max(0, (shrinkProgress - 0.18) / 0.35));
+      const raw = Math.min(1, Math.max(0, (shrinkProgress - 0.08) / 0.35));
       const c0Prog = smootherstep(raw);
       bocTachCards[0].style.opacity = c0Prog.toFixed(3);
       bocTachCards[0].style.transform = `translate3d(${((1 - c0Prog) * 36).toFixed(1)}px, 0, 0)`;
     }
 
     if (bocTachCards[1]) {
-      const raw = Math.min(1, Math.max(0, (shrinkProgress - 0.36) / 0.35));
+      const raw = Math.min(1, Math.max(0, (shrinkProgress - 0.30) / 0.35));
       const c1Prog = smootherstep(raw);
       bocTachCards[1].style.opacity = c1Prog.toFixed(3);
       bocTachCards[1].style.transform = `translate3d(${((1 - c1Prog) * 36).toFixed(1)}px, 0, 0)`;
     }
 
     if (bocTachCards[2]) {
-      const raw = Math.min(1, Math.max(0, (shrinkProgress - 0.54) / 0.38));
+      const raw = Math.min(1, Math.max(0, (shrinkProgress - 0.52) / 0.38));
       const c2Prog = smootherstep(raw);
       bocTachCards[2].style.opacity = c2Prog.toFixed(3);
       bocTachCards[2].style.transform = `translate3d(${((1 - c2Prog) * 36).toFixed(1)}px, 0, 0)`;
