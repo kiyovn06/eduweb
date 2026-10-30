@@ -527,7 +527,7 @@ body {
 /* STICKY TRACK FOR SECTION 02: BÓC TÁCH (ẢNH 6/7 THU NHỎ XUỐNG 4/7 · CÁCH ĐỀU ĐÚNG 30PX TRÊN VÀ DƯỚI · KHÔNG BỊ BO GÓC TRÊN) */
 .stage-boc-tach-track {
   position: relative;
-  min-height: 130vh;
+  min-height: 190vh;
   padding: 0 !important;
   margin: 0 !important;
 }
@@ -681,7 +681,7 @@ body {
    ══════════════════════════════════════════════════════════════════════════ */
 .stage-live-quiz-track {
   position: relative;
-  min-height: 135vh;
+  min-height: 200vh;
   padding: 0 !important;
   margin: 0 !important;
 }
@@ -932,7 +932,7 @@ body {
   position: relative;
   z-index: 30;
   margin-top: 0;
-  min-height: 160vh;
+  min-height: 240vh;
   padding: 0 !important;
   box-sizing: border-box;
   overflow: visible;
@@ -1103,7 +1103,7 @@ body {
 .stage-app-showcase-track {
   position: relative;
   z-index: 35;
-  min-height: 135vh;
+  min-height: 190vh;
   width: 100%;
   background: #ffffff !important;
   padding: 0 !important;

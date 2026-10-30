@@ -11,12 +11,12 @@ import { ScrollytellingEngine } from './webgpu-story-engine.js';
 async function initScrollytelling() {
   // ── 0. Lenis Smooth Scroll Engine (Awwwards Industry Benchmark) ──────────
   const lenis = new Lenis({
-    duration: 0.85,
+    duration: 1.05,
     easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
     smoothWheel: true,
     smoothTouch: false,
-    wheelMultiplier: 1.15,
-    touchMultiplier: 1.5,
+    wheelMultiplier: 0.95,
+    touchMultiplier: 1.2,
   });
   window.lenis = lenis;
 
@@ -300,7 +300,7 @@ async function initScrollytelling() {
     const targetRot2 = 7.0;
 
     // Phase 1: Left 1 & Right 1
-    const rawP1 = Math.min(1, Math.max(0, fanProgress / 0.72));
+    const rawP1 = Math.min(1, Math.max(0, fanProgress / 0.68));
     const p1 = smootherstep(rawP1);
     const dist1 = baseOff1 + (targetOff1 - baseOff1) * p1;
     const rot1 = baseRot1 + (targetRot1 - baseRot1) * p1;
@@ -313,7 +313,7 @@ async function initScrollytelling() {
     }
 
     // Phase 2: Left 2 & Right 2
-    const rawP2 = Math.min(1, Math.max(0, (fanProgress - 0.15) / 0.8));
+    const rawP2 = Math.min(1, Math.max(0, (fanProgress - 0.18) / 0.78));
     const p2 = smootherstep(rawP2);
     const dist2 = baseOff2 + (targetOff2 - baseOff2) * p2;
     const rot2 = baseRot2 + (targetRot2 - baseRot2) * p2;
@@ -326,7 +326,7 @@ async function initScrollytelling() {
     }
 
     // Center card
-    const pCenter = Math.min(1, Math.max(0, fanProgress / 0.7));
+    const pCenter = Math.min(1, Math.max(0, fanProgress / 0.68));
     const tabletScale = (1.0 + 0.02 * pCenter).toFixed(3);
     fanCenterTablet.style.transform = `translate3d(-50%, -50%, 0) scale(${tabletScale})`;
   }
@@ -605,7 +605,7 @@ async function initScrollytelling() {
       appRightCol.style.opacity = '1';
     }
 
-    const stackProgress = Math.min(1, Math.max(0, progress));
+    const stackProgress = Math.min(1, Math.max(0, (progress - 0.05) / 0.90));
 
     if (stackProgress <= 0) {
       p2.style.transform = 'translate3d(-50%, 140%, 0)';
