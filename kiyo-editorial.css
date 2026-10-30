@@ -102,10 +102,12 @@ body {
    SITE HEADER (Cuộn tự nhiên theo trang, không đứng im · Nền xám đồng bộ)
    ══════════════════════════════════════════════════════════════════════════ */
 .site-header {
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: var(--header-height);
-  background: var(--bg-top-grey);
+  background: transparent;
   border-bottom: none;
   display: flex;
   align-items: center;
@@ -314,10 +316,10 @@ body {
   z-index: 1;
   pointer-events: none;
   overflow: hidden;
-  border-radius: 0;
+  border-radius: 0 !important;
   border: none !important;
   box-shadow: none !important;
-  transform-origin: center center;
+  transform-origin: top right;
   background: var(--bg-top-grey);
   isolation: isolate;
   will-change: transform;

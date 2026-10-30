@@ -201,8 +201,8 @@ async function initScrollytelling() {
     }
 
     if (heroBackdrop) {
-      const imgScale = Math.max(0.94, 1 - progress * 0.06).toFixed(3);
-      heroBackdrop.style.transform = `scale(${imgScale})`;
+      heroBackdrop.style.transform = 'none';
+      heroBackdrop.style.borderRadius = '0';
     }
 
     if (heroPoincianaWrap) {
