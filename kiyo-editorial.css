@@ -2468,7 +2468,7 @@ body {
   color: #475569;
   text-decoration: none;
   transition: color 0.2s ease;
-  white-space: nowrap;
+  line-height: 1.45;
 }
 
 .footer-links-list li a:hover {
