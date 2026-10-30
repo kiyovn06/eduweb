@@ -2365,7 +2365,7 @@ body {
    ══════════════════════════════════════════════════════════════════════════ */
 .stage-cta {
   padding: clamp(3rem, 5vh, 5.5rem) 0 0 0;
-  background: var(--bg-surface);
+  background: #ffffff;
   width: 100%;
   overflow: hidden;
 }
@@ -2374,7 +2374,7 @@ body {
   width: 100%;
   box-sizing: border-box;
   padding: clamp(3.5rem, 6vh, 6rem) clamp(24px, 5vw, 80px) 0;
-  background: var(--bg-surface);
+  background: #ffffff;
   overflow: hidden;
   margin-top: clamp(2rem, 4vh, 4rem);
 }
@@ -2453,33 +2453,35 @@ body {
 /* CHỮ SIÊU TO FULL WEB IN HOA CHẠM ĐÁY (CHUẨN 100% ẢNH 1 ANTIGRAVITY) */
 .footer-monumental-wordmark {
   width: 100%;
+  /* Không clip → chữ hiện full, không bị cắt phần đáy */
   overflow: visible;
-  display: flex;
-  justify-content: flex-end;
-  align-items: flex-end;
-  flex-direction: column;
+  display: block;
   user-select: none;
   pointer-events: none;
   padding: 0;
+  /* padding-bottom = khoảng cách từ đáy chữ đến hết trang
+     (descender ~ 27% font-size, ta muốn chừa khoảng đó)
+     Dùng padding-bottom âm để kéo phần dưới vào trong khung trang */
   margin: 0;
-  /* Clip chữ ở đáy - chỉ hiện phần trên như ảnh tham chiếu */
-  height: clamp(4rem, 14.5vw, 19rem);
+  background: #ffffff;
+  /* Chiều cao tự nhiên = line-height của text */
 }
 
 .monumental-text {
   font-family: var(--font-sans), 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  /* Scale to fill full viewport width */
   font-size: clamp(6rem, 21vw, 29rem);
   font-weight: 900;
   letter-spacing: -0.05em;
   color: #0a0f1d;
-  line-height: 0.78;
+  line-height: 0.85;
   margin: 0;
   padding: 0;
   text-align: center;
   white-space: nowrap;
   width: 100%;
   display: block;
+  /* Không transform → chữ hiện tự nhiên, giữ phần descender */
+  transform: none;
 }
 
 .cta-resolution-container {
