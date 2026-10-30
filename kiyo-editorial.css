@@ -1115,9 +1115,9 @@ body {
   height: 100vh;
   width: 100%;
   display: flex;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
-  padding: clamp(28px, 4.5vh, 48px) clamp(24px, 2.5vw, 40px); /* CÁCH ĐỀU 100% TRÊN VÀ DƯỚI */
+  padding: 0 clamp(24px, 2.5vw, 40px) 0; /* CHẠM XUỐNG DƯỚI ĐÁY 100% */
   box-sizing: border-box;
   overflow: hidden;
   background: #ffffff !important;
@@ -1126,13 +1126,13 @@ body {
 
 .managed-app-grid {
   display: grid;
-  grid-template-columns: minmax(260px, 0.85fr) 390px minmax(460px, 1.8fr);
+  grid-template-columns: minmax(220px, 0.85fr) calc((100vh - 60px) * (390 / 844)) minmax(420px, 1.8fr);
   gap: clamp(20px, 2.2vw, 36px);
-  align-items: center;
+  align-items: stretch;
   width: 100%;
   max-width: 1680px;
   margin: 0 auto;
-  height: 100%;
+  height: 100vh;
   box-sizing: border-box;
 }
 
@@ -1223,8 +1223,8 @@ body {
 /* ── CỘT GIỮA: IPHONE MOCKUP TO 100% ── */
 .managed-center-col {
   position: relative;
-  width: 395px;
-  height: 100%;
+  width: calc((100vh - 60px) * (390 / 844));
+  height: 100vh;
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -1237,12 +1237,12 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 390px;
-  height: clamp(560px, calc(100vh - clamp(56px, 9vh, 96px)), 812px);
-  max-height: 100%;
-  border-radius: 54px;
+  width: calc((100vh - 60px) * (390 / 844));
+  height: calc(100vh - 60px);
+  max-height: calc(100vh - 60px);
+  border-radius: clamp(38px, calc((100vh - 60px) * 0.065), 54px);
   background: #000000;
-  padding: 9px;
+  padding: clamp(7px, calc((100vh - 60px) * 0.011), 10px);
   box-sizing: border-box;
   border: 4px solid #d4d4d8;
   box-shadow: 0 0 0 1px #a1a1aa, 0 32px 80px -16px rgba(15, 23, 42, 0.35);
@@ -1290,7 +1290,7 @@ body {
   position: relative;
   width: 100%;
   height: 100%;
-  border-radius: 46px;
+  border-radius: clamp(32px, calc((100vh - 60px) * 0.055), 46px);
   overflow: hidden;
   background: #f8fafc;
   display: flex;
@@ -1406,7 +1406,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  border-radius: 46px;
+  border-radius: clamp(32px, calc((100vh - 60px) * 0.055), 46px);
   overflow-y: auto;
   overflow-x: hidden;
   background: #ffffff;
@@ -1663,21 +1663,24 @@ body {
 .managed-right-col {
   position: relative;
   width: 100%;
-  height: 100%;
+  height: 100vh;
   margin-left: auto;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  align-self: center;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-self: flex-end;
   will-change: transform, opacity;
 }
 
 .cards-stack-container {
   position: relative;
   width: 100%;
-  height: clamp(560px, calc(100vh - clamp(56px, 9vh, 96px)), 812px);
-  max-height: 100%;
-  border-radius: 44px;
+  height: calc(100vh - 30px);
+  margin-top: 30px;
+  margin-bottom: 0 !important;
+  border-radius: 44px 44px 0 0 !important;
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
   overflow: hidden;
 }
 
@@ -1687,7 +1690,9 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  border-radius: 44px;
+  border-radius: 44px 44px 0 0 !important;
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
   padding: clamp(32px, 4.5vh, 48px) clamp(32px, 3.5vw, 56px);
   box-sizing: border-box;
   display: flex;
@@ -1703,7 +1708,9 @@ body {
   background: linear-gradient(150deg, #2563eb 0%, #1d4ed8 100%);
   box-shadow: 0 24px 60px rgba(37, 99, 235, 0.22);
   color: #ffffff;
-  border-radius: 44px;
+  border-radius: 44px 44px 0 0 !important;
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
 }
 
 /* Card 2: Trắng chuẩn State 2 (Phone 2) - Trượt từ dưới lên dừng ngay dưới tiêu đề Card 1 */
@@ -1712,7 +1719,9 @@ body {
   background: #ffffff;
   border: none !important; /* TUYỆT ĐỐI KHÔNG CÓ VIỀN XÁM */
   outline: none !important;
-  border-radius: 44px;
+  border-radius: 44px 44px 0 0 !important; /* KHÔNG BO GÓC Ở DƯỚI - CHẠM XUỐNG DƯỚI ĐÁY LUÔN */
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
   box-shadow: 0 -16px 40px rgba(15, 23, 42, 0.08); /* Bóng mờ êm dịu, không viền xám */
   transform: translateY(140%);
   opacity: 0;
@@ -1816,13 +1825,28 @@ body {
     height: auto;
     gap: 1.5rem;
   }
+  .managed-center-col {
+    width: 100%;
+    max-width: 380px;
+    height: 680px;
+  }
+  .iphone-frame {
+    height: 100% !important;
+    width: 100% !important;
+    max-height: 100% !important;
+  }
   .managed-app-sticky {
     height: auto;
     min-height: 100vh;
-    padding: 2.5rem 1.5rem;
+    padding: 2.5rem 1.5rem 0;
   }
   .managed-right-col {
     margin: 0 auto;
+    height: auto;
+  }
+  .cards-stack-container {
+    height: 520px !important;
+    margin-top: 0;
   }
 }
 
