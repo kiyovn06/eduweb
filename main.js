@@ -20,25 +20,21 @@ async function initScrollytelling() {
   });
   window.lenis = lenis;
 
-  function raf(time) {
-    lenis.raf(time);
-    requestAnimationFrame(raf);
-  }
-  requestAnimationFrame(raf);
-
   // ── 1. Technical Canvas Background Engine ─────────────────────────────────
   const canvas = document.getElementById('scrolly-canvas');
   let engine = null;
   if (canvas) {
     engine = new ScrollytellingEngine(canvas);
     await engine.init();
-
-    function renderLoop(t) {
-      engine.render(t);
-      requestAnimationFrame(renderLoop);
-    }
-    requestAnimationFrame(renderLoop);
   }
+
+  // Unified Frame Loop: Lenis + Canvas in a Single rAF Callback
+  function raf(time) {
+    lenis.raf(time);
+    if (engine) engine.render(time);
+    requestAnimationFrame(raf);
+  }
+  requestAnimationFrame(raf);
 
   // ── 2. DOM Elements Cache ─────────────────────────────────────────────────
   const stages = Array.from(document.querySelectorAll('.stage-section'));
@@ -96,16 +92,56 @@ async function initScrollytelling() {
     return c * c * c * (c * (c * 6 - 15) + 10);
   }
 
-  // Precomputed Dimensions (recomputed on resize ONLY to prevent Layout Thrashing)
+  // Precomputed Dimensions & Track Geometry (Zero getBoundingClientRect in scroll loop!)
   let windowH = window.innerHeight;
   let windowW = window.innerWidth;
   let cachedGrailVisualW = 0;
   let cachedAppStopOffsetY = 165;
   let cachedCardHeight = 400;
 
+  let bocTachTop = 0, bocTachHeight = 0, bocTachDist = 0;
+  let liveQuizTop = 0, liveQuizHeight = 0, liveQuizFanDist = 0;
+  let grailSheetTop = 0, grailSheetHeight = 0, grailSheetDist = 0;
+  let showcaseTop = 0, showcaseHeight = 0, showcaseDist = 0;
+  let cachedStageOffsets = [];
+
+  function getElementPageTop(el) {
+    if (!el) return 0;
+    const rect = el.getBoundingClientRect();
+    return rect.top + (window.pageYOffset || document.documentElement.scrollTop || 0);
+  }
+
   function updateCachedDimensions() {
     windowH = window.innerHeight;
     windowW = window.innerWidth;
+
+    if (bocTachTrack) {
+      bocTachTop = getElementPageTop(bocTachTrack);
+      bocTachHeight = bocTachTrack.offsetHeight;
+      bocTachDist = bocTachHeight - windowH;
+    }
+    if (liveQuizTrack) {
+      liveQuizTop = getElementPageTop(liveQuizTrack);
+      liveQuizHeight = liveQuizTrack.offsetHeight;
+      liveQuizFanDist = windowH * 1.15;
+    }
+    if (grailSheetSection) {
+      grailSheetTop = getElementPageTop(grailSheetSection);
+      grailSheetHeight = grailSheetSection.offsetHeight;
+      grailSheetDist = grailSheetHeight - windowH;
+    }
+    if (showcaseTrack) {
+      showcaseTop = getElementPageTop(showcaseTrack);
+      showcaseHeight = showcaseTrack.offsetHeight;
+      showcaseDist = showcaseHeight - windowH;
+    }
+
+    cachedStageOffsets = stages.map((s) => {
+      const top = getElementPageTop(s);
+      const height = s.offsetHeight;
+      return { top, bottom: top + height };
+    });
+
     if (grailVisualEl) {
       cachedGrailVisualW = grailVisualEl.clientWidth || (windowW - 380);
     }
@@ -119,6 +155,11 @@ async function initScrollytelling() {
   }
   updateCachedDimensions();
   window.addEventListener('resize', updateCachedDimensions, { passive: true });
+  window.addEventListener('load', updateCachedDimensions, { passive: true });
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(updateCachedDimensions);
+  }
+  setTimeout(updateCachedDimensions, 400);
 
   // Bind Grail Gallery Jump Click Handler (ONCE at init)
   if (grailGalleryStrip && grailSheetSection && grailNumItems > 0) {
@@ -142,13 +183,12 @@ async function initScrollytelling() {
     });
   }
 
-  // ── 3. Smooth Hero Pinned Scroll & Scaling (Kéo lên luôn · Chữ & Ảnh co giãn) ───
+  // ── 3. Smooth Hero Pinned Scroll & Scaling (100% GPU Accelerated · Zero Repaint) ───
   let lastHeroProgress = -1;
-  let lastHeroRadius = -1;
   function updateHeroParallax(scrollY) {
     if (!heroStage || windowH <= 0) return;
     const progress = Math.min(1, Math.max(0, scrollY / windowH));
-    if (progress === lastHeroProgress) return;
+    if (Math.abs(progress - lastHeroProgress) < 0.0005) return;
     if ((progress === 0 && lastHeroProgress === 0) || (progress === 1 && lastHeroProgress === 1)) return;
     lastHeroProgress = progress;
 
@@ -161,11 +201,6 @@ async function initScrollytelling() {
     }
 
     if (heroBackdrop) {
-      const currentRadius = Math.round(progress * 40);
-      if (currentRadius !== lastHeroRadius) {
-        heroBackdrop.style.borderRadius = `${currentRadius}px`;
-        lastHeroRadius = currentRadius;
-      }
       const imgScale = Math.max(0.94, 1 - progress * 0.06).toFixed(3);
       heroBackdrop.style.transform = `scale(${imgScale})`;
     }
@@ -218,29 +253,30 @@ async function initScrollytelling() {
     }
   }
 
-  function updateBocTachShrink() {
+  function updateBocTachShrink(scrollY) {
     if (!bocTachTrack || !bocTachVisualCol || !bocTachTextCol) return;
     if (windowW <= 768) return;
 
-    const rect = bocTachTrack.getBoundingClientRect();
-    if (rect.bottom < -100) {
+    const rectTop = bocTachTop - scrollY;
+    const rectBottom = rectTop + bocTachHeight;
+
+    if (rectBottom < -100) {
       if (lastBocTachProgress === 1) return;
       applyBocTachState(1);
       lastBocTachProgress = 1;
       return;
     }
-    if (rect.top > windowH + 100) {
+    if (rectTop > windowH + 100) {
       if (lastBocTachProgress === 0) return;
       applyBocTachState(0);
       lastBocTachProgress = 0;
       return;
     }
 
-    const totalDist = rect.height - windowH;
-    if (totalDist <= 0) return;
+    if (bocTachDist <= 0) return;
 
-    const passed = -rect.top;
-    const progress = Math.min(1, Math.max(0, passed / totalDist));
+    const passed = scrollY - bocTachTop;
+    const progress = Math.min(1, Math.max(0, passed / bocTachDist));
     if (Math.abs(progress - lastBocTachProgress) < 0.0008) return;
 
     applyBocTachState(progress);
@@ -295,37 +331,72 @@ async function initScrollytelling() {
     fanCenterTablet.style.transform = `translate3d(-50%, -50%, 0) scale(${tabletScale})`;
   }
 
-  function updateLiveQuizFanOut() {
+  function updateLiveQuizFanOut(scrollY) {
     if (!liveQuizTrack || !fanCenterTablet) return;
     if (windowW <= 768) return;
 
-    const rect = liveQuizTrack.getBoundingClientRect();
-    if (rect.bottom < -100) {
+    const rectTop = liveQuizTop - scrollY;
+    const rectBottom = rectTop + liveQuizHeight;
+
+    if (rectBottom < -100) {
       if (lastFanProgress === 1) return;
       applyFanState(1);
       lastFanProgress = 1;
       return;
     }
-    if (rect.top > windowH + 100) {
+    if (rectTop > windowH + 100) {
       if (lastFanProgress === 0) return;
       applyFanState(0);
       lastFanProgress = 0;
       return;
     }
 
-    const totalDist = rect.height - windowH;
-    if (totalDist <= 0) return;
-
-    const passed = -rect.top;
-    const fanDist = windowH * 1.15;
-    const fanProgress = Math.min(1, Math.max(0, passed / fanDist));
+    const passed = scrollY - liveQuizTop;
+    const fanProgress = Math.min(1, Math.max(0, passed / liveQuizFanDist));
     if (Math.abs(fanProgress - lastFanProgress) < 0.0008) return;
 
     applyFanState(fanProgress);
     lastFanProgress = fanProgress;
   }
 
-  // ── 3.3 Stage 04: Grail-Style Editorial Sheet Transition (Chương 03 · Quản lý lớp học) ─────────
+  // ── 3.3 Stage 04: Grail-Style Editorial Sheet Transition (Zero Allocations · Precomputed Steps) ─────────
+  const grailSteps = [];
+  const cachedGrailWidths = [];
+  const cachedGrailMargins = [];
+  const lastRenderedWidths = [];
+  const lastRenderedMargins = [];
+
+  function initGrailSteps() {
+    if (!grailGalleryItems || grailNumItems === 0) return;
+    const numTransitions = grailNumItems - 1;
+    const startPad = 0.04;
+    const endPad = 0.04;
+    const availableP = 1 - startPad - endPad;
+    const stepSpan = availableP / Math.max(1, numTransitions);
+
+    grailSteps.length = 0;
+    for (let i = 0; i < numTransitions; i++) {
+      grailSteps.push({
+        from: i,
+        to: i + 1,
+        start: startPad + i * stepSpan,
+        end: startPad + (i + 1) * stepSpan,
+      });
+    }
+
+    cachedGrailWidths.length = grailNumItems;
+    cachedGrailMargins.length = grailNumItems;
+    lastRenderedWidths.length = grailNumItems;
+    lastRenderedMargins.length = grailNumItems;
+    for (let i = 0; i < grailNumItems; i++) {
+      cachedGrailWidths[i] = 0;
+      cachedGrailMargins[i] = 0;
+      lastRenderedWidths[i] = -1;
+      lastRenderedMargins[i] = -1;
+    }
+  }
+  initGrailSteps();
+
   let lastGrailProgress = -1;
   function applyGrailState(galleryProgress) {
     if (!grailGalleryItems || grailNumItems === 0) return;
@@ -333,45 +404,30 @@ async function initScrollytelling() {
     const collapsedW = 48;
     const gap = 24;
 
-    const numTransitions = grailNumItems - 1;
-    const startPad = 0.04;
-    const endPad = 0.04;
-    const availableP = 1 - startPad - endPad;
-    const stepSpan = availableP / Math.max(1, numTransitions);
-
-    const steps = [];
-    for (let i = 0; i < numTransitions; i++) {
-      steps.push({
-        from: i,
-        to: i + 1,
-        start: startPad + i * stepSpan,
-        end: startPad + (i + 1) * stepSpan
-      });
-    }
-
-    const widths = new Array(grailNumItems).fill(0);
-    const margins = new Array(grailNumItems).fill(0);
-
-    if (steps.length === 0 || galleryProgress < steps[0].start) {
-      widths[0] = visualW;
-      margins[0] = 0;
-    } else if (galleryProgress >= steps[steps.length - 1].end) {
+    if (grailSteps.length === 0 || galleryProgress < grailSteps[0].start) {
+      cachedGrailWidths[0] = visualW;
+      cachedGrailMargins[0] = 0;
+      for (let i = 1; i < grailNumItems; i++) {
+        cachedGrailWidths[i] = 0;
+        cachedGrailMargins[i] = 0;
+      }
+    } else if (galleryProgress >= grailSteps[grailSteps.length - 1].end) {
       for (let i = 0; i < grailNumItems - 1; i++) {
-        widths[i] = collapsedW;
-        margins[i] = i === 0 ? 0 : gap;
+        cachedGrailWidths[i] = collapsedW;
+        cachedGrailMargins[i] = i === 0 ? 0 : gap;
       }
       const usedLeft = (grailNumItems - 1) * (collapsedW + gap);
-      widths[grailNumItems - 1] = Math.max(collapsedW, visualW - usedLeft);
-      margins[grailNumItems - 1] = gap;
+      cachedGrailWidths[grailNumItems - 1] = Math.max(collapsedW, visualW - usedLeft);
+      cachedGrailMargins[grailNumItems - 1] = gap;
     } else {
       let currentStepIdx = 0;
-      for (let s = 0; s < steps.length; s++) {
-        if (galleryProgress >= steps[s].start && galleryProgress < steps[s].end) {
+      for (let s = 0; s < grailSteps.length; s++) {
+        if (galleryProgress >= grailSteps[s].start && galleryProgress < grailSteps[s].end) {
           currentStepIdx = s;
           break;
         }
       }
-      const curStep = steps[currentStepIdx];
+      const curStep = grailSteps[currentStepIdx];
       const rawP = Math.max(0, Math.min(1, (galleryProgress - curStep.start) / (curStep.end - curStep.start)));
 
       let easeT = 0;
@@ -385,38 +441,41 @@ async function initScrollytelling() {
       }
 
       for (let i = 0; i < curStep.from; i++) {
-        widths[i] = collapsedW;
-        margins[i] = i === 0 ? 0 : gap;
+        cachedGrailWidths[i] = collapsedW;
+        cachedGrailMargins[i] = i === 0 ? 0 : gap;
       }
 
       const usedLeft = curStep.from * (collapsedW + gap);
       const spaceForPair = Math.max(collapsedW + gap + 100, visualW - usedLeft);
 
-      margins[curStep.from] = curStep.from === 0 ? 0 : gap;
+      cachedGrailMargins[curStep.from] = curStep.from === 0 ? 0 : gap;
       const shrinkAmount = (spaceForPair - collapsedW) * easeT;
       const fromW = Math.max(collapsedW, spaceForPair - shrinkAmount);
-      widths[curStep.from] = fromW;
+      cachedGrailWidths[curStep.from] = fromW;
 
-      margins[curStep.to] = gap;
+      cachedGrailMargins[curStep.to] = gap;
       const freedSpace = spaceForPair - fromW;
       const toW = freedSpace > gap ? freedSpace - gap : 0;
-      widths[curStep.to] = toW;
+      cachedGrailWidths[curStep.to] = toW;
 
       for (let i = curStep.to + 1; i < grailNumItems; i++) {
-        widths[i] = 0;
-        margins[i] = 0;
+        cachedGrailWidths[i] = 0;
+        cachedGrailMargins[i] = 0;
       }
     }
 
-    grailGalleryItems.forEach((item, idx) => {
-      const w = widths[idx];
-      const ml = margins[idx];
+    for (let idx = 0; idx < grailNumItems; idx++) {
+      const item = grailGalleryItems[idx];
+      const w = cachedGrailWidths[idx];
+      const ml = cachedGrailMargins[idx];
 
       if (w <= 0.5) {
         if (item.style.display !== 'none') {
           item.style.display = 'none';
           item.style.opacity = '0';
           item.classList.remove('is-active', 'is-collapsed');
+          lastRenderedWidths[idx] = 0;
+          lastRenderedMargins[idx] = 0;
         }
       } else {
         if (item.style.display !== 'block') {
@@ -427,16 +486,22 @@ async function initScrollytelling() {
         const isCollapsed = w <= 55;
         const isActive = !isCollapsed;
 
-        item.style.width = `${w.toFixed(2)}px`;
-        item.style.marginLeft = `${ml.toFixed(2)}px`;
+        if (Math.abs(w - lastRenderedWidths[idx]) > 0.4) {
+          item.style.width = `${w.toFixed(1)}px`;
+          lastRenderedWidths[idx] = w;
+        }
+        if (Math.abs(ml - lastRenderedMargins[idx]) > 0.4) {
+          item.style.marginLeft = `${ml.toFixed(1)}px`;
+          lastRenderedMargins[idx] = ml;
+        }
 
         item.classList.toggle('is-collapsed', isCollapsed);
         item.classList.toggle('is-active', isActive);
       }
-    });
+    }
   }
 
-  function updateGrailSheetTransition() {
+  function updateGrailSheetTransition(scrollY) {
     if (!grailSheetCard || !grailSheetSection) return;
     if (windowW <= 768) {
       if (grailHeaderEl) { grailHeaderEl.style.transform = 'none'; grailHeaderEl.style.opacity = '1'; }
@@ -452,22 +517,26 @@ async function initScrollytelling() {
       return;
     }
 
-    const rect = grailSheetSection.getBoundingClientRect();
-    if (rect.bottom < -100) {
+    const rectTop = grailSheetTop - scrollY;
+    const rectBottom = rectTop + grailSheetHeight;
+
+    if (rectBottom < -100) {
       if (lastGrailProgress === 1) return;
       applyGrailState(1);
       lastGrailProgress = 1;
       return;
     }
-    if (rect.top > windowH + 100) {
+    if (rectTop > windowH + 100) {
       if (lastGrailProgress === 0) return;
       applyGrailState(0);
       lastGrailProgress = 0;
       return;
     }
 
-    const totalDist = rect.height - windowH;
-    const galleryProgress = totalDist > 0 ? Math.min(1, Math.max(0, -rect.top / totalDist)) : 0;
+    if (grailSheetDist <= 0) return;
+
+    const passed = scrollY - grailSheetTop;
+    const galleryProgress = Math.min(1, Math.max(0, passed / grailSheetDist));
     if (Math.abs(galleryProgress - lastGrailProgress) < 0.0008) return;
 
     applyGrailState(galleryProgress);
@@ -488,18 +557,31 @@ async function initScrollytelling() {
       appRightCol.style.opacity = '0';
     }
     if (p1) {
-      p1.style.transform = 'translate(-50%, calc(-50% + 50px)) scale(0.9)';
+      p1.style.transform = 'translate3d(-50%, calc(-50% + 50px), 0) scale(0.9)';
       p1.style.opacity = '0';
     }
-    p2.style.transform = 'translate(-50%, 140%)';
+    p2.style.transform = 'translate3d(-50%, 140%, 0)';
     p2.style.opacity = '0';
     p2.style.pointerEvents = 'none';
-    c2.style.transform = 'translateY(140%)';
+    c2.style.transform = 'translate3d(0, 140%, 0)';
     c2.style.opacity = '0';
     c2.style.pointerEvents = 'none';
   }
 
-  function applyAppEnterState(enterProgress) {
+  function applyAppEnterState(enterProgress, isStateTransition = false) {
+    if (isStateTransition) {
+      if (c1) {
+        c1.style.transform = 'translateY(0) scale(1)';
+        c1.style.opacity = '1';
+      }
+      p2.style.transform = 'translate(-50%, 140%)';
+      p2.style.opacity = '0';
+      p2.style.pointerEvents = 'none';
+      c2.style.transform = 'translateY(140%)';
+      c2.style.opacity = '0';
+      c2.style.pointerEvents = 'none';
+    }
+
     const enterEase = 1 - Math.pow(1 - enterProgress, 2.5);
     const leftOffset = (-180 * (1 - enterEase)).toFixed(1);
     const rightOffset = (180 * (1 - enterEase)).toFixed(1);
@@ -519,17 +601,6 @@ async function initScrollytelling() {
       p1.style.transform = `translate(-50%, calc(-50% + ${centerOffsetY}px)) scale(${centerScale})`;
       p1.style.opacity = enterOpacity;
     }
-    if (c1) {
-      c1.style.transform = 'translateY(0) scale(1)';
-      c1.style.opacity = '1';
-    }
-
-    p2.style.transform = 'translate(-50%, 140%)';
-    p2.style.opacity = '0';
-    p2.style.pointerEvents = 'none';
-    c2.style.transform = 'translateY(140%)';
-    c2.style.opacity = '0';
-    c2.style.pointerEvents = 'none';
   }
 
   function applyAppStackState(progress) {
@@ -545,18 +616,18 @@ async function initScrollytelling() {
     const stackProgress = Math.min(1, Math.max(0, (progress - 0.15) / 0.70));
 
     if (stackProgress <= 0) {
-      p2.style.transform = 'translate(-50%, 140%)';
+      p2.style.transform = 'translate3d(-50%, 140%, 0)';
       p2.style.opacity = '0';
       p2.style.pointerEvents = 'none';
-      c2.style.transform = 'translateY(140%)';
+      c2.style.transform = 'translate3d(0, 140%, 0)';
       c2.style.opacity = '0';
       c2.style.pointerEvents = 'none';
       if (p1) {
-        p1.style.transform = 'translate(-50%, -50%) scale(1)';
+        p1.style.transform = 'translate3d(-50%, -50%, 0) scale(1)';
         p1.style.opacity = '1';
       }
       if (c1) {
-        c1.style.transform = 'translateY(0) scale(1)';
+        c1.style.transform = 'translate3d(0, 0, 0) scale(1)';
         c1.style.opacity = '1';
       }
       return;
@@ -569,11 +640,11 @@ async function initScrollytelling() {
     const currentCardY = Math.round(startCardY - (startCardY - cachedAppStopOffsetY) * easeY);
     const itemOpacity = Math.min(1, stackProgress * 3.5).toFixed(2);
 
-    p2.style.transform = `translate(-50%, ${phoneY.toFixed(2)}%)`;
+    p2.style.transform = `translate3d(-50%, ${phoneY.toFixed(2)}%, 0)`;
     p2.style.opacity = itemOpacity;
     p2.style.pointerEvents = 'auto';
 
-    c2.style.transform = `translateY(${currentCardY}px)`;
+    c2.style.transform = `translate3d(0, ${currentCardY}px, 0)`;
     c2.style.opacity = itemOpacity;
     c2.style.pointerEvents = 'auto';
 
@@ -581,16 +652,16 @@ async function initScrollytelling() {
     const underScale = (1 - 0.045 * easeY).toFixed(3);
     const underOpacity = (1 - 0.15 * easeY).toFixed(3);
     if (p1) {
-      p1.style.transform = `translate(-50%, -50%) scale(${underScale})`;
+      p1.style.transform = `translate3d(-50%, -50%, 0) scale(${underScale})`;
       p1.style.opacity = underOpacity;
     }
     if (c1) {
-      c1.style.transform = 'translateY(0) scale(1)';
+      c1.style.transform = 'translate3d(0, 0, 0) scale(1)';
       c1.style.opacity = '1';
     }
   }
 
-  function updateAppPhoneStack() {
+  function updateAppPhoneStack(scrollY) {
     if (!showcaseTrack || !p2 || !c2) return;
     if (windowW <= 768) {
       if (appLeftCol) { appLeftCol.style.transform = 'none'; appLeftCol.style.opacity = '1'; }
@@ -598,15 +669,17 @@ async function initScrollytelling() {
       return;
     }
 
-    const rect = showcaseTrack.getBoundingClientRect();
-    if (rect.bottom < -100) {
+    const rectTop = showcaseTop - scrollY;
+    const rectBottom = rectTop + showcaseHeight;
+
+    if (rectBottom < -100) {
       if (lastAppState === 2 && lastAppProgress === 1) return;
       applyAppStackState(1);
       lastAppState = 2;
       lastAppProgress = 1;
       return;
     }
-    if (rect.top > windowH + 100) {
+    if (rectTop > windowH + 100) {
       if (lastAppState === 0) return;
       applyAppBeforeEnterState();
       lastAppState = 0;
@@ -614,19 +687,18 @@ async function initScrollytelling() {
       return;
     }
 
-    const totalDist = rect.height - windowH;
-    if (totalDist <= 0) return;
+    if (showcaseDist <= 0) return;
 
-    if (rect.top > 0 && rect.top <= windowH) {
-      const enterProgress = 1 - (rect.top / windowH);
-      applyAppEnterState(enterProgress);
+    if (rectTop > 0 && rectTop <= windowH) {
+      const enterProgress = 1 - (rectTop / windowH);
+      applyAppEnterState(enterProgress, lastAppState !== 1);
       lastAppState = 1;
       lastAppProgress = enterProgress;
       return;
     }
 
-    const passed = -rect.top;
-    const progress = Math.min(1, Math.max(0, passed / totalDist));
+    const passed = scrollY - showcaseTop;
+    const progress = Math.min(1, Math.max(0, passed / showcaseDist));
     if (Math.abs(progress - lastAppProgress) < 0.0008 && lastAppState === 2) return;
 
     applyAppStackState(progress);
@@ -646,12 +718,11 @@ async function initScrollytelling() {
       const easeOut = 1 - Math.pow(1 - p, 3);
       const currentVal = start + (target - start) * easeOut;
 
-      if (isDecimal) {
-        el.textContent = currentVal.toFixed(1);
-      } else if (target >= 1000) {
-        el.textContent = Math.floor(currentVal).toLocaleString('vi-VN');
-      } else {
-        el.textContent = Math.floor(currentVal);
+      const formatted = isDecimal
+        ? currentVal.toFixed(1)
+        : (target >= 1000 ? Math.floor(currentVal).toLocaleString('vi-VN') : String(Math.floor(currentVal)));
+      if (el.textContent !== formatted) {
+        el.textContent = formatted;
       }
 
       if (p < 1) {
@@ -678,6 +749,7 @@ async function initScrollytelling() {
             const target = parseFloat(valEl.dataset.count || '0');
             runCountUp(valEl, target, 1400);
           });
+          showcaseObserver.unobserve(entry.target);
         }
       });
     },
@@ -692,6 +764,7 @@ async function initScrollytelling() {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           entry.target.classList.add('is-visible');
+          flowObserver.unobserve(entry.target);
         }
       });
     },
@@ -708,13 +781,14 @@ async function initScrollytelling() {
     });
   }, 80);
 
-  // ── 6. Optimized Nav Link Active Tracking ────────────────────────────────
+  // ── 6. Optimized Nav Link Active Tracking (Pure Binary/Offset Math · Zero DOM Reads) ──
   let lastActiveNavIdx = -1;
-  function updateNavActiveLink() {
+  function updateNavActiveLink(scrollY) {
+    const checkY = scrollY + 120;
     let activeIdx = -1;
-    for (let idx = 0; idx < stages.length; idx++) {
-      const rect = stages[idx].getBoundingClientRect();
-      if (rect.top <= 120 && rect.bottom >= 120) {
+    for (let idx = 0; idx < cachedStageOffsets.length; idx++) {
+      const stage = cachedStageOffsets[idx];
+      if (checkY >= stage.top && checkY < stage.bottom) {
         activeIdx = idx;
         break;
       }
@@ -727,7 +801,7 @@ async function initScrollytelling() {
     }
   }
 
-  // ── 7. Unified Frame Tick / Scroll Handler ────────────────────────────────
+  // ── 7. Unified Frame Tick / Scroll Handler (100% Zero DOM Layout Reads) ──
   function onScrollUpdate(scrollY) {
     const totalScroll = document.documentElement.scrollHeight - windowH;
 
@@ -738,11 +812,11 @@ async function initScrollytelling() {
     }
 
     updateHeroParallax(scrollY);
-    updateBocTachShrink();
-    updateLiveQuizFanOut();
-    updateGrailSheetTransition();
-    updateAppPhoneStack();
-    updateNavActiveLink();
+    updateBocTachShrink(scrollY);
+    updateLiveQuizFanOut(scrollY);
+    updateGrailSheetTransition(scrollY);
+    updateAppPhoneStack(scrollY);
+    updateNavActiveLink(scrollY);
   }
 
   if (lenis) {
@@ -772,6 +846,21 @@ async function initScrollytelling() {
   window.addEventListener('resize', () => {
     if (engine) engine.resize();
   }, { passive: true });
+
+  // Pre-decode scrollytelling images asynchronously so GPU textures are primed
+  if ('requestIdleCallback' in window) {
+    window.requestIdleCallback(() => {
+      document.querySelectorAll('img').forEach((img) => {
+        if (img.decode) img.decode().catch(() => {});
+      });
+    });
+  } else {
+    setTimeout(() => {
+      document.querySelectorAll('img').forEach((img) => {
+        if (img.decode) img.decode().catch(() => {});
+      });
+    }, 120);
+  }
 
   // Initial update
   onScrollUpdate(window.pageYOffset || 0);

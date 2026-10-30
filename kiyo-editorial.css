@@ -271,6 +271,7 @@ body {
 .flow-in-up.is-visible {
   opacity: 1;
   transform: translate3d(0, 0, 0);
+  will-change: auto;
 }
 
 .flow-in-left.delay-1 {
@@ -319,7 +320,7 @@ body {
   transform-origin: center center;
   background: var(--bg-top-grey);
   isolation: isolate;
-  will-change: border-radius, transform;
+  will-change: transform;
 }
 
 .hero-backdrop-img {
@@ -953,7 +954,7 @@ body {
   padding: clamp(1.5rem, 2.5vw, 3rem) clamp(2rem, 3.5vw, 4.5rem);
   box-sizing: border-box;
   transform-origin: center 15%;
-  will-change: transform, border-radius, max-width, box-shadow;
+  will-change: transform;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1279,11 +1280,12 @@ body {
 
 .phone-frame-2 {
   z-index: 20;
-  transform: translate(-50%, 140%);
+  transform: translate3d(-50%, 140%, 0);
   opacity: 0;
   pointer-events: none;
   box-shadow: 0 -24px 60px rgba(0, 0, 0, 0.35), 0 32px 80px -16px rgba(15, 23, 42, 0.35);
   will-change: transform, opacity;
+  backface-visibility: hidden;
 }
 
 .iphone-screen {
@@ -1723,10 +1725,12 @@ body {
   border-bottom-left-radius: 0 !important;
   border-bottom-right-radius: 0 !important;
   box-shadow: 0 -16px 40px rgba(15, 23, 42, 0.08); /* Bóng mờ êm dịu, không viền xám */
-  transform: translateY(140%);
+  transform: translate3d(0, 140%, 0);
   opacity: 0;
   pointer-events: none;
   color: #0f172a;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
 }
 
 /* Tiêu đề & Mô tả tinh giản tối đa (Xóa tất cả icon & pills) */
