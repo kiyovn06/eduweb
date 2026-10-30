@@ -11,12 +11,12 @@ import { ScrollytellingEngine } from './webgpu-story-engine.js';
 async function initScrollytelling() {
   // ── 0. Lenis Smooth Scroll Engine (Awwwards Industry Benchmark) ──────────
   const lenis = new Lenis({
-    duration: 1.05,
+    duration: 1.3,
     easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
     smoothWheel: true,
     smoothTouch: false,
-    wheelMultiplier: 0.95,
-    touchMultiplier: 1.2,
+    wheelMultiplier: 0.72,
+    touchMultiplier: 1.0,
   });
   window.lenis = lenis;
 
