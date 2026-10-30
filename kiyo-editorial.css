@@ -2197,15 +2197,15 @@ body {
 }
 
 .products-showcase-grid {
-  display: flex;
-  justify-content: center;
-  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(24px, 2.5vw, 38px);
+  align-items: stretch;
 }
 
-/* Base Product Card: 100% Không Khung, Không Viền, Đúng Tỉ Lệ 1 Dòng 4 Cái Như Cũ */
+/* Base Product Card: 100% Không Khung, Không Viền, Đúng Tỉ Lệ 1 Dòng 4 Cái Như Cũ, Canh Bên Trái */
 .product-item-card {
   width: 100%;
-  max-width: clamp(290px, 23vw, 370px);
   background: #ffffff;
   border: none !important;
   outline: none !important;
