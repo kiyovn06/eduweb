@@ -2103,13 +2103,13 @@ body {
   background-color: #ffffff !important;
   color: #0f172a !important;
   padding: 0 !important;
-  min-height: 560vh;
+  min-height: 420vh;
 }
 
 .stage-quy-trinh-dark .quy-trinh-scroll-track {
   position: relative;
   width: 100%;
-  min-height: 560vh;
+  min-height: 420vh;
 }
 
 .stage-quy-trinh-dark .quy-trinh-sticky-viewport {
@@ -2205,6 +2205,18 @@ body {
   display: flex;
   align-items: center;
   z-index: 6;
+}
+
+
+/* 100% Hide Steps 1, 2, 3, 4 per user directive */
+.quy-trinh-step-view[data-step="1"],
+.quy-trinh-step-view[data-step="2"],
+.quy-trinh-step-view[data-step="3"],
+.quy-trinh-step-view[data-step="4"] {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
 }
 
 .quy-trinh-step-view {

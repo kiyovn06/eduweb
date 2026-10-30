@@ -650,40 +650,11 @@ async function initScrollytelling() {
     return c * c * c * (c * (c * 6 - 15) + 10);
   }
 
-  // Continuous Monotonic Hermite Spline: non-zero, steady glide velocity across milestones
+  // Smooth continuous drum offset during intro & Step 0
   function getSmoothDrumOffset(p) {
     if (p <= 0) return -260;
-    if (p >= 0.62) return 1560; // Locked at NGÀY THỨ 10
-
-    const points = [
-      { p: 0.00, y: -260.0 },
-      { p: 0.16, y: 0.0 },    // NGÀY 1
-      { p: 0.32, y: 520.0 },  // NGÀY 4
-      { p: 0.48, y: 1040.0 }, // NGÀY 7
-      { p: 0.62, y: 1560.0 }  // NGÀY THỨ 10
-    ];
-    const tangents = [1625.0, 3250.0, 3250.0, 3400.0, 0.0];
-
-    for (let i = 0; i < points.length - 1; i++) {
-      const p0 = points[i].p;
-      const y0 = points[i].y;
-      const p1 = points[i+1].p;
-      const y1 = points[i+1].y;
-      if (p >= p0 && p <= p1) {
-        const h = p1 - p0;
-        const t = (p - p0) / h;
-        const t2 = t * t;
-        const t3 = t2 * t;
-        const h00 = 2 * t3 - 3 * t2 + 1;
-        const h10 = t3 - 2 * t2 + t;
-        const h01 = -2 * t3 + 3 * t2;
-        const h11 = t3 - t2;
-        const m0 = tangents[i] * h;
-        const m1 = tangents[i+1] * h;
-        return h00 * y0 + h10 * m0 + h01 * y1 + h11 * m1;
-      }
-    }
-    return 1560;
+    const t = Math.min(1, Math.max(0, p / 0.40));
+    return -260 + 1820 * smootherstep(t);
   }
 
   function updateQuyTrinhScrolly() {
@@ -699,17 +670,24 @@ async function initScrollytelling() {
     const progress = Math.min(1, Math.max(0, -rect.top / totalDist));
     lastQuyTrinhProgress = progress;
 
-    // ── Continuous Scroll-Scrubbed Text Animation (With Stable Readability Plateaus) ──
+    // ── Continuous Scroll-Scrubbed Text Animation (Steps 1, 2, 3, 4 are 100% hidden) ──
     const cardTimeline = [
-      { step: 0, inP: 0.11,  peakIn: 0.15, peakOut: 0.20, outP: 0.25 }, // Step 0
-      { step: 1, inP: 0.23,  peakIn: 0.28, peakOut: 0.32, outP: 0.38 }, // Step 1
-      { step: 2, inP: 0.36,  peakIn: 0.41, peakOut: 0.45, outP: 0.51 }, // Step 2
-      { step: 3, inP: 0.49,  peakIn: 0.54, peakOut: 0.58, outP: 0.64 }, // Step 3
-      { step: 4, inP: 0.62,  peakIn: 0.67, peakOut: 0.71, outP: 0.74 }, // Step 4 (fades out by 0.74)
-      { step: 5, inP: 0.88,  peakIn: 0.93, peakOut: 1.05, outP: 1.05 }  // Step 5: Pure crisp vector typography on white
+      { step: 0, inP: 0.08,  peakIn: 0.16, peakOut: 0.32, outP: 0.42 }, // Step 0: "Một quy trình đơn giản trong ba bước."
+      { step: 5, inP: 0.80,  peakIn: 0.86, peakOut: 1.05, outP: 1.05 }  // Step 5: Pure crisp vector typography on white
     ];
 
     let activeStep = -1;
+
+    // Explicitly hide steps 1, 2, 3, 4
+    quyTrinhStepViews.forEach(v => {
+      const s = parseInt(v.getAttribute('data-step'), 10);
+      if (s >= 1 && s <= 4) {
+        v.style.display = 'none';
+        v.style.opacity = '0';
+        v.style.visibility = 'hidden';
+        v.style.pointerEvents = 'none';
+      }
+    });
 
     cardTimeline.forEach(({ step, inP, peakIn, peakOut, outP }) => {
       const view = quyTrinhStepViews.find(v => parseInt(v.getAttribute('data-step'), 10) === step);
@@ -746,28 +724,6 @@ async function initScrollytelling() {
       view.style.visibility = alpha > 0.005 ? 'visible' : 'hidden';
       view.style.pointerEvents = alpha > 0.5 ? 'auto' : 'none';
 
-      if (step === 4) {
-        // Continuous analog spotlight lighting reveal (starts at 0.64, fully lit by 0.68)
-        const lightRaw = Math.min(1, Math.max(0, (progress - 0.64) / 0.04));
-        const lightT = smootherstep(lightRaw);
-        view.classList.toggle('is-lit', lightT >= 0.5);
-
-        const faintEls = view.querySelectorAll('.step4-faint');
-        faintEls.forEach(el => {
-          el.style.opacity = (0.26 + 0.74 * lightT).toFixed(3);
-        });
-
-        const accentEls = view.querySelectorAll('.step4-accent');
-        accentEls.forEach(el => {
-          const r = Math.round(255 + (254 - 255) * lightT);
-          const g = Math.round(255 + (71 - 255) * lightT);
-          const b = Math.round(255 + (1 - 255) * lightT);
-          const a = (0.26 + 0.74 * lightT).toFixed(3);
-          el.style.setProperty('color', `rgb(${r}, ${g}, ${b})`, 'important');
-          el.style.opacity = a;
-        });
-      }
-
       if (step === 5) {
         view.style.transform = `translateY(${offset.toFixed(1)}px)`;
       } else {
@@ -803,22 +759,22 @@ async function initScrollytelling() {
     }
 
     // ── 3. CHOREOGRAPHED TIMELINE PHASES ──
-    // Phase 1: Intro glide from CENTER to LEFT (0.05 to 0.11)
-    // Progress <= 0.05: drum is straight in middle ("thanh kéo hiện ở giữa"), 100% vertical, no text
-    // Progress 0.05 -> 0.11: drum glides safely to LEFT BEFORE text appears ("không bị đè lên chữ")
-    const introShiftRaw = Math.min(1, Math.max(0, (progress - 0.05) / 0.06));
+    // Phase 1: Intro glide from CENTER to LEFT (0.06 to 0.16)
+    // Progress <= 0.06: drum is straight in middle ("thanh kéo hiện ở giữa"), 100% vertical, no text
+    // Progress 0.06 -> 0.16: drum glides safely to LEFT as Step 0 text enters ("không bị đè lên chữ")
+    const introShiftRaw = Math.min(1, Math.max(0, (progress - 0.06) / 0.10));
     const introLeftT = smootherstep(introShiftRaw);
     const curveAmount = introLeftT;
 
-    // Phase 2: Unified Glide & Open into 3D Pyramid (0.74 to 0.82)
-    // Single continuous, fluid transition: Drum glides from left to center and opens into 3D pyramid!
-    // ("không bị lỗi chuyển động quá nhiều, mượt mà 100%")
-    const roadRaw = Math.min(1, Math.max(0, (progress - 0.74) / 0.08));
+    // Phase 2: Unified Glide & Open into 3D Pyramid in CENTER (0.42 to 0.58)
+    // Directly after Step 0 finishes (0.32 -> 0.42), drum smoothly glides from left to center and opens into 3D pyramid!
+    // ("không bị lỗi chuyển động quá nhiều, mượt mà 100%, không còn các bước 1 2 3 4")
+    const roadRaw = Math.min(1, Math.max(0, (progress - 0.42) / 0.16));
     const roadT = smootherstep(roadRaw);
 
-    // Phase 3: Seamless fade from 3D Pyramid into Pure Vector Typography (0.86 to 0.93)
+    // Phase 3: Seamless fade from 3D Pyramid into Pure Vector Typography (0.74 to 0.84)
     // Eliminates all ugly fuzzy dot artifacts - text is 100% crisp, sharp, and pristine!
-    const roadFadeRaw = Math.min(1, Math.max(0, (progress - 0.86) / 0.07));
+    const roadFadeRaw = Math.min(1, Math.max(0, (progress - 0.74) / 0.10));
     const roadFade = smootherstep(roadFadeRaw);
     const slatAlpha = Math.max(0, 1 - roadFade);
 
