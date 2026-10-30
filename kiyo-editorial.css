@@ -2444,6 +2444,16 @@ body {
   letter-spacing: -0.01em;
 }
 
+.footer-col-heading a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer-col-heading a:hover {
+  color: #2b5cff;
+}
+
 .footer-links-list {
   list-style: none;
   padding: 0;
