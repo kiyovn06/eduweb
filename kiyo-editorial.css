@@ -1117,8 +1117,8 @@ body {
   width: 100%;
   display: flex;
   align-items: stretch;
-  justify-content: center;
-  padding: 0 clamp(24px, 2.5vw, 40px) 0; /* CHẠM XUỐNG DƯỚI ĐÁY 100% */
+  justify-content: flex-start;
+  padding: 0 clamp(20px, 2.2vw, 36px) 0; /* CHẠM XUỐNG DƯỚI ĐÁY 100% */
   box-sizing: border-box;
   overflow: hidden;
   background: #ffffff !important;
@@ -1127,24 +1127,24 @@ body {
 
 .managed-app-grid {
   display: grid;
-  grid-template-columns: minmax(220px, 0.85fr) calc((100vh - 60px) * (390 / 844)) minmax(420px, 1.8fr);
-  gap: clamp(20px, 2.2vw, 36px);
+  grid-template-columns: minmax(200px, max-content) calc((100vh - 60px) * (390 / 844)) 1fr;
+  gap: clamp(24px, 2.8vw, 48px);
   align-items: stretch;
   width: 100%;
-  max-width: 1680px;
-  margin: 0 auto;
+  max-width: 100%;
+  margin: 0;
   height: 100vh;
   box-sizing: border-box;
 }
 
-/* ── CỘT TRÁI: TIÊU ĐỀ TO (CĂN TRÊN THEO YÊU CẦU) ── */
+/* ── CỘT TRÁI: TIÊU ĐỀ TO (CANH BÊN TRÊN 30PX & SÁT BÊN TRÁI) ── */
 .managed-left-col {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-self: center;
+  justify-content: flex-start;
+  align-self: flex-start;
   height: 100%;
-  padding: 0;
+  padding: 30px 0 0 0; /* CANH Ở BÊN TRÊN - THẲNG HÀNG 30PX VỚI ĐIỆN THOẠI & THẺ */
   box-sizing: border-box;
   min-width: 0;
   will-change: transform, opacity;
@@ -1735,12 +1735,13 @@ body {
 
 /* Tiêu đề & Mô tả tinh giản tối đa (Xóa tất cả icon & pills) */
 .card-title {
-  font-size: clamp(2.4rem, 3.2vw, 3.8rem);
+  font-size: clamp(1.85rem, 2.3vw, 2.85rem);
   font-weight: 800;
   line-height: 1.15;
   letter-spacing: -0.025em;
   margin: 0 0 20px;
   text-align: left;
+  white-space: nowrap; /* KHÔNG ĐƯỢC XUỐNG DÒNG */
 }
 
 .card-desc {
