@@ -2167,6 +2167,169 @@ body {
 /* ══════════════════════════════════════════════════════════════════════════
    05: BẢNG TÍNH NĂNG & GÓI TRIỂN KHAI (SIÊU TO · KHÔNG KHUNG VIỀN · CÁI CAO CÁI THẤP)
    ══════════════════════════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════════════════════
+   SECTION: SẢN PHẨM CỦA KIYOEDU
+   ══════════════════════════════════════════════════════════════════════ */
+#san-pham {
+  padding: clamp(5rem, 9vh, 8.5rem) clamp(24px, 3.5vw, 60px);
+  background: #f8fafc !important;
+  overflow: hidden;
+}
+
+#san-pham .chapter-container {
+  max-width: clamp(1240px, 94vw, 1620px);
+  margin: 0 auto;
+}
+
+#san-pham .section-intro {
+  margin-bottom: clamp(3rem, 5vh, 4.5rem);
+  text-align: center;
+}
+
+#san-pham .section-title {
+  font-family: var(--font-display, 'Plus Jakarta Sans', sans-serif);
+  font-size: clamp(2.2rem, 3.4vw, 3.6rem);
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.035em;
+  line-height: 1.15;
+  margin: 0;
+}
+
+.section-subtitle {
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: clamp(1.05rem, 1.35vw, 1.25rem);
+  color: #64748b;
+  margin-top: 0.85rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.products-showcase-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(20px, 2vw, 32px);
+  align-items: stretch;
+}
+
+.product-item-card {
+  background: #ffffff;
+  border-radius: 28px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.35s ease;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.03);
+}
+
+.product-item-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08);
+  border-color: rgba(37, 99, 235, 0.25);
+}
+
+.product-card-visual {
+  position: relative;
+  height: clamp(190px, 22vh, 240px);
+  overflow: hidden;
+  background: #e2e8f0;
+}
+
+.product-card-visual img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.product-item-card:hover .product-card-visual img {
+  transform: scale(1.05);
+}
+
+.product-card-badge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 999px;
+  letter-spacing: 0.02em;
+}
+
+.product-card-body {
+  padding: clamp(1.4rem, 2vw, 1.85rem);
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.product-card-title {
+  font-family: var(--font-display, 'Plus Jakarta Sans', sans-serif);
+  font-size: clamp(1.15rem, 1.35vw, 1.3rem);
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 0.65rem;
+  line-height: 1.3;
+}
+
+.product-card-desc {
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: clamp(0.88rem, 1vw, 0.95rem);
+  color: #64748b;
+  line-height: 1.6;
+  margin: 0 0 1.25rem;
+  flex-grow: 1;
+}
+
+.product-card-footer {
+  margin-top: auto;
+  padding-top: 0.85rem;
+  border-top: 1px solid rgba(15, 23, 42, 0.06);
+}
+
+.product-card-link {
+  font-family: var(--font-display, 'Plus Jakarta Sans', sans-serif);
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #2563eb;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: gap 0.2s ease, color 0.2s ease;
+}
+
+.product-card-link::after {
+  content: '→';
+  transition: transform 0.2s ease;
+}
+
+.product-item-card:hover .product-card-link {
+  color: #1d4ed8;
+}
+
+.product-item-card:hover .product-card-link::after {
+  transform: translateX(4px);
+}
+
+@media (max-width: 1200px) {
+  .products-showcase-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .products-showcase-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 #tinh-nang {
   padding: clamp(5rem, 10vh, 10rem) clamp(24px, 3.5vw, 60px);
   background: #ffffff !important;
