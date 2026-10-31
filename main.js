@@ -81,6 +81,22 @@ async function initScrollytelling() {
   const appRightCol = showcaseTrack ? showcaseTrack.querySelector('.managed-right-col') : null;
   const c1Title = c1 ? c1.querySelector('.card-title') : null;
 
+  // ── Mobile Showcase Tabs Interaction (inside initScrollytelling) ──
+  const showcaseTabs = document.querySelectorAll('.showcase-tab-btn');
+  if (showcaseTabs.length > 0 && showcaseTrack) {
+    showcaseTabs.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const tabIdx = btn.getAttribute('data-tab');
+        showcaseTabs.forEach(b => {
+          const isActive = b === btn;
+          b.classList.toggle('active', isActive);
+          b.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        });
+        showcaseTrack.classList.toggle('show-phone-2', tabIdx === '2');
+      });
+    });
+  }
+
   // Stats Counters
   const statsStrip = document.getElementById('stats-counter-strip');
   const statValues = Array.from(document.querySelectorAll('.stat-value'));
@@ -255,7 +271,11 @@ async function initScrollytelling() {
 
   function updateBocTachShrink(scrollY) {
     if (!bocTachTrack || !bocTachVisualCol || !bocTachTextCol) return;
-    if (windowW <= 768) return;
+    if (windowW <= 768) {
+      if (bocTachTitleGroup) { bocTachTitleGroup.style.opacity = ''; bocTachTitleGroup.style.transform = ''; }
+      bocTachCards.forEach(c => { c.style.opacity = ''; c.style.transform = ''; });
+      return;
+    }
 
     const rectTop = bocTachTop - scrollY;
     const rectBottom = rectTop + bocTachHeight;
@@ -333,7 +353,14 @@ async function initScrollytelling() {
 
   function updateLiveQuizFanOut(scrollY) {
     if (!liveQuizTrack || !fanCenterTablet) return;
-    if (windowW <= 768) return;
+    if (windowW <= 768) {
+      if (fanCardL1) fanCardL1.style.transform = '';
+      if (fanCardR1) fanCardR1.style.transform = '';
+      if (fanCardL2) fanCardL2.style.transform = '';
+      if (fanCardR2) fanCardR2.style.transform = '';
+      if (fanCenterTablet) fanCenterTablet.style.transform = '';
+      return;
+    }
 
     const rectTop = liveQuizTop - scrollY;
     const rectBottom = rectTop + liveQuizHeight;
@@ -656,8 +683,12 @@ async function initScrollytelling() {
   function updateAppPhoneStack(scrollY) {
     if (!showcaseTrack || !p2 || !c2) return;
     if (windowW <= 768) {
-      if (appLeftCol) { appLeftCol.style.transform = 'none'; appLeftCol.style.opacity = '1'; }
-      if (appRightCol) { appRightCol.style.transform = 'none'; appRightCol.style.opacity = '1'; }
+      if (appLeftCol) { appLeftCol.style.transform = ''; appLeftCol.style.opacity = ''; }
+      if (appRightCol) { appRightCol.style.transform = ''; appRightCol.style.opacity = ''; }
+      if (p1) { p1.style.transform = ''; p1.style.opacity = ''; }
+      if (p2) { p2.style.transform = ''; p2.style.opacity = ''; p2.style.pointerEvents = ''; }
+      if (c1) { c1.style.transform = ''; c1.style.opacity = ''; }
+      if (c2) { c2.style.transform = ''; c2.style.opacity = ''; c2.style.pointerEvents = ''; }
       return;
     }
 
@@ -863,3 +894,5 @@ if (document.readyState === 'loading') {
 } else {
   initScrollytelling();
 }
+
+
