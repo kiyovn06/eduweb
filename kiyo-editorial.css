@@ -2910,14 +2910,24 @@ html, body {
 }
 
 @media (max-width: 768px) {
-  /* 00: HEADER COMPACT & SLEEK */
+  /* TRIỆT TIÊU HIỆU ỨNG TRANSLATE LỆCH TRÊN MOBILE - TẤT CẢ SÁT MÉP ĐÚNG 10PX */
+  .flow-in-left,
+  .flow-in-right,
+  .flow-in-up {
+    transform: none !important;
+    opacity: 1 !important;
+    transition: none !important;
+  }
+
+  /* 00: HEADER - SÁT MÉP TRÌNH DUYỆT ĐÚNG 10PX */
   .site-header {
-    padding: 0.65rem 1rem !important;
+    padding: 0.65rem 10px !important;
     height: 56px !important;
-    background: rgba(241, 245, 249, 0.9) !important;
+    background: rgba(241, 245, 249, 0.95) !important;
     backdrop-filter: blur(12px) !important;
     -webkit-backdrop-filter: blur(12px) !important;
     z-index: 100 !important;
+    box-sizing: border-box !important;
   }
 
   .header-nav {
@@ -2934,65 +2944,68 @@ html, body {
     font-weight: 700 !important;
   }
 
-  /* 01: HERO SECTION - KHÔNG ĐÈ LÊN CHỮ, HOA PHƯỢNG GỌN */
+  /* 01: HERO SECTION - SÁT MÉP ĐÚNG 10PX, GỌN GÀNG, KHÔNG CÒN KHOẢNG TRẮNG MÊNH MÔNG */
   .stage-hero {
-    min-height: 100vh !important;
-    height: 100vh !important;
-    padding: 70px 1.25rem 2rem 1.25rem !important;
+    min-height: auto !important;
+    height: clamp(480px, 76vh, 580px) !important;
+    padding: 68px 10px 1.5rem 10px !important;
     display: flex !important;
     flex-direction: column !important;
     justify-content: flex-start !important;
     box-sizing: border-box !important;
+    overflow: hidden !important;
   }
 
   .hero-poinciana-wrap {
-    width: 160px !important;
-    max-width: 42vw !important;
-    top: 52px !important;
-    right: -15px !important;
+    width: 135px !important;
+    max-width: 38vw !important;
+    top: 50px !important;
+    right: -5px !important;
     opacity: 0.85 !important;
     pointer-events: none !important;
   }
 
   .hero-backdrop-img {
-    object-position: 85% 95% !important; /* Đẩy máy tính bảng và học sinh xuống nửa dưới */
+    object-position: 65% 75% !important; /* Đưa học sinh & tablet vào góc nhìn trực quan ngay dưới chữ */
+    transform: scale(1.05) !important;
   }
 
   .hero-backdrop-overlay {
     background: linear-gradient(
       180deg,
-      rgba(241, 245, 249, 1) 0%,
-      rgba(241, 245, 249, 0.96) 30%,
-      rgba(241, 245, 249, 0.72) 48%,
-      rgba(241, 245, 249, 0.15) 72%,
+      rgba(241, 245, 249, 0.88) 0%,
+      rgba(241, 245, 249, 0.5) 25%,
+      rgba(241, 245, 249, 0.05) 50%,
       rgba(241, 245, 249, 0) 100%
     ) !important;
   }
 
   .hero-foreground-content {
     max-width: 100% !important;
-    margin-top: 1.5rem !important;
+    width: 100% !important;
+    margin-top: 1rem !important;
     z-index: 10 !important;
+    padding: 0 !important;
   }
 
   .hero-title-line-1 {
-    font-size: clamp(2rem, 7vw, 2.55rem) !important;
+    font-size: clamp(2rem, 7.5vw, 2.6rem) !important;
     line-height: 1.12 !important;
     color: var(--text-primary) !important;
   }
 
   .hero-title-line-2 {
-    font-size: clamp(2.2rem, 8vw, 2.85rem) !important;
+    font-size: clamp(2.2rem, 8.5vw, 2.9rem) !important;
     line-height: 1.12 !important;
     color: var(--accent-blue) !important;
     margin-bottom: 0.5rem !important;
   }
 
-  /* 02: STAGE BÓC TÁCH ĐỀ AI */
+  /* 02: STAGE BÓC TÁCH ĐỀ AI - SÁT MÉP ĐÚNG 10PX, KHOẢNG CÁCH GỌN GÀNG */
   .stage-boc-tach-track {
     min-height: auto !important;
     height: auto !important;
-    padding: 3rem 1.25rem !important;
+    padding: 2rem 10px !important;
   }
 
   .boc-tach-sticky-wrapper {
@@ -3004,31 +3017,34 @@ html, body {
   .chapter-shrink-split {
     display: flex !important;
     flex-direction: column !important;
-    gap: 1.75rem !important;
+    gap: 1.25rem !important;
     height: auto !important;
   }
 
   .boc-tach-visual-col {
     width: 100% !important;
     height: auto !important;
+    padding: 0 !important;
   }
 
   .boc-tach-visual-col .chapter-visual-box {
-    height: 240px !important;
-    border-radius: 20px !important;
+    height: 220px !important;
+    border-radius: 18px !important;
     overflow: hidden !important;
+    width: 100% !important;
   }
 
   .boc-tach-text-col {
     width: 100% !important;
     opacity: 1 !important;
     transform: none !important;
+    padding: 0 !important;
   }
 
   .boc-tach-title-group {
     opacity: 1 !important;
     transform: none !important;
-    margin-bottom: 1.25rem !important;
+    margin-bottom: 1rem !important;
   }
 
   .boc-tach-title {
@@ -3037,21 +3053,23 @@ html, body {
   }
 
   .boc-tach-cards-wrap {
-    gap: 1rem !important;
+    gap: 0.85rem !important;
   }
 
   .feature-block {
     opacity: 1 !important;
     transform: none !important;
-    padding: 1.25rem !important;
+    padding: 1.15rem 1rem !important;
     border-radius: 16px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
   }
 
-  /* 03: STAGE LIVE QUIZ (ĐẤU TRƯỜNG 0MS) - TRIỆT TIÊU TRÀN MÀN HÌNH */
+  /* 03: STAGE LIVE QUIZ - SÁT MÉP ĐÚNG 10PX, KHÔNG TRÀN NGANG */
   .stage-live-quiz-track {
     min-height: auto !important;
     height: auto !important;
-    padding: 3rem 1.25rem !important;
+    padding: 2rem 10px !important;
     overflow: hidden !important;
     max-width: 100vw !important;
   }
@@ -3067,6 +3085,12 @@ html, body {
   .live-quiz-inner-container {
     height: auto !important;
     overflow: hidden !important;
+    padding: 0 !important;
+    width: 100% !important;
+  }
+
+  .live-quiz-header {
+    margin-bottom: 0.75rem !important;
   }
 
   .live-quiz-fan-stage {
@@ -3074,9 +3098,9 @@ html, body {
     flex-direction: row !important;
     overflow-x: auto !important;
     scroll-snap-type: x mandatory !important;
-    gap: 1rem !important;
+    gap: 0.85rem !important;
     height: auto !important;
-    padding: 1rem 0.25rem 1.5rem !important;
+    padding: 0.75rem 0 1rem !important;
     perspective: none !important;
     justify-content: flex-start !important;
     -webkit-overflow-scrolling: touch;
@@ -3089,19 +3113,19 @@ html, body {
     position: static !important;
     top: auto !important;
     left: auto !important;
-    flex: 0 0 min(260px, 75vw) !important;
-    height: 360px !important;
+    flex: 0 0 min(255px, 72vw) !important;
+    height: 330px !important;
     scroll-snap-align: center !important;
     transform: none !important;
     opacity: 1 !important;
-    border-radius: 20px !important;
+    border-radius: 18px !important;
   }
 
-  /* 04: STAGE LỚP HỌC THÔNG MINH */
+  /* 04: STAGE LỚP HỌC THÔNG MINH - SÁT MÉP ĐÚNG 10PX */
   .grail-sheet-section {
     min-height: auto !important;
     height: auto !important;
-    padding: 3rem 1.25rem !important;
+    padding: 2rem 10px !important;
     overflow: hidden !important;
   }
 
@@ -3109,6 +3133,7 @@ html, body {
     padding: 0 !important;
     border-radius: 0 !important;
     max-width: 100% !important;
+    width: 100% !important;
     transform: none !important;
     background: transparent !important;
     height: auto !important;
@@ -3118,12 +3143,14 @@ html, body {
   .grail-content-split {
     display: flex !important;
     flex-direction: column !important;
-    gap: 1.5rem !important;
+    gap: 1.25rem !important;
+    width: 100% !important;
   }
 
   .grail-sheet-header {
     width: 100% !important;
     max-width: 100% !important;
+    margin-bottom: 0.25rem !important;
   }
 
   .grail-sheet-title {
@@ -3138,32 +3165,33 @@ html, body {
   }
 
   .grail-gallery-strip {
-    height: 280px !important;
+    height: 240px !important;
     width: 100% !important;
     overflow-x: auto !important;
     scroll-snap-type: x mandatory !important;
     display: flex !important;
     flex-direction: row !important;
-    gap: 12px !important;
+    gap: 10px !important;
     -webkit-overflow-scrolling: touch;
+    padding-bottom: 0.5rem !important;
   }
 
   .grail-gallery-item {
     height: 100% !important;
-    flex: 0 0 min(260px, 75vw) !important;
-    width: min(260px, 75vw) !important;
-    max-width: min(260px, 75vw) !important;
-    min-width: min(260px, 75vw) !important;
+    flex: 0 0 min(255px, 72vw) !important;
+    width: min(255px, 72vw) !important;
+    max-width: min(255px, 72vw) !important;
+    min-width: min(255px, 72vw) !important;
     opacity: 1 !important;
     scroll-snap-align: center !important;
-    border-radius: 18px !important;
+    border-radius: 16px !important;
   }
 
-  /* 05: QUẢN LÝ TRONG 1 ỨNG DỤNG - SỬA LỖI ẢNH 2 100% */
+  /* 05: QUẢN LÝ TRONG 1 ỨNG DỤNG - SÁT MÉP ĐÚNG 10PX, KHÔNG TRỐNG XANH VÀ KHÔNG TRỐNG TRẮNG */
   .stage-app-showcase-track {
     min-height: auto !important;
     height: auto !important;
-    padding: 3rem 1.25rem !important;
+    padding: 2rem 10px !important;
     background: #ffffff !important;
     overflow: hidden !important;
   }
@@ -3179,7 +3207,7 @@ html, body {
   .managed-app-grid {
     display: flex !important;
     flex-direction: column !important;
-    gap: 1.5rem !important;
+    gap: 0.85rem !important;
     width: 100% !important;
     max-width: 100% !important;
     height: auto !important;
@@ -3195,12 +3223,13 @@ html, body {
   }
 
   .managed-title {
-    font-size: clamp(2rem, 7vw, 2.5rem) !important;
+    font-size: clamp(1.8rem, 6.2vw, 2.3rem) !important;
     flex-direction: row !important;
     flex-wrap: wrap !important;
     align-items: baseline !important;
     gap: 6px !important;
     line-height: 1.15 !important;
+    margin-bottom: 0.25rem !important;
   }
 
   .title-line-text {
@@ -3220,14 +3249,14 @@ html, body {
   .mobile-showcase-tabs {
     display: flex !important;
     gap: 8px !important;
-    margin: 1.25rem 0 0.5rem 0 !important;
+    margin: 0.65rem 0 0.5rem 0 !important;
     width: 100% !important;
   }
 
   .showcase-tab-btn {
     flex: 1 !important;
-    padding: 0.65rem 0.85rem !important;
-    font-size: 0.95rem !important;
+    padding: 0.6rem 0.85rem !important;
+    font-size: 0.92rem !important;
     font-weight: 700 !important;
     border-radius: 9999px !important;
     border: none !important;
@@ -3245,12 +3274,12 @@ html, body {
     box-shadow: 0 4px 14px rgba(37, 99, 235, 0.28) !important;
   }
 
-  /* Khung điện thoại trên mobile */
+  /* Khung điện thoại gọn gàng trên mobile */
   .managed-center-col {
     position: relative !important;
     width: 100% !important;
-    height: 480px !important;
-    margin: 0 auto !important;
+    height: 405px !important;
+    margin: 0.25rem auto 0.5rem auto !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -3261,14 +3290,14 @@ html, body {
     top: 50% !important;
     left: 50% !important;
     transform: translate(-50%, -50%) !important;
-    width: min(265px, 72vw) !important;
-    height: 470px !important;
-    max-height: 470px !important;
-    border-radius: 38px !important;
+    width: min(235px, 66vw) !important;
+    height: 405px !important;
+    max-height: 405px !important;
+    border-radius: 36px !important;
     border-width: 3px !important;
     border-color: #d4d4d8 !important;
     transition: opacity 0.35s ease, transform 0.35s ease !important;
-    box-shadow: 0 20px 50px -10px rgba(15, 23, 42, 0.25) !important;
+    box-shadow: 0 16px 40px -10px rgba(15, 23, 42, 0.2) !important;
   }
 
   .phone-frame-1 {
@@ -3297,114 +3326,236 @@ html, body {
     transform: translate(-50%, -50%) !important;
   }
 
-  /* Thẻ thông tin bên dưới điện thoại trên mobile */
+  /* Thẻ thông tin ôm sát nội dung - TRIỆT TIÊU 100% KHOẢNG TRỐNG XANH VÀ TRẮNG */
   .managed-right-col {
     width: 100% !important;
     height: auto !important;
-    margin-top: 0.5rem !important;
+    margin-top: 0.25rem !important;
   }
 
   .cards-stack-container {
     position: relative !important;
     width: 100% !important;
-    min-height: 190px !important;
+    min-height: auto !important;
+    height: auto !important;
   }
 
   .app-feature-card {
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
     width: 100% !important;
-    border-radius: 20px !important;
-    padding: 1.25rem 1.25rem !important;
-    transition: opacity 0.35s ease, transform 0.35s ease !important;
+    border-radius: 18px !important;
+    padding: 1.15rem 1rem !important;
+    box-sizing: border-box !important;
+    transition: opacity 0.3s ease, transform 0.3s ease !important;
   }
 
   .app-feature-card .card-title {
-    font-size: clamp(1.3rem, 5vw, 1.6rem) !important;
+    font-size: clamp(1.25rem, 5vw, 1.5rem) !important;
     line-height: 1.25 !important;
-    margin-bottom: 0.5rem !important;
+    margin-bottom: 0.4rem !important;
   }
 
   .app-feature-card .card-desc {
-    font-size: 0.95rem !important;
+    font-size: 0.92rem !important;
     line-height: 1.5 !important;
+    margin: 0 !important;
   }
 
   .app-feature-card-1 {
     position: relative !important;
+    display: block !important;
     opacity: 1 !important;
     z-index: 2 !important;
     transform: none !important;
   }
 
   .app-feature-card-2 {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
     opacity: 0 !important;
     z-index: 1 !important;
     pointer-events: none !important;
-    transform: translateY(12px) !important;
+    transform: translateY(8px) !important;
+    display: none !important;
   }
 
   .stage-app-showcase-track.show-phone-2 .app-feature-card-1 {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
     opacity: 0 !important;
     pointer-events: none !important;
-    transform: translateY(-12px) !important;
+    transform: translateY(-8px) !important;
+    display: none !important;
   }
 
   .stage-app-showcase-track.show-phone-2 .app-feature-card-2 {
+    position: relative !important;
+    display: block !important;
     opacity: 1 !important;
     pointer-events: auto !important;
     z-index: 2 !important;
     transform: none !important;
   }
 
-  /* 06: BẢNG GIÁ & TÍNH NĂNG TRÊN MOBILE */
+  /* 06: BẢNG GIÁ & TÍNH NĂNG TRÊN MOBILE - SÁT MÉP ĐÚNG 10PX, KHÔNG TRỐNG */
+  #tinh-nang {
+    padding: 2.25rem 10px !important;
+    background: #ffffff !important;
+  }
+
+  #tinh-nang .chapter-container {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  #tinh-nang .section-intro {
+    margin-bottom: 1.25rem !important;
+    text-align: center !important;
+  }
+
+  #tinh-nang .section-title {
+    font-size: clamp(1.8rem, 6.2vw, 2.3rem) !important;
+  }
+
   .pricing-tiers-grid {
     display: flex !important;
     flex-direction: column !important;
-    gap: 2rem !important;
+    gap: 1.25rem !important;
+    width: 100% !important;
   }
 
-  .tier-card {
+  .tier-card,
+  .tier-card:nth-child(1),
+  .tier-card:nth-child(2),
+  .tier-card:nth-child(3),
+  .tier-card.tier-highlighted {
     width: 100% !important;
     min-height: auto !important;
     margin-top: 0 !important;
-    border-radius: 28px !important;
-    padding: 2.25rem 1.5rem !important;
+    border-radius: 20px !important;
+    padding: 1.4rem 1.15rem !important;
+    box-sizing: border-box !important;
   }
 
   .tier-card h3 {
-    font-size: clamp(2.2rem, 7vw, 2.75rem) !important;
+    font-size: clamp(1.75rem, 6vw, 2.2rem) !important;
+    margin-bottom: 0.25rem !important;
+  }
+
+  .tier-price {
+    font-size: 1.05rem !important;
+    margin-bottom: 0.75rem !important;
+  }
+
+  .tier-feature-list {
+    margin: 1rem 0 1.25rem 0 !important;
+    gap: 0.45rem !important;
+  }
+
+  .tier-feature-list li {
+    font-size: 0.92rem !important;
   }
 
   .btn-tier-action {
     width: 100% !important;
-    padding: 1.15rem 2rem !important;
+    padding: 0.85rem 1.25rem !important;
+    font-size: 0.95rem !important;
+    box-sizing: border-box !important;
   }
 
-  /* 07: FOOTER & MONUMENTAL WORDMARK */
+  /* 07: FOOTER & CAMPUS BANNER - SÁT MÉP ĐÚNG 10PX, KHÔNG CÒN KHOẢNG TRỐNG VÔ NGHĨA */
+  .stage-cta {
+    padding: 2rem 10px 0 10px !important;
+    background: #ffffff !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .cta-resolution-container {
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+
+  .cta-campus-banner {
+    width: 100% !important;
+    margin-bottom: 1.25rem !important;
+  }
+
   .cta-campus-banner img {
-    height: 220px !important;
+    height: 190px !important;
     object-fit: cover !important;
-    border-radius: 18px !important;
+    border-radius: 14px !important;
+    width: 100% !important;
+    display: block !important;
+  }
+
+  .footer-editorial-container {
+    padding: 1.5rem 10px 1rem 10px !important;
+    margin-top: 1rem !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    background: #ffffff !important;
   }
 
   .footer-editorial-top {
     flex-direction: column !important;
-    gap: 2rem !important;
+    gap: 1.25rem !important;
+    margin: 0 0 1.25rem 0 !important;
+    width: 100% !important;
+  }
+
+  .footer-creative-brand {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  .footer-creative-title {
+    font-size: clamp(1.6rem, 5.5vw, 2.1rem) !important;
+    margin-bottom: 0.35rem !important;
+  }
+
+  .footer-creative-tagline {
+    font-size: 0.92rem !important;
+    line-height: 1.5 !important;
+    margin-bottom: 1rem !important;
   }
 
   .footer-editorial-nav {
     display: grid !important;
     grid-template-columns: repeat(2, 1fr) !important;
-    gap: 1.5rem !important;
+    gap: 1.25rem 1rem !important;
+    width: 100% !important;
+  }
+
+  .footer-nav-col {
+    width: 100% !important;
+  }
+
+  .footer-monumental-wordmark {
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0.5rem 0 0 0 !important;
+    overflow: hidden !important;
+    background: #ffffff !important;
   }
 
   .monumental-text {
-    font-size: clamp(3.2rem, 16vw, 5.5rem) !important;
+    font-size: clamp(2.6rem, 13.5vw, 4rem) !important;
     text-align: center !important;
     letter-spacing: -0.04em !important;
-    line-height: 0.9 !important;
+    line-height: 1 !important;
+    width: 100% !important;
+    display: block !important;
+    margin: 0 !important;
+    white-space: nowrap !important;
   }
 }
 
