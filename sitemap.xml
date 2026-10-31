@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://ede.kiyo.vn/</loc>
+    <loc>https://edu.kiyo.vn/</loc>
     <lastmod>2026-10-31</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://ede.kiyo.vn/#tong-quan</loc>
+    <loc>https://edu.kiyo.vn/#tong-quan</loc>
     <lastmod>2026-10-31</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://ede.kiyo.vn/#dau-truong</loc>
+    <loc>https://edu.kiyo.vn/#dau-truong</loc>
     <lastmod>2026-10-31</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://ede.kiyo.vn/#tinh-nang</loc>
+    <loc>https://edu.kiyo.vn/#tinh-nang</loc>
     <lastmod>2026-10-31</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>

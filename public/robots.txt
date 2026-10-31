@@ -20,4 +20,4 @@ Allow: /
 User-agent: PerplexityBot
 Allow: /
 
-Sitemap: https://ede.kiyo.vn/sitemap.xml
+Sitemap: https://edu.kiyo.vn/sitemap.xml
