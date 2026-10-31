@@ -2890,26 +2890,35 @@ body {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   GLOBAL MOBILE OVERFLOW-X PREVENTION
+   DESKTOP OVERFLOW SAFETY (PRESERVE POSITION: STICKY 100%)
    ══════════════════════════════════════════════════════════════════════════ */
 html, body {
-  overflow-x: hidden !important;
-  max-width: 100vw !important;
-  width: 100% !important;
   position: relative;
+  overflow-x: clip;
 }
 
 #story-main, .story-curtain-sheet {
-  overflow-x: hidden !important;
-  max-width: 100vw !important;
-  width: 100% !important;
+  overflow: visible !important;
+  position: relative;
 }
 
 .mobile-showcase-tabs {
-  display: none;
+  display: none !important;
 }
 
 @media (max-width: 768px) {
+  /* MOBILE OVERFLOW-X PREVENTION (CHỈ ÁP DỤNG TRÊN ĐIỆN THOẠI) */
+  html, body {
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
+    width: 100% !important;
+  }
+
+  #story-main, .story-curtain-sheet {
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
+    width: 100% !important;
+  }
   /* TRIỆT TIÊU HIỆU ỨNG TRANSLATE LỆCH TRÊN MOBILE - TẤT CẢ SÁT MÉP ĐÚNG 10PX */
   .flow-in-left,
   .flow-in-right,
